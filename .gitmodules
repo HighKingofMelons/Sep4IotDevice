@@ -1,0 +1,6 @@
+[submodule "IoT_Semester_project"]
+	path = IoT_Semester_project
+	url = https://github.com/ihavn/IoT_Semester_project
+[submodule "VIA_FreeRTOS_AVRMEGA"]
+	path = VIA_FreeRTOS_AVRMEGA
+	url = https://github.com/ihavn/VIA_FreeRTOS_AVRMEGA
