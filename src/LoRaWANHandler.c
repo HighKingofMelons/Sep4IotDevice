@@ -70,15 +70,7 @@ static void _lora_setup(void)
 	// Join the LoRaWAN
 	uint8_t maxJoinTriesLeft = 10;
 	
-<<<<<<< HEAD
-<<<<<<< HEAD:src/LoRaWANHandler.c
-	//mh_z19_initialise(ser_USART3); 
-=======
-	mh_z19_initialise(ser_USART3); 
->>>>>>> a0b62f3 (CO2 sensor progress):LoRaWANHandler.c
-=======
-	//mh_z19_initialise(ser_USART3); 
->>>>>>> 8903bb4 (Co2 impelentation, not tests)
+	mh_z19_initialise(ser_USART3);
 	
 	do {
 		rc = lora_driver_join(LORA_OTAA);
@@ -144,23 +136,6 @@ void lora_handler_task( void *pvParameters )
 	for(;;)
 	{
 		xTaskDelayUntil( &xLastWakeTime, xFrequency );
-<<<<<<< HEAD
-<<<<<<< HEAD:src/LoRaWANHandler.c
-=======
->>>>>>> 8903bb4 (Co2 impelentation, not tests)
-		
-		// Some dummy payload
-		uint8_t tmp = 255;
-		// Flag bits
-		uint8_t open_bit = tmp | 0x1;
-		uint8_t battery_bit = 0;
-		uint8_t temp_bit = 0;
-		uint8_t hum_bit= 0;
-		uint8_t co2_bit = 0;
-		uint8_t sound_bit = 0;
-		uint8_t light_bit = 0;
-		uint8_t pir_bit = tmp | 0x128;
-<<<<<<< HEAD
 
 		// co2 actual mesurement
 		//uint16_t ppm;
@@ -190,62 +165,12 @@ void lora_handler_task( void *pvParameters )
 		_uplink_payload.bytes[8] = light >> 8;
 		_uplink_payload.bytes[9] = light & 0xFF;
 		
-		
 		printf("Payload: ");
 		for (int i = 0; i < _uplink_payload.len; i++)
 		{
 			printf("%i ", _uplink_payload.bytes[i]);
 		}
 		printf("\n");
-=======
-=======
->>>>>>> 8903bb4 (Co2 impelentation, not tests)
-
-		// co2 actual mesurement
-		//uint16_t ppm;
-		//mh_z19_returnCode_t rc;
-		//rc = mh_z19_takeMeassuring();
-		
-		uint8_t flags = 0;//open_bit | battery_bit | temp_bit | hum_bit | co2_bit | sound_bit | light_bit | pir_bit; // dummy flags
-		int16_t temp = 0; // Dummy temp
-		uint8_t hum = 0; // Dummy humidity
-		uint16_t co2_ppm = co2_get_latest_average_co2(co2);
-		printf("Payload.co2: %i\n", co2);
-		uint16_t sound = 0; // Dummy sound
-		uint16_t light = 0; // Dummy lux
-		// Some dummy payload
-		//uint16_t hum = 12345; // Dummy humidity
-		//int16_t temp = 675; // Dummy temp
-		//uint16_t co2_ppm = 1050; // Dummy CO2
-
-<<<<<<< HEAD
-		_uplink_payload.bytes[0] = hum >> 8;
-		_uplink_payload.bytes[1] = hum & 0xFF;
-		_uplink_payload.bytes[2] = temp >> 8;
-		_uplink_payload.bytes[3] = temp & 0xFF;
-		//_uplink_payload.bytes[4] = ppm >> 8;
-		//_uplink_payload.bytes[5] = ppm & 0xFF;
->>>>>>> a0b62f3 (CO2 sensor progress):LoRaWANHandler.c
-=======
-		_uplink_payload.bytes[0] = flags;
-		_uplink_payload.bytes[1] = temp >> 8;
-		_uplink_payload.bytes[2] = temp & 0xFF;
-		_uplink_payload.bytes[3] = hum;
-		_uplink_payload.bytes[4] = co2_ppm >> 8;
-		_uplink_payload.bytes[5] = co2_ppm & 0xFF;
-		_uplink_payload.bytes[6] = sound >> 8;
-		_uplink_payload.bytes[7] = sound & 0xFF;
-		_uplink_payload.bytes[8] = light >> 8;
-		_uplink_payload.bytes[9] = light & 0xFF;
-		
-		
-		printf("Payload: ");
-		for (int i = 0; i < _uplink_payload.len; i++)
-		{
-			printf("%i ", _uplink_payload.bytes[i]);
-		}
-		printf("\n");
->>>>>>> 8903bb4 (Co2 impelentation, not tests)
 
 		status_leds_shortPuls(led_ST4);  // OPTIONAL
 		printf("Upload Message >%s<\n", lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload)));
