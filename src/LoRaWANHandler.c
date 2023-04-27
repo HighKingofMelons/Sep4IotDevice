@@ -7,6 +7,9 @@
 #include <stddef.h>
 #include <stdio.h>
 
+// co2 driver import
+#include <mh_z19.h>
+
 #include <ATMEGA_FreeRTOS.h>
 
 #include <lora_driver.h>
@@ -64,6 +67,8 @@ static void _lora_setup(void)
 
 	// Join the LoRaWAN
 	uint8_t maxJoinTriesLeft = 10;
+	
+	mh_z19_initialise(ser_USART3); 
 	
 	do {
 		rc = lora_driver_join(LORA_OTAA);
@@ -129,17 +134,23 @@ void lora_handler_task( void *pvParameters )
 	{
 		xTaskDelayUntil( &xLastWakeTime, xFrequency );
 
+		// co2 actual messurement
+		//uint16_t ppm;
+		//mh_z19_returnCode_t rc;
+		//rc = mh_z19_takeMeassuring();
+		
+
 		// Some dummy payload
 		uint16_t hum = 12345; // Dummy humidity
 		int16_t temp = 675; // Dummy temp
-		uint16_t co2_ppm = 1050; // Dummy CO2
+		//uint16_t co2_ppm = 1050; // Dummy CO2
 
 		_uplink_payload.bytes[0] = hum >> 8;
 		_uplink_payload.bytes[1] = hum & 0xFF;
 		_uplink_payload.bytes[2] = temp >> 8;
 		_uplink_payload.bytes[3] = temp & 0xFF;
-		_uplink_payload.bytes[4] = co2_ppm >> 8;
-		_uplink_payload.bytes[5] = co2_ppm & 0xFF;
+		//_uplink_payload.bytes[4] = ppm >> 8;
+		//_uplink_payload.bytes[5] = ppm & 0xFF;
 
 		status_leds_shortPuls(led_ST4);  // OPTIONAL
 		printf("Upload Message >%s<\n", lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload)));

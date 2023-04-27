@@ -16,6 +16,9 @@
 #include <stdio_driver.h>
 #include <serial.h>
 
+// co2 driver import
+#include <mh_z19.h>
+
  // Needed for LoRaWAN
 #include <lora_driver.h>
 #include <status_leds.h>
@@ -70,12 +73,20 @@ void task1( void *pvParameters )
 
 	// Initialise the xLastWakeTime variable with the current time.
 	xLastWakeTime = xTaskGetTickCount();
+	
+	
+	uint16_t ppm;
+	mh_z19_returnCode_t rc;
+	rc = mh_z19_takeMeassuring();
+	
+	
 
 	for(;;)
 	{
 		xTaskDelayUntil( &xLastWakeTime, xFrequency );
-		puts("Task1"); // stdio functions are not reentrant - Should normally be protected by MUTEX
+		//puts("Task1"); // stdio functions are not reentrant - Should normally be protected by MUTEX
 		PORTA ^= _BV(PA0);
+		printf("%d", ppm);
 	}
 }
 
@@ -91,7 +102,7 @@ void task2( void *pvParameters )
 	for(;;)
 	{
 		xTaskDelayUntil( &xLastWakeTime, xFrequency );
-		puts("Task2"); // stdio functions are not reentrant - Should normally be protected by MUTEX
+		//puts("Task2"); // stdio functions are not reentrant - Should normally be protected by MUTEX
 		PORTA ^= _BV(PA7);
 	}
 }
@@ -114,6 +125,7 @@ void initialiseSystem()
 	lora_driver_initialise(1, NULL);
 	// Create LoRaWAN task and start it up with priority 3
 	lora_handler_initialise(3);
+	mh_z19_initialise(ser_USART3);
 }
 
 /*-----------------------------------------------------------*/
