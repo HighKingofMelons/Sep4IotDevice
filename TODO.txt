@@ -1,0 +1,17 @@
+# 24. April
+
+For thursday 
+    Cmake tests GTest
+    Dockerfile to build/run tests
+    Talk to backend
+
+    
+Later tm
+    Get info from on Sensor
+    Build Payload
+    Send Payload
+    Recieve return Payload
+    Parse Payload
+    Configure Sensor
+
+    
