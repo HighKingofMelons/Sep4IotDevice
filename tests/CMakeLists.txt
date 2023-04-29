@@ -10,12 +10,12 @@ enable_testing()
 
 # Source files to be tested
 set(SOURCES_TEST
-    
+    ../src/utils.c
 )
 
 # The tests themselves
 set(TESTS
-    
+    utils.cpp
 )
 
 include_directories(
