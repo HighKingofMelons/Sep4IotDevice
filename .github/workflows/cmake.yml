@@ -11,7 +11,7 @@ env:
   BUILD_TARGET: Sep4IotDeviceTests
 
 jobs:
-  build:
+  unit-tests:
     runs-on: ubuntu-latest
 
     steps:
