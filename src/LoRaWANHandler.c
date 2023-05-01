@@ -146,12 +146,13 @@ void lora_handler_task( void *pvParameters )
 		uint8_t light_bit = 0;
 		uint8_t pir_bit = tmp | 0x128;
 		
-		uint8_t flags = open_bit | battery_bit | temp_bit | hum_bit | co2_bit | sound_bit | light_bit | pir_bit; // dummy flags
+		uint8_t flags = 0;//open_bit | battery_bit | temp_bit | hum_bit | co2_bit | sound_bit | light_bit | pir_bit; // dummy flags
 		int16_t temp = temperature_get_latest_average_temperature(temperature); // Dummy temp
-		uint8_t hum = 50; // Dummy humidity
-		uint16_t co2_ppm = 5555; // Dummy CO2
-		uint16_t sound = 6666; // Dummy sound
-		uint16_t light = 7777; // Dummy lux
+		printf("Payload.temp: %i\n", temp);
+		uint8_t hum = 0; // Dummy humidity
+		uint16_t co2_ppm = 0; // Dummy CO2
+		uint16_t sound = 0; // Dummy sound
+		uint16_t light = 0; // Dummy lux
 		
 		_uplink_payload.bytes[0] = flags;
 		_uplink_payload.bytes[1] = temp >> 8;
@@ -163,6 +164,13 @@ void lora_handler_task( void *pvParameters )
 		_uplink_payload.bytes[7] = sound & 0xFF;
 		_uplink_payload.bytes[8] = light >> 8;
 		_uplink_payload.bytes[9] = light & 0xFF;
+
+		printf("Payload: ");		
+		for (int i = 0; i < _uplink_payload.len; i++)
+		{
+			printf("%i ", _uplink_payload.bytes[i]);
+		}
+		printf("\n");
 
 		status_leds_shortPuls(led_ST4);  // OPTIONAL
 		printf("Upload Message >%s<\n", lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload)));

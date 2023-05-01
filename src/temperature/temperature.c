@@ -5,6 +5,7 @@
  *  Author: andre
  */ 
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
@@ -25,12 +26,11 @@ void resetTemperatureArray(temperature_t self);
 int makeOneTemperatueMesurment(temperature_t self);
 void addTemperature(temperature_t self, int temperature);
 
-static SemaphoreHandle_t latestAvgTemperatureMutex;
 static TaskHandle_t mesureTemperatureTask = NULL;
 
 typedef struct temperature {
 	int16_t temperatureArray[10];
-	int nextTemperatureToReadIdx;
+	int16_t nextTemperatureToReadIdx;
 	int16_t latestAvgTemperature;
 	SemaphoreHandle_t latestAvgTemperatureMutex;
 	uint8_t portNo;
@@ -49,7 +49,7 @@ temperature_t temperature_create(uint8_t port, TickType_t freequency) {
 	xTaskCreate(temperature_mesure,				/* Function that implements the task. */
 				"messureTemperature",           /* Text name for the task. */
 				TASK_MESSURE_TEMP_STACK,		/* Stack size in words, not bytes. */
-				(void*)1,						/* Parameter passed into the task. */
+				(void*) _newTemperature,		/* Parameter passed into the task. */
 				TASK_MESSURE_TEMP_PRIORITY,		/* Priority at which the task is created. */
 				&mesureTemperatureTask			/* Used to pass out the created task's handle. */
 	);	
@@ -83,12 +83,12 @@ void calculateTemperature(temperature_t self) {
 	}
 
 	while (1) {
-		if (xSemaphoreTake(latestAvgTemperatureMutex, pdMS_TO_TICKS(200)) == pdTRUE ) { // wait maximum 200ms
+		if (xSemaphoreTake(self->latestAvgTemperatureMutex, pdMS_TO_TICKS(200)) == pdTRUE ) { // wait maximum 200ms
 			self->latestAvgTemperature = (int16_t) (temperaturex10Sum / 10); // TODO: something smarter
-			xSemaphoreGive(latestAvgTemperatureMutex);
+			xSemaphoreGive(self->latestAvgTemperatureMutex);
 			break;
 		} else {
-			/* We timed out and could not obtain the mutex and cant therefore not access the shared resource safely. */
+
 		}
 	}
 }
@@ -96,9 +96,9 @@ void calculateTemperature(temperature_t self) {
 int16_t temperature_get_latest_average_temperature(temperature_t self) {
 	int16_t tmpTemperature = -100;
 	while (1) {
-		if (xSemaphoreTake(latestAvgTemperatureMutex, pdMS_TO_TICKS(200)) == pdTRUE ) { // wait maximum 200ms
+		if (xSemaphoreTake(self->latestAvgTemperatureMutex, pdMS_TO_TICKS(200)) == pdTRUE ) { // wait maximum 200ms
 			tmpTemperature = self->latestAvgTemperature;
-			xSemaphoreGive(latestAvgTemperatureMutex);
+			xSemaphoreGive(self->latestAvgTemperatureMutex);
 			break;
 		} else {
 			/* We timed out and could not obtain the mutex and cant therefore not access the shared resource safely. */
@@ -160,8 +160,9 @@ int initializeTemperatureDriver() {
 }
 
 int wakeUpTemperatureSensor() {
-	switch (hih8120_measure()) {
+	switch (hih8120_wakeup()) {
 		case HIH8120_OK:
+			vTaskDelay(pdMS_TO_TICKS(100));
 			// Driver initialized OK
 			// Always check what hih8120_initialise() returns
 			return 1;
@@ -183,13 +184,12 @@ int makeOneTemperatueMesurment(temperature_t self) {
 	
 	wakeUpTemperatureSensor();
 	
-	while(!hih8120_isReady()) {
-		vTaskDelay(pdMS_TO_TICKS(500)); //wait 0.5s
-	}
-	
 	switch(hih8120_measure()) {
 		case HIH8120_OK:
-			vTaskDelay(pdMS_TO_TICKS(1500)); //wait 1.5s
+			while(!hih8120_isReady()) {
+				vTaskDelay(pdMS_TO_TICKS(500)); //wait 0.5s
+			}
+			printf("Temp Measurement #%i: %i\n", self->nextTemperatureToReadIdx + 1, hih8120_getTemperature_x10());
 			addTemperature(self, hih8120_getTemperature_x10());
 			return 1;
 		case HIH8120_TWI_BUSY:
