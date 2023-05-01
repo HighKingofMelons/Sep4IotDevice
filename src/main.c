@@ -20,6 +20,9 @@
 #include <lora_driver.h>
 #include <status_leds.h>
 
+// Needed for temp measure
+#include "temperature/temperature.h"
+
 // define two Tasks
 void task1( void *pvParameters );
 void task2( void *pvParameters );
@@ -28,7 +31,7 @@ void task2( void *pvParameters );
 SemaphoreHandle_t xTestSemaphore;
 
 // Prototype for LoRaWAN handler
-void lora_handler_initialise(UBaseType_t lora_handler_task_priority);
+void lora_handler_initialise(UBaseType_t lora_handler_task_priority, temperature_t temperature);
 
 /*-----------------------------------------------------------*/
 void create_tasks_and_semaphores(void)
@@ -112,8 +115,14 @@ void initialiseSystem()
 	status_leds_initialise(5); // Priority 5 for internal task
 	// Initialise the LoRaWAN driver without down-link buffer
 	lora_driver_initialise(1, NULL);
+	
+	// Create temp TODO: restructure files to more logical and easier to draw class diagram 
+	const TickType_t measureCircleFreaquency = pdMS_TO_TICKS(300000UL); // Upload message every 5 minutes (300000 ms)
+	
+	temperature_t temperature = temperature_create(22, measureCircleFreaquency); //TODO: change port number
+	
 	// Create LoRaWAN task and start it up with priority 3
-	lora_handler_initialise(3);
+	lora_handler_initialise(3, temperature);
 }
 
 /*-----------------------------------------------------------*/
