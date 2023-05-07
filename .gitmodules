@@ -3,4 +3,4 @@
 	url = https://github.com/ihavn/IoT_Semester_project
 [submodule "VIA_FreeRTOS_AVRMEGA"]
 	path = VIA_FreeRTOS_AVRMEGA
-	url = https://github.com/ihavn/VIA_FreeRTOS_AVRMEGA
+	url = https://github.com/HighKingofMelons/VIA_FreeRTOS_AVRMEGA
