@@ -8,6 +8,8 @@ on:
 jobs:
   Deploy:
     runs-on: ubuntu-latest
+    env:
+      PLATFORMIO_AUTH_TOKEN: PlatformIO
 
     steps:
       - uses: actions/checkout@v3
