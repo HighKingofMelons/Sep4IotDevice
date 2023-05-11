@@ -1,0 +1,29 @@
+name: PlatformIO CI
+
+on:
+  push:
+    branches:
+      - release
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+    env:
+      PLATFORMIO_AUTH_TOKEN: PlatformIO
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.platformio/.cache
+          key: ${{ runner.os }}-pio
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: Install PlatformIO Core
+        run: pip install --upgrade platformio
+
+      - name: Deploy Project to TestDevice
+        run: pio remote run -e linux --target upload --verbose

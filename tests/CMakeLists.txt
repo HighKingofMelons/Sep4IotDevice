@@ -19,7 +19,7 @@ set(TESTS
 )
 
 include_directories(
-    ../src/include
+    ../include
     Drivers
     FreeRTOS
 )
