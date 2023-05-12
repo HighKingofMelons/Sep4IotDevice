@@ -17,21 +17,24 @@
 #include <serial.h>
 
 // co2 driver import
-#include <mh_z19.h>
+//#include <mh_z19.h>
 
  // Needed for LoRaWAN
 #include <lora_driver.h>
 #include <status_leds.h>
 
+#include "co2/co2.h"
+
 // define two Tasks
 void task1( void *pvParameters );
 void task2( void *pvParameters );
+
 
 // define semaphore handle
 SemaphoreHandle_t xTestSemaphore;
 
 // Prototype for LoRaWAN handler
-void lora_handler_initialise(UBaseType_t lora_handler_task_priority);
+void lora_handler_initialise(UBaseType_t lora_handler_task_priority, co2_c co2);
 
 /*-----------------------------------------------------------*/
 void create_tasks_and_semaphores(void)
@@ -75,9 +78,9 @@ void task1( void *pvParameters )
 	xLastWakeTime = xTaskGetTickCount();
 	
 	
-	uint16_t ppm;
-	mh_z19_returnCode_t rc;
-	rc = mh_z19_takeMeassuring();
+	//uint16_t ppm;
+	//mh_z19_returnCode_t rc;
+	//rc = mh_z19_takeMeassuring();
 	
 	
 
@@ -86,7 +89,7 @@ void task1( void *pvParameters )
 		xTaskDelayUntil( &xLastWakeTime, xFrequency );
 		//puts("Task1"); // stdio functions are not reentrant - Should normally be protected by MUTEX
 		PORTA ^= _BV(PA0);
-		printf("%d", ppm);
+		//printf("%d", ppm);
 	}
 }
 
@@ -124,8 +127,13 @@ void initialiseSystem()
 	// Initialise the LoRaWAN driver without down-link buffer
 	lora_driver_initialise(1, NULL);
 	// Create LoRaWAN task and start it up with priority 3
-	lora_handler_initialise(3);
-	mh_z19_initialise(ser_USART3);
+	
+	const TickType_t mesureCircleFreaquency = pdMS_TO_TICKS(300000UL);
+	
+	co2_c co2 = co2_create(22, mesureCircleFreaquency);
+	
+	lora_handler_initialise(3, co2);
+	//mh_z19_initialise(ser_USART3);
 }
 
 /*-----------------------------------------------------------*/
