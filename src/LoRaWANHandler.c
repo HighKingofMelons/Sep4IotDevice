@@ -136,6 +136,18 @@ void lora_handler_task( void *pvParameters )
 	for(;;)
 	{
 		xTaskDelayUntil( &xLastWakeTime, xFrequency );
+		
+		// Some dummy payload
+		uint8_t tmp = 255;
+		// Flag bits
+		uint8_t open_bit = tmp | 0x1;
+		uint8_t battery_bit = 0;
+		uint8_t temp_bit = 0;
+		uint8_t hum_bit= 0;
+		uint8_t co2_bit = 0;
+		uint8_t sound_bit = 0;
+		uint8_t light_bit = 0;
+		uint8_t pir_bit = tmp | 0x128;
 
 		// co2 actual mesurement
 		//uint16_t ppm;

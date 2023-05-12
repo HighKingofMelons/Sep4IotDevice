@@ -54,7 +54,6 @@ void initialiseSystem()
 	
 	lora_handler_initialise(3, co2);
 	//mh_z19_initialise(ser_USART3);
-
 }
 
 /*-----------------------------------------------------------*/
