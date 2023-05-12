@@ -15,21 +15,23 @@
 #include <lora_driver.h>
 #include <status_leds.h>
 
+#include "co2/co2.h"
+
 // Parameters for OTAA join - You have got these in a mail from IHA
-#define LORA_appEUI "XXXXXXXXXXXXXXX"
-#define LORA_appKEY "YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY"
+#define LORA_appEUI "49B360EEE16A8D4C"
+#define LORA_appKEY "E0597BF885F1F18CF896B91F8E211814"
 
 void lora_handler_task( void *pvParameters );
 
 static lora_driver_payload_t _uplink_payload;
 
-void lora_handler_initialise(UBaseType_t lora_handler_task_priority)
+void lora_handler_initialise(UBaseType_t lora_handler_task_priority, co2_c co2)
 {
 	xTaskCreate(
 	lora_handler_task
 	,  "LRHand"  // A name just for humans
 	,  configMINIMAL_STACK_SIZE+200  // This stack size can be checked & adjusted by reading the Stack Highwater
-	,  NULL
+	,  co2
 	,  lora_handler_task_priority  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
 	,  NULL );
 }
@@ -68,7 +70,7 @@ static void _lora_setup(void)
 	// Join the LoRaWAN
 	uint8_t maxJoinTriesLeft = 10;
 	
-	mh_z19_initialise(ser_USART3); 
+	//mh_z19_initialise(ser_USART3); 
 	
 	do {
 		rc = lora_driver_join(LORA_OTAA);
@@ -112,6 +114,7 @@ static void _lora_setup(void)
 /*-----------------------------------------------------------*/
 void lora_handler_task( void *pvParameters )
 {
+	co2_c co2 = (co2_c) pvParameters;
 	// Hardware reset of LoRaWAN transceiver
 	lora_driver_resetRn2483(1);
 	vTaskDelay(2);
@@ -133,24 +136,54 @@ void lora_handler_task( void *pvParameters )
 	for(;;)
 	{
 		xTaskDelayUntil( &xLastWakeTime, xFrequency );
+		
+		// Some dummy payload
+		uint8_t tmp = 255;
+		// Flag bits
+		uint8_t open_bit = tmp | 0x1;
+		uint8_t battery_bit = 0;
+		uint8_t temp_bit = 0;
+		uint8_t hum_bit= 0;
+		uint8_t co2_bit = 0;
+		uint8_t sound_bit = 0;
+		uint8_t light_bit = 0;
+		uint8_t pir_bit = tmp | 0x128;
 
-		// co2 actual messurement
+		// co2 actual mesurement
 		//uint16_t ppm;
 		//mh_z19_returnCode_t rc;
 		//rc = mh_z19_takeMeassuring();
 		
-
+		uint8_t flags = 0;//open_bit | battery_bit | temp_bit | hum_bit | co2_bit | sound_bit | light_bit | pir_bit; // dummy flags
+		int16_t temp = 0; // Dummy temp
+		uint8_t hum = 0; // Dummy humidity
+		uint16_t co2_ppm = co2_get_latest_average_co2(co2);
+		printf("Payload.co2: %i\n", co2);
+		uint16_t sound = 0; // Dummy sound
+		uint16_t light = 0; // Dummy lux
 		// Some dummy payload
-		uint16_t hum = 12345; // Dummy humidity
-		int16_t temp = 675; // Dummy temp
+		//uint16_t hum = 12345; // Dummy humidity
+		//int16_t temp = 675; // Dummy temp
 		//uint16_t co2_ppm = 1050; // Dummy CO2
 
-		_uplink_payload.bytes[0] = hum >> 8;
-		_uplink_payload.bytes[1] = hum & 0xFF;
-		_uplink_payload.bytes[2] = temp >> 8;
-		_uplink_payload.bytes[3] = temp & 0xFF;
-		//_uplink_payload.bytes[4] = ppm >> 8;
-		//_uplink_payload.bytes[5] = ppm & 0xFF;
+		_uplink_payload.bytes[0] = flags;
+		_uplink_payload.bytes[1] = temp >> 8;
+		_uplink_payload.bytes[2] = temp & 0xFF;
+		_uplink_payload.bytes[3] = hum;
+		_uplink_payload.bytes[4] = co2_ppm >> 8;
+		_uplink_payload.bytes[5] = co2_ppm & 0xFF;
+		_uplink_payload.bytes[6] = sound >> 8;
+		_uplink_payload.bytes[7] = sound & 0xFF;
+		_uplink_payload.bytes[8] = light >> 8;
+		_uplink_payload.bytes[9] = light & 0xFF;
+		
+		
+		printf("Payload: ");
+		for (int i = 0; i < _uplink_payload.len; i++)
+		{
+			printf("%i ", _uplink_payload.bytes[i]);
+		}
+		printf("\n");
 
 		status_leds_shortPuls(led_ST4);  // OPTIONAL
 		printf("Upload Message >%s<\n", lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload)));
