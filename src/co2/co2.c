@@ -9,9 +9,9 @@
 #include <math.h>
 #include <string.h>
 #include <ATMEGA_FreeRTOS.h>
-#include "semphr.h"
-#include "message_buffer.h"
-#include "task.h"
+#include <semphr.h>
+#include <message_buffer.h>
+#include <task.h>
 #include "../taskConfig.h"
 #include "co2.h"
 #include <mh_z19.h>
@@ -23,7 +23,7 @@ co2_c initializeCo2(uint8_t port, TickType_t freequency);
 void calculateCo2(co2_c self);
 void resetCo2Array(co2_c self);
 int makeOneCo2Mesurment(co2_c self);
-void addCo2(co2_c self, int co2);
+void addCo2(co2_c self, int16_t co2);
 
 static TaskHandle_t mesureCo2Task = NULL;
 
@@ -94,34 +94,11 @@ int16_t co2_get_latest_average_co2(co2_c self) {
 			xSemaphoreGive(self->latestAvgCo2Mutex);
 			break;
 			} else {
-
 		}
 	}
 
 	return tmpCo2;
 }
-/*
-int co2_destroy(co2_c self) {
-	if (self != NULL) {
-		free(self);
-	}
-	
-	if (mesureCo2Task != NULL) {
-		vTaskDelete(mesureTemperatureTask);
-		mesureCo2Task = NULL;
-	}
-	
-	mh_z19_returnCode_t returnCode;
-	
-	if((returnCode = mh_z19_destroy()) == MHZ19_OK) {
-		//Destroyed successfully
-		return 1;
-		} else {
-		//MH_Z19_OUT_OF_HEAP
-		return 2;
-	}
-}
-*/
 
 co2_c initializeCo2(uint8_t port, TickType_t freequency){
 	co2_c _newCo2 = calloc(sizeof(co2_st), 1);
@@ -139,10 +116,6 @@ int initializeCo2Driver() {
 	mh_z19_returnCode_t returnCode;
 	returnCode = mh_z19_takeMeassuring();
 	switch (returnCode){
-		case MHZ19_OK:
-		// Driver initialized OK
-		// Always check what hih8120_initialise() returns
-		return 1;
 		case MHZ19_NO_MEASSURING_AVAILABLE:
 		return 2;
 		case MHZ19_NO_SERIAL:
@@ -164,20 +137,19 @@ int makeOneCo2Mesurment(co2_c self) {
 	uint16_t ppm;
 	mh_z19_returnCode_t rc;
 	rc = mh_z19_takeMeassuring();
-	vTaskDelay (pdMS_TO_TICKS(500UL));
-	switch(rc) {
-		case MHZ19_OK:
+	vTaskDelay(pdMS_TO_TICKS(500UL));
+	switch (rc)
+	{
+	case MHZ19_NO_MEASSURING_AVAILABLE:
+		return 3;
+	case MHZ19_NO_SERIAL:
+		return 4;
+	case MHZ19_PPM_MUST_BE_GT_999:
+		return 5;
+	default:
 		mh_z19_getCo2Ppm(&ppm);
 		printf("Co2 Measurement #%i: %i\n", self->nextCo2ToReadIdx + 1, ppm);
 		addCo2(self, ppm);
-		return 1;
-		case MHZ19_NO_MEASSURING_AVAILABLE:
-		return 3;
-		case MHZ19_NO_SERIAL:
-		return 4;
-		case MHZ19_PPM_MUST_BE_GT_999:
-		return 5;
-		default:
 		return 0;
-	}
+		}
 }
