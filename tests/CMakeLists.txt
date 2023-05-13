@@ -12,11 +12,13 @@ enable_testing()
 set(SOURCES_TEST
     ../src/utils.c
     fakes.c
+    ../src/temperature/temperature.c
 )
 
 # The tests themselves
 set(TESTS
     utils.cpp
+    test_temperature.cpp
 )
 
 include_directories(

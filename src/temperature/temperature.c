@@ -10,9 +10,9 @@
 #include <math.h>
 #include <string.h>
 #include <ATMEGA_FreeRTOS.h>
-#include "semphr.h"
-#include "message_buffer.h"
-#include "task.h"
+#include <semphr.h>
+#include <message_buffer.h>
+#include <task.h>
 #include "../taskConfig.h"
 #include "temperature.h"
 #include <hih8120.h>
