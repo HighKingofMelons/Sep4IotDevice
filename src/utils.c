@@ -11,3 +11,4 @@ uint16_t float_to_int_x10(float input) {
         return (uint16_t) multiple;
 
     return 0;
+}

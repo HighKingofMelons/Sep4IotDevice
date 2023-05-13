@@ -11,6 +11,7 @@ enable_testing()
 # Source files to be tested
 set(SOURCES_TEST
     ../src/utils.c
+    ../src/co2/co2.c
 )
 
 # The tests themselves
