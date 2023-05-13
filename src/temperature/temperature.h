@@ -10,6 +10,5 @@
 
 typedef struct temperature* temperature_t;
 temperature_t temperature_create(uint8_t portNo, TickType_t mesureCircleFreequency);
-void temperature_mesure(void *pvParameters);
 int16_t temperature_get_latest_average_temperature(temperature_t self);
 int temaperature_destroy(temperature_t self);

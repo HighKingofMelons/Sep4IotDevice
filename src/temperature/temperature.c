@@ -21,22 +21,22 @@ int initializeTemperatureDriver();
 int wakeUpTemperatureSensor();
 
 temperature_t initializeTemperature(uint8_t port, TickType_t freequency);
-void calculateTemperature(temperature_t self);
+void temperature_mesure(void *pvParameters);
 void resetTemperatureArray(temperature_t self);
 int makeOneTemperatueMesurment(temperature_t self);
-void addTemperature(temperature_t self, int temperature);
+void addTemperature(temperature_t self, int16_t temperature);
+void calculateTemperature(temperature_t self);
 
 static TaskHandle_t mesureTemperatureTask = NULL;
 
 typedef struct temperature {
 	int16_t temperatureArray[10];
-	int16_t nextTemperatureToReadIdx;
+	uint8_t nextTemperatureToReadIdx;
 	int16_t latestAvgTemperature;
 	SemaphoreHandle_t latestAvgTemperatureMutex;
 	uint8_t portNo;
 	TickType_t xMesureCircleFrequency;
 	TickType_t xLastMessureCircleTime;
-	
 } temperature_st;
 
 
@@ -176,7 +176,7 @@ int wakeUpTemperatureSensor() {
 }
 
 int makeOneTemperatueMesurment(temperature_t self) {
-	if (self->nextTemperatureToReadIdx > 10) {
+	if (self->nextTemperatureToReadIdx >= 10) {
 		calculateTemperature(self);
 		resetTemperatureArray(self);
 		xTaskDelayUntil(&(self->xLastMessureCircleTime), self->xMesureCircleFrequency);
