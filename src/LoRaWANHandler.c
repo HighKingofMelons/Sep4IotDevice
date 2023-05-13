@@ -134,7 +134,7 @@ void lora_handler_task( void *pvParameters )
 
 	_lora_setup();
 
-	_uplink_payload.len = 6;
+	_uplink_payload.len = 10;
 	_uplink_payload.portNo = 2;
 
 	TickType_t xLastWakeTime;
