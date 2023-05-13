@@ -43,5 +43,43 @@ target_link_libraries(
     GTest::gtest_main
 )
 
+
+
+add_custom_target(init
+    COMMAND ${CMAKE_MAKE_PROGRAM} clean
+    COMMAND rm -f ${OBJECT_DIR}/*.gcno
+    COMMAND rm -f ${OBJECT_DIR}/*.gcda
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+)
+
+# Create the gcov target. Run coverage tests with 'make gcov'
+
+add_custom_target(gcov
+    COMMAND mkdir -p gcoverage
+    COMMAND ${CMAKE_MAKE_PROGRAM} test
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+)
+
+add_custom_command(TARGET gcov
+    COMMAND echo "=================== GCOV ===================="
+    COMMAND gcov -b ${CMAKE_SOURCE_DIR}/src/*.cpp -o ${OBJECT_DIR}
+    COMMAND echo "-- Source diretorie: ${CMAKE_SOURCE_DIR}/src/"
+    COMMAND echo "-- Coverage files have been output to ${CMAKE_BINARY_DIR}/gcoverage"
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/gcoverage
+)
+
+# Create the lcov target. Run result tests with 'make lcov'
+add_custom_target(lcov
+    COMMAND mkdir -p lcoverage
+)
+
+add_custom_command(TARGET lcov
+    COMMAND echo "=================== LCOV ===================="
+    COMMAND echo "-- Passing lcov tool under code coverage"
+    COMMAND lcov --capture --directory ../ --output-file lcoverage/main_coverage.info
+    COMMAND echo "-- Generating HTML output files"
+    COMMAND genhtml lcoverage/main_coverage.info --output-directory lcoverage
+)
+
 include(GoogleTest)
 gtest_discover_tests(${project_name}Tests)
