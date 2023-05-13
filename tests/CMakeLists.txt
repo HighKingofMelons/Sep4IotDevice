@@ -12,6 +12,7 @@ enable_testing()
 set(SOURCES_TEST
     ../src/utils.c
     ../src/error.c
+    ../src/co2/co2.c
     fakes.c
 )
 
