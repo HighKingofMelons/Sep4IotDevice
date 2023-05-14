@@ -11,6 +11,7 @@ enable_testing()
 # Source files to be tested
 set(SOURCES_TEST
     ../src/utils.c
+    fakes.c
 )
 
 # The tests themselves
@@ -22,6 +23,7 @@ include_directories(
     ../include
     Drivers
     FreeRTOS
+    ./
 )
 
 add_executable(
