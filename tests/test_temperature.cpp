@@ -1,13 +1,7 @@
 #include "gtest/gtest.h"
-#include "fff.h"
-DEFINE_FFF_GLOBALS;
 
 extern "C" {
-    #include <temperature.h>
-    #include <ATMEGA_FreeRTOS.h>
-    #include <semphr.h>
-    #include <message_buffer.h>
-    #include <task.h>
+    #include "fakes.h"
 }
 
 class Test_production : public ::testing::Test
