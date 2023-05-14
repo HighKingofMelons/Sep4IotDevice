@@ -12,3 +12,5 @@ typedef uint32_t TickType_t;
 
 #define pdPASS                                   ( pdTRUE )
 #define pdFAIL                                   ( pdFALSE )
+
+#define tskIDLE_PRIORITY ((UBaseType_t)0U)

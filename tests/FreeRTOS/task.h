@@ -15,5 +15,7 @@ BaseType_t xTaskCreate( TaskFunction_t pxTaskCode,
                         TaskHandle_t * const pxCreatedTask );
 
 void vTaskDelay( const TickType_t xTicksToDelay );
+BaseType_t xTaskDelayUntil(TickType_t *const pxPreviousWakeTime,
+                           const TickType_t xTimeIncrement);
 
 TickType_t xTaskGetTickCount(void);
