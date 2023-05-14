@@ -1,0 +1,6 @@
+{
+    "github-actions.workflows.pinned.workflows": [
+        ".github/workflows/platformio.yml",
+        ".github/workflows/cmake.yml"
+    ]
+}

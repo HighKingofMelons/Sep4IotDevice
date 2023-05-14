@@ -28,4 +28,3 @@ jobs:
     - name: Test
       working-directory: ${{github.workspace}}/build/tests
       run: ./Sep4IotDeviceTests
-
