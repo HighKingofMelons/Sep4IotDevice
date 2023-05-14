@@ -11,11 +11,8 @@ enable_testing()
 # Source files to be tested
 set(SOURCES_TEST
     ../src/utils.c
-<<<<<<< HEAD
     ../src/co2/co2.c
-=======
     fakes.c
->>>>>>> 44e643662981084d7ba63ff8159fc0b32291d218
 )
 
 # The tests themselves

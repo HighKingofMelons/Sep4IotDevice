@@ -1,9 +1,5 @@
-<<<<<<< HEAD
-struct QueueDef_t;
-typedef struct QueueDef_t *QueueHandle_t;
-=======
 #pragma once
-#include <ATMEGA_FreeRTOS.h>
+#include "ATMEGA_FreeRTOS.h"
 
 #define errQUEUE_EMPTY                           ( ( BaseType_t ) 0 )
 #define errQUEUE_FULL                            ( ( BaseType_t ) 0 )
@@ -25,4 +21,3 @@ BaseType_t xQueueReceive( QueueHandle_t xQueue,
 BaseType_t xQueueSend(  QueueHandle_t xQueue,
                         const void * pvItemToQueue,
                         TickType_t xTicksToWait );
->>>>>>> 44e643662981084d7ba63ff8159fc0b32291d218

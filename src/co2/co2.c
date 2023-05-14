@@ -134,7 +134,7 @@ int makeOneCo2Mesurment(co2_c self) {
 		xTaskDelayUntil(&(self->xLastMessureCircleTime), self->xMesureCircleFrequency);
 	}	
 	
-	uint16_t ppm;
+	int ppm;
 	mh_z19_returnCode_t rc;
 	rc = mh_z19_takeMeassuring();
 	vTaskDelay(pdMS_TO_TICKS(500UL));
