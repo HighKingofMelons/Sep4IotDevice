@@ -17,21 +17,17 @@
 #include <serial.h>
 
 // co2 driver import
-<<<<<<< HEAD
-<<<<<<< HEAD:src/main.c
 //#include <mh_z19.h>
-=======
-#include <mh_z19.h>
->>>>>>> a0b62f3 (CO2 sensor progress):main.c
-=======
-//#include <mh_z19.h>
->>>>>>> 8903bb4 (Co2 impelentation, not tests)
 
  // Needed for LoRaWAN
 #include <lora_driver.h>
 #include <status_leds.h>
 
 #include "co2/co2.h"
+
+// define two Tasks
+void task1( void *pvParameters );
+void task2( void *pvParameters );
 
 
 // define semaphore handle
@@ -54,9 +50,24 @@ void create_tasks_and_semaphores(void)
 			xSemaphoreGive( ( xTestSemaphore ) );  // Make the mutex available for use, by initially "Giving" the Semaphore.
 		}
 	}
+
+	xTaskCreate(
+	task1
+	,  "Task1"  // A name just for humans
+	,  configMINIMAL_STACK_SIZE  // This stack size can be checked & adjusted by reading the Stack Highwater
+	,  NULL
+	,  2  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
+	,  NULL );
+
+	xTaskCreate(
+	task2
+	,  "Task2"  // A name just for humans
+	,  configMINIMAL_STACK_SIZE  // This stack size can be checked & adjusted by reading the Stack Highwater
+	,  NULL
+	,  1  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
+	,  NULL );
 }
 
-<<<<<<< HEAD
 /*-----------------------------------------------------------*/
 void task1( void *pvParameters )
 {
@@ -67,21 +78,9 @@ void task1( void *pvParameters )
 	xLastWakeTime = xTaskGetTickCount();
 	
 	
-<<<<<<< HEAD
-<<<<<<< HEAD:src/main.c
 	//uint16_t ppm;
 	//mh_z19_returnCode_t rc;
 	//rc = mh_z19_takeMeassuring();
-=======
-	uint16_t ppm;
-	mh_z19_returnCode_t rc;
-	rc = mh_z19_takeMeassuring();
->>>>>>> a0b62f3 (CO2 sensor progress):main.c
-=======
-	//uint16_t ppm;
-	//mh_z19_returnCode_t rc;
-	//rc = mh_z19_takeMeassuring();
->>>>>>> 8903bb4 (Co2 impelentation, not tests)
 	
 	
 
@@ -90,15 +89,7 @@ void task1( void *pvParameters )
 		xTaskDelayUntil( &xLastWakeTime, xFrequency );
 		//puts("Task1"); // stdio functions are not reentrant - Should normally be protected by MUTEX
 		PORTA ^= _BV(PA0);
-<<<<<<< HEAD
-<<<<<<< HEAD:src/main.c
 		//printf("%d", ppm);
-=======
-		printf("%d", ppm);
->>>>>>> a0b62f3 (CO2 sensor progress):main.c
-=======
-		//printf("%d", ppm);
->>>>>>> 8903bb4 (Co2 impelentation, not tests)
 	}
 }
 
@@ -118,8 +109,6 @@ void task2( void *pvParameters )
 		PORTA ^= _BV(PA7);
 	}
 }
-=======
->>>>>>> a1854d6 (Testing prep progress)
 
 /*-----------------------------------------------------------*/
 void initialiseSystem()
@@ -138,10 +127,6 @@ void initialiseSystem()
 	// Initialise the LoRaWAN driver without down-link buffer
 	lora_driver_initialise(1, NULL);
 	// Create LoRaWAN task and start it up with priority 3
-<<<<<<< HEAD
-<<<<<<< HEAD:src/main.c
-=======
->>>>>>> 8903bb4 (Co2 impelentation, not tests)
 	
 	const TickType_t mesureCircleFreaquency = pdMS_TO_TICKS(300000UL);
 	
@@ -149,13 +134,6 @@ void initialiseSystem()
 	
 	lora_handler_initialise(3, co2);
 	//mh_z19_initialise(ser_USART3);
-<<<<<<< HEAD
-=======
-	lora_handler_initialise(3);
-	mh_z19_initialise(ser_USART3);
->>>>>>> a0b62f3 (CO2 sensor progress):main.c
-=======
->>>>>>> 8903bb4 (Co2 impelentation, not tests)
 }
 
 /*-----------------------------------------------------------*/
