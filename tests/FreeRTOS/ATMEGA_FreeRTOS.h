@@ -14,3 +14,5 @@ typedef uint32_t TickType_t;
 #define pdFAIL                                   ( pdFALSE )
 
 #define tskIDLE_PRIORITY ((UBaseType_t)0U)
+
+TickType_t pdMS_TO_TICKS(uint16_t numb);
