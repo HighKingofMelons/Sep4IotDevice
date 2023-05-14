@@ -12,6 +12,7 @@ enable_testing()
 set(SOURCES_TEST
     ../src/utils.c
     ../src/error.c
+    fakes.c
 )
 
 # The tests themselves
@@ -24,6 +25,7 @@ include_directories(
     ../include
     Drivers
     FreeRTOS
+    ./
 )
 
 add_executable(
