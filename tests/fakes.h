@@ -4,6 +4,8 @@
 #include "task.h"
 #include "display_7seg.h"
 #include "queue.h"
+#include "semphr.h"
+#include "mh_z19.h"
 
 #include "fff.h"
 
@@ -52,3 +54,16 @@ DECLARE_FAKE_VALUE_FUNC(BaseType_t, xTaskCreate, TaskFunction_t, const char * co
 
 // void vTaskDelay( const TickType_t xTicksToDelay );
 DECLARE_FAKE_VOID_FUNC(vTaskDelay, const TickType_t);
+
+//co2
+
+DECLARE_FAKE_VALUE_FUNC(TickType_t, pdMS_TO_TICKS, uint16_t);
+DECLARE_FAKE_VALUE_FUNC(int, xSemaphoreTake, SemaphoreHandle_t, TickType_t)
+DECLARE_FAKE_VOID_FUNC(xSemaphoreGive, SemaphoreHandle_t);
+
+DECLARE_FAKE_VALUE_FUNC(SemaphoreHandle_t, xSemaphoreCreateMutex);
+DECLARE_FAKE_VALUE_FUNC(TickType_t, xTaskGetTickCount);
+DECLARE_FAKE_VALUE_FUNC(BaseType_t, xTaskDelayUntil, TickType_t *const, const TickType_t);
+DECLARE_FAKE_VALUE_FUNC(mh_z19_returnCode_t, mh_z19_getCo2Ppm, int*);
+DECLARE_FAKE_VOID_FUNC(mh_z19_initialise, serial_comPort_t);
+DECLARE_FAKE_VALUE_FUNC(mh_z19_returnCode_t, mh_z19_takeMeassuring);
