@@ -7,7 +7,7 @@
 
 
 #pragma once
-
+#include <FreeRTOSConfig.h>
 /* Priorities at which the tasks are created. */
 #define TASK_MESSURE_CO2_PRIORITY	( tskIDLE_PRIORITY + 2 )
 /* Task stack sizes*/

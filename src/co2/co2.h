@@ -7,6 +7,8 @@
 
 
 #pragma once
+#include <inttypes.h>
+
 
 typedef struct co2* co2_c;
 co2_c co2_create(uint8_t portNo, TickType_t freequency);
