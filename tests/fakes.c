@@ -20,7 +20,7 @@ DEFINE_FAKE_VOID_FUNC(display_7seg_display, float, uint8_t);
 // void display_7seg_displayHex(char * hexString);
 DEFINE_FAKE_VOID_FUNC(display_7seg_displayHex, char*);
 // void display_7seg_displayErr(void);
-DEFINE_FAKE_VOID_FUNC(display_7seg_displayErr)
+DEFINE_FAKE_VOID_FUNC(display_7seg_displayErr);
 
 // ------------------------
 #include "queue.h"

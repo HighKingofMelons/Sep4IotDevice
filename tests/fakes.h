@@ -24,7 +24,7 @@ DECLARE_FAKE_VOID_FUNC(display_7seg_display, float, uint8_t);
 // void display_7seg_displayHex(char * hexString);
 DECLARE_FAKE_VOID_FUNC(display_7seg_displayHex, char*);
 // void display_7seg_displayErr(void);
-DECLARE_FAKE_VOID_FUNC(display_7seg_displayErr)
+DECLARE_FAKE_VOID_FUNC(display_7seg_displayErr);
 
 // ------------------------
 

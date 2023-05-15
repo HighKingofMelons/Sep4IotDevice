@@ -4,17 +4,15 @@ extern "C" {
     #include <display_7seg.h>
     #include <task.h>
     #include <queue.h>
+
     #include <error.h>
+    #include <private/p_error.h>
 
     #include <fakes.h>
 }
 
-TEST(Error, QueueError) {
-    error_handler_init();
+#define INIT_FAKES(FAKE)        \
+    FAKE(display_7seg_display)  \
+    FAKE(xQueueCreate)          \
+    FAKE(xTaskCreate)
 
-    ASSERT_EQ(fff.call_history[0], (void *)display_7seg_initialise);
-    ASSERT_EQ(fff.call_history[1], (void *)xQueueCreate);
-    ASSERT_EQ(fff.call_history[2], (void *)xTaskCreate);
-
-    FFF_RESET_HISTORY();
-};

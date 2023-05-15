@@ -5,68 +5,111 @@
 #include <FreeRTOSConfig.h>
 #include <task.h>
 #include <queue.h>
+#include <semphr.h>
 #include <display_7seg.h>
 
 #include "error.h"
+#include "private/p_error.h"
 
-struct queue_item {
-    error_code_t error;
-    TickType_t length;
-};
+void error_handler_task (void *pvArguments);
 
-int is_initialized = 0;
-QueueHandle_t queue_handle;
-
-void error_handler_task(void *pvParameters) {
-    
-    while (1)
-    {
-        printf("Error Handler Task Start\n");
-        struct queue_item item;
-        if (pdFALSE == xQueueReceive(queue_handle, &item, 2000)) {       
-            continue;
-        }
-
-        display_7seg_powerUp();
-
-        switch (item.error)
-        {
-            case ERROR_LORAWAN_NO_CONNECT:
-                display_7seg_displayHex("E001");
-                printf("Error #E%c: LORAWAN_NO_CONNECT\n", item.error);
-                break;
-            
-            default:
-                display_7seg_displayErr();
-                printf("Error #?: UNKNOWN ERROR\n");
-                break;
-        }
-
-        vTaskDelay(item.length);
-        display_7seg_powerDown();
-    }
-    
-}
-
-void error_handler_init() {
-    printf("Error Handler Init");
+error_handler_t error_handler_init () {
     display_7seg_initialise(NULL);
 
-    queue_handle = xQueueCreate(16, sizeof(struct queue_item));
+    error_handler_t _error_handler = {
+        xQueueCreate(10, sizeof(struct error_item)),
+        xSemaphoreCreateMutex(),
+        0,
+        pdFALSE
+    };
 
-    xTaskCreate(
+    xSemaphoreGive(_error_handler->flag_semaphore);
+
+    xTaskCreate (
         error_handler_task,
-        "Error Handler",
-        128,
-        NULL,
-        tskIDLE_PRIORITY+1,
-        NULL
+        "Error Handler Task",
+        configTIMER_TASK_STACK_DEPTH,
+        _error_handler,
+        tskIDLE_PRIORITY + 1,
+        NULL 
     );
 }
 
-BaseType_t error_handler_queue_error(error_code_t error, TickType_t length) {
-    printf("Error Handler QUEUE");
-    struct queue_item item = {error, length};
+void update_flags(error_handler_t self) {
+    struct error_item item = { NULL, NULL };
 
-    return xQueueSend(queue_handle, &item, 1000);
+    if (pdTRUE != xSemaphoreTake(self->flag_semaphore, 0))
+        return;
+
+    if (pdTRUE != xQueueReceive(self->queue, &item, 0)) {
+        xSemaphoreGive(self->flag_semaphore);
+        return;
+    }
+
+    if (item.state == ERROR_ENABLE) {
+        printf("Flags: %i, Component: %i, Result: %i\n", self->flags, item.component, self->flags & (error_flags_t) item.component);
+        self->flags = self->flags & (error_flags_t) item.component;
+    }
+    else if (item.state == ERROR_DISABLE) {
+        printf("Flags: %i, Component: %i, Result: %i\n", self->flags, item.component, self->flags ^ (error_flags_t) item.component);
+        self->flags = self->flags ^ (error_flags_t) item.component;
+    }
+
+    xSemaphoreGive(self->flag_semaphore);
+}
+
+BaseType_t error_handler_report(error_handler_t self, error_component_t component) {
+    struct error_item item = {
+        component,
+        ERROR_ENABLE
+    };
+
+    return xQueueSend(self->queue, &item, 0);
+}
+
+BaseType_t error_handler_revoke(error_handler_t self, error_component_t component) {
+    struct error_item item = {
+        component,
+        ERROR_DISABLE
+    };
+
+    return xQueueSend(self->queue, &item, 0);
+}
+
+void update_display(error_handler_t self) {
+    if (!self->flags) {
+        if (!self->display_on)
+            return;
+        
+        display_7seg_powerDown();
+        self->display_on = pdFALSE;
+        return;
+    }
+        
+    if (!self->display_on) {
+        display_7seg_powerUp();
+        self->display_on = pdTRUE;
+    }
+}
+
+error_flags_t error_handler_get_flags(error_handler_t self) {
+    for (;;) {
+        if (pdTRUE == xSemaphoreTake(self->queue, 50))
+            break;
+    }
+    error_flags_t _flags = self->flags;
+    xSemaphoreGive(self->flag_semaphore);
+    return _flags;
+}
+
+void error_handler_task (void *pvArguments) {
+    error_handler_t self = pvArguments;
+
+    for (;;)
+    {
+        void update_flags(self);
+
+
+    }
+    
 }

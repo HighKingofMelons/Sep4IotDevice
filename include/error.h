@@ -3,29 +3,23 @@
 #include <stdint.h>
 #include <ATMEGA_FreeRTOS.h>
 
-/*
-    Error codes recignised by system.
-    When adding new error codes remember to add relevant switch statements.
-*/ 
 typedef enum {
-    ERROR_LORAWAN_NO_CONNECT = 001,
-} error_code_t;
+    ERROR_TEMP  = 128,
+    ERROR_CO2   = 64,
+    ERROR_HUMI  = 32,
+    ERROR_SOUND = 16,
+    ERROR_PIR   = 8,
+} error_component_t;
 
-/*
-    Intializes Error handler.
-    Needs to be called before the scheduler is activated.
-*/
-void error_handler_init();
+typedef uint8_t error_flags_t;
+typedef struct error_handler *error_handler_t;
 
-/*
-    Queues up an error meassage at a given length.
-        `error`: `error_code_t`
-            If error code is not recignised 
-        
-        `length`: `TickType_t`
-            The amount of ticks
-*/
-BaseType_t error_handler_queue_error(error_code_t error, TickType_t length);
+error_handler_t error_handler_init();
 
-error_code_t error_handler_get_payload_error();
+BaseType_t error_handler_report(error_handler_t self, error_component_t component);
+BaseType_t error_handler_revoke(error_handler_t self, error_component_t component);
 
+BaseType_t error_handler_get_component_state(error_handler_t self, error_component_t component);
+
+/* The first 3 bits of the return are always 0 */
+error_flags_t error_handler_get_flags(error_handler_t self);
