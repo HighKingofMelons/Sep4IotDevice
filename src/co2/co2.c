@@ -16,14 +16,11 @@
 #include "co2.h"
 #include <mh_z19.h>
 
-int initializeCo2Driver();
 int wakeUpCo2Sensos();
 
 co2_c initializeCo2(uint8_t port, TickType_t freequency);
 void calculateCo2(co2_c self);
 void resetCo2Array(co2_c self);
-int makeOneCo2Mesurment(co2_c self);
-void addCo2(co2_c self, int16_t co2);
 
 static TaskHandle_t mesureCo2Task = NULL;
 
@@ -127,7 +124,8 @@ int initializeCo2Driver() {
 	}
 }
 
-int makeOneCo2Mesurment(co2_c self) {
+int makeOneCo2Mesurment(co2_c self)
+{
 	if (self->nextCo2ToReadIdx >= 10) {
 		calculateCo2(self);
 		resetCo2Array(self);

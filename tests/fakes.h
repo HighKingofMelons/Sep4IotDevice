@@ -58,7 +58,7 @@ DECLARE_FAKE_VOID_FUNC(vTaskDelay, const TickType_t);
 //co2
 
 DECLARE_FAKE_VALUE_FUNC(TickType_t, pdMS_TO_TICKS, uint16_t);
-DECLARE_FAKE_VALUE_FUNC(int, xSemaphoreTake, SemaphoreHandle_t, TickType_t)
+DECLARE_FAKE_VALUE_FUNC(BaseType_t, xSemaphoreTake, SemaphoreHandle_t, TickType_t);
 DECLARE_FAKE_VOID_FUNC(xSemaphoreGive, SemaphoreHandle_t);
 
 DECLARE_FAKE_VALUE_FUNC(SemaphoreHandle_t, xSemaphoreCreateMutex);

@@ -7,6 +7,7 @@ DEFINE_FFF_GLOBALS;
 #include "semphr.h"
 #include "mh_z19.h"
 
+
 // void display_7seg_initialise(void (*displayDoneCallBack)(void));
 DEFINE_FAKE_VOID_FUNC(display_7seg_initialise, void*);
 // void display_7seg_powerUp(void);
@@ -56,7 +57,7 @@ DEFINE_FAKE_VOID_FUNC(vTaskDelay, const TickType_t);
 //co2
 DEFINE_FAKE_VALUE_FUNC(TickType_t, pdMS_TO_TICKS, uint16_t);
 //TickType_t pdMS_TO_TICKS(uint16_t numb);
-DEFINE_FAKE_VALUE_FUNC(int, xSemaphoreTake, SemaphoreHandle_t, TickType_t)
+DEFINE_FAKE_VALUE_FUNC(BaseType_t, xSemaphoreTake, SemaphoreHandle_t, TickType_t);
 DEFINE_FAKE_VOID_FUNC(xSemaphoreGive, SemaphoreHandle_t);
 
 DEFINE_FAKE_VALUE_FUNC(SemaphoreHandle_t, xSemaphoreCreateMutex);
