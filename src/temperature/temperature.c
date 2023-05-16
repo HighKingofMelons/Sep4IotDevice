@@ -28,6 +28,7 @@ int16_t getMaxLimit(temperature_t self);
 int16_t getMinLimit(temperature_t self);
 void setMaxLimit(temperature_t self, int16_t maxLimit);
 void setMinLimit(temperature_t self, int16_t minLimit);
+void recordMeasurment(temperature_t self);
 
 static TaskHandle_t mesureTemperatureTask = NULL;
 
@@ -214,17 +215,7 @@ void makeOneMesurment(temperature_t self) {
 	
 	switch(hih8120_measure()) {
 		case HIH8120_OK:
-			while(!hih8120_isReady()) {
-				vTaskDelay(pdMS_TO_TICKS(500)); //wait 0.5s
-			}
-
-			int16_t currentTemperature =  hih8120_getTemperature_x10();
-
-			if (DEBUG) {
-				printf("Temp Measurement #%i: %i\n", self->nextToReadIdx + 1, currentTemperature);
-			}
-
-			addMeassurmentToArray(self, currentTemperature);
+			recordMeasurment(self);
 			break;
 		case HIH8120_TWI_BUSY:
 			// TODO:
@@ -233,6 +224,9 @@ void makeOneMesurment(temperature_t self) {
 			// TODO:
 			break;
 		default:
+			if (DEBUG) {
+				recordMeasurment(self);
+			}
 			// TODO:
 			break;
 	}
@@ -298,4 +292,17 @@ void setMinLimit(temperature_t self, int16_t minLimit) {
 	}
 }
 
+void recordMeasurment(temperature_t self) {
+	while(!hih8120_isReady()) {
+			vTaskDelay(pdMS_TO_TICKS(500)); //wait 0.5s
+	}
+
+	int16_t currentTemperature =  hih8120_getTemperature_x10();
+
+	if (DEBUG) {
+		printf("Temp Measurement #%i: %i\n", self->nextToReadIdx + 1, currentTemperature);
+	}
+
+	addMeassurmentToArray(self, currentTemperature);
+}
 
