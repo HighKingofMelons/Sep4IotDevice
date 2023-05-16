@@ -13,7 +13,7 @@
 #include <semphr.h>
 #include <task.h>
 #include "../taskConfig.h"
-#include "temperature.h"
+#include "../include/temperature.h"
 #include <hih8120.h>
 
 void initializeTemperatureDriver();
@@ -58,7 +58,7 @@ temperature_t temperature_create(TickType_t freequency) {
 				(void*) _newTemperature,		/* Parameter passed into the task. */
 				TASK_MESSURE_TEMP_PRIORITY,		/* Priority at which the task is created. */
 				&mesureTemperatureTask			/* Used to pass out the created task's handle. */
-	);	
+	);
 	
 	return _newTemperature;			
 }
@@ -205,6 +205,9 @@ void wakeUpTemperatureSensor() {
 			// TODO:
 			break;
 		default:
+			if (DEBUG) {
+				vTaskDelay(pdMS_TO_TICKS(100));
+			}
 			// TODO:
 			break;
 	}
@@ -294,7 +297,7 @@ void setMinLimit(temperature_t self, int16_t minLimit) {
 
 void recordMeasurment(temperature_t self) {
 	while(!hih8120_isReady()) {
-			vTaskDelay(pdMS_TO_TICKS(500)); //wait 0.5s
+		vTaskDelay(pdMS_TO_TICKS(500)); //wait 0.5s
 	}
 
 	int16_t currentTemperature =  hih8120_getTemperature_x10();
