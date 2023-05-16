@@ -13,6 +13,7 @@ struct QueueDef_t;
 typedef struct QueueDef_t * QueueHandle_t;
 
 QueueHandle_t xQueueCreate( UBaseType_t uxQueueLength, UBaseType_t uxItemSize );
+void vQueueDelete(QueueHandle_t handle);
 
 BaseType_t xQueueReceive( QueueHandle_t xQueue,
                           void * const pvBuffer,

@@ -18,4 +18,4 @@ void vTaskDelay( const TickType_t xTicksToDelay );
 BaseType_t xTaskDelayUntil(TickType_t *const pxPreviousWakeTime,
                            const TickType_t xTimeIncrement);
 
-TickType_t xTaskGetTickCount(void);
+void vTaskDelete( TaskHandle_t xTaskToDelete );
