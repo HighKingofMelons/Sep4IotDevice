@@ -1,6 +1,8 @@
 #pragma once
 #include <ATMEGA_FreeRTOS.h>
 
+#define pdMS_TO_TICKS( xTimeInMs )   xTimeInMs
+
 #define tskIDLE_PRIORITY    ( ( UBaseType_t ) 0U )
 
 struct TaskControlBlock_t;
@@ -15,3 +17,9 @@ BaseType_t xTaskCreate( TaskFunction_t pxTaskCode,
                         TaskHandle_t * const pxCreatedTask );
 
 void vTaskDelay( const TickType_t xTicksToDelay );
+
+BaseType_t xTaskDelayUntil(TickType_t * const pxPreviousWakeTime, const TickType_t xTimeIncrement);
+
+TickType_t xTaskGetTickCount( void );
+
+void vTaskDelete( TaskHandle_t xTaskToDelete );
