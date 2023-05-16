@@ -12,7 +12,7 @@
 #include <lora_driver.h>
 #include <status_leds.h>
 
-#include "temperature/temperature.h"
+#include "temperature.h"
 
 // TODO: Restructure into ADS to make it easier to draw class diagram
 
