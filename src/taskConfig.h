@@ -15,3 +15,8 @@
 #define TASK_MESSURE_TEMP_STACK		( configMINIMAL_STACK_SIZE * 2 )
 #define	TASK_MESSURE_HUM_STACK		( configMINIMAL_STACK_SIZE )
 #define configUSE_MUTEXES			1
+/* Initial Limits */
+#define TEMP_MAX_LIMIT 25
+#define TEMP_MIN_LIMIT 18
+
+#define DEBUG                       1
