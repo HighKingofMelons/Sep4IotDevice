@@ -8,39 +8,39 @@ extern "C"
 #include "fakes.h"
 }
 
-class Test_co2 : public ::testing::Test{
-    protected:
-        void SetUp() override{
-            RESET_FAKE(xTaskCreate);
-            RESET_FAKE(xTaskGetTickCount);
-            RESET_FAKE(vTaskDelay);
-            RESET_FAKE(xSemaphoreTake);
-            RESET_FAKE(xSemaphoreGive);
-            RESET_FAKE(vTaskDelete);
+// class Test_co2 : public ::testing::Test{
+//     protected:
+//         void SetUp() override{
+//             RESET_FAKE(xTaskCreate);
+//             RESET_FAKE(xTaskGetTickCount);
+//             RESET_FAKE(vTaskDelay);
+//             RESET_FAKE(xSemaphoreTake);
+//             RESET_FAKE(xSemaphoreGive);
+//             RESET_FAKE(vTaskDelete);
             
-            RESET_FAKE(xSemaphoreCreateMutex);
-            RESET_FAKE(mh_z19_initialise);
+//             RESET_FAKE(xSemaphoreCreateMutex);
+//             RESET_FAKE(mh_z19_initialise);
 
-            RESET_FAKE(xTaskDelayUntil);
-            RESET_FAKE(mh_z19_takeMeassuring);
-            RESET_FAKE(mh_z19_getCo2Ppm);
+//             RESET_FAKE(xTaskDelayUntil);
+//             RESET_FAKE(mh_z19_takeMeassuring);
+//             RESET_FAKE(mh_z19_getCo2Ppm);
 
-        }
+//         }
 
-        void TearDown() override{
+//         void TearDown() override{
 
-        }
+//         }
 
-        void callFunctionNTimes(void (*func) (co2_c), co2_c parameter, int n){
-            for(int i = 0; i < n; i++){
-                func(parameter);
-            }
-        }
-}
+//         void callFunctionNTimes(void (*func) (co2_c), co2_c parameter, int n){
+//             for(int i = 0; i < n; i++){
+//                 func(parameter);
+//             }
+//         }
+// }
 
-TEST_F(){
-    
-}
+// TEST_F(){
+
+// }
 
 TEST(co2, Initialize)
 {

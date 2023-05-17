@@ -9,5 +9,3 @@ typedef int8_t BaseType_t;
 typedef uint8_t UBaseType_t;
 typedef struct TaskControlBlock_t *TaskHandle_t;
 typedef void (*TaskFunction_t)(void *);
-
-TickType_t pdMS_TO_TICKS(uint16_t numb);
