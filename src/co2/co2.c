@@ -13,7 +13,7 @@
 #include <message_buffer.h>
 #include <task.h>
 #include "../taskConfig.h"
-#include "co2.h"
+#include "../include/co2.h"
 #include <mh_z19.h>
 
 int wakeUpCo2Sensos();

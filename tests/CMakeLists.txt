@@ -18,6 +18,7 @@ set(SOURCES_TEST
 # The tests themselves
 set(TESTS
     utils.cpp
+    test_co2.cpp
 )
 
 include_directories(
