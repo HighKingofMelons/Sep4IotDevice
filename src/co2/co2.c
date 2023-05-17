@@ -18,7 +18,7 @@
 
 int wakeUpCo2Sensos();
 
-co2_c initializeCo2(uint8_t port, TickType_t freequency);
+co2_c initializeCo2(TickType_t freequency);
 void calculateCo2(co2_c self);
 void resetCo2Array(co2_c self);
 
@@ -29,13 +29,13 @@ typedef struct co2 {
 	int16_t nextCo2ToReadIdx;
 	int16_t latestAvgCo2;
 	SemaphoreHandle_t latestAvgCo2Mutex;
-	uint8_t portNo;
+	//uint8_t portNo;
 	TickType_t xMesureCircleFrequency;
 	TickType_t xLastMessureCircleTime;
 	} co2_st;
 	
-co2_c co2_create(uint8_t port, TickType_t freequency){
-	co2_c _newCo2 = initializeCo2(port, freequency);
+co2_c co2_create(TickType_t freequency){
+	co2_c _newCo2 = initializeCo2(freequency);
 	
 	initializeCo2Driver();
 	
@@ -96,13 +96,14 @@ int16_t co2_get_latest_average_co2(co2_c self) {
 	return tmpCo2;
 }
 
-co2_c initializeCo2(uint8_t port, TickType_t freequency){
+co2_c initializeCo2(TickType_t freequency){
 	co2_c _newCo2 = calloc(sizeof(co2_st), 1);
 	resetCo2Array(_newCo2);
 	_newCo2->latestAvgCo2 = 0;
 	_newCo2->latestAvgCo2Mutex = xSemaphoreCreateMutex();
-	_newCo2->portNo = port;
+	//_newCo2->portNo = port;
 	_newCo2->xMesureCircleFrequency = freequency;
+	_newCo2->xLastMessureCircleTime = xTaskGetTickCount();
 	
 	return _newCo2;	
 }
