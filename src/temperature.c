@@ -12,7 +12,7 @@
 #include <ATMEGA_FreeRTOS.h>
 #include <semphr.h>
 #include <task.h>
-#include "../taskConfig.h"
+#include "../include/taskConfig.h"
 #include "../include/temperature.h"
 #include <hih8120.h>
 
@@ -20,15 +20,15 @@ void initializeTemperatureDriver();
 void wakeUpTemperatureSensor();
 temperature_t initializeTemperature(TickType_t freequency);
 void temperature_mesure(void *pvParameters);
-void resetArray(temperature_t self);
-void makeOneMesurment(temperature_t self);
-void addMeassurmentToArray(temperature_t self, int16_t temperature);
-void calculateAvg(temperature_t self);
-int16_t getMaxLimit(temperature_t self);
-int16_t getMinLimit(temperature_t self);
-void setMaxLimit(temperature_t self, int16_t maxLimit);
-void setMinLimit(temperature_t self, int16_t minLimit);
-void recordMeasurment(temperature_t self);
+void temperature_resetArray(temperature_t self);
+void temperature_makeOneMesurment(temperature_t self);
+void temperature_addMeassurmentToArray(temperature_t self, int16_t temperature);
+void temperature_calculateAvg(temperature_t self);
+int16_t temperature_getMaxLimit(temperature_t self);
+int16_t temperature_getMinLimit(temperature_t self);
+void temperature_setMaxLimit(temperature_t self, int16_t maxLimit);
+void temperature_setMinLimit(temperature_t self, int16_t minLimit);
+void temperature_recordMeasurment(temperature_t self);
 
 static TaskHandle_t mesureTemperatureTask = NULL;
 
@@ -66,21 +66,21 @@ temperature_t temperature_create(TickType_t freequency) {
 void temperature_mesure(void* pvParameters) {
 	temperature_t self = (temperature_t) pvParameters; // TODO: IS THIS CORRECT?
 	for(;;) {
-		makeOneMesurment(self);
+		temperature_makeOneMesurment(self);
 		vTaskDelay(pdMS_TO_TICKS(27000UL)); // 27s delay, to make ~10 measurements in 4.5-5min
 	}
 }
 
-void addMeassurmentToArray(temperature_t self, int16_t temperature) {
+void temperature_addMeassurmentToArray(temperature_t self, int16_t temperature) {
 	self->temperatureArray[self->nextToReadIdx++] = temperature;
 }
 
-void resetArray(temperature_t self) {
+void temperature_resetArray(temperature_t self) {
 	memset(self->temperatureArray, 0, sizeof self->temperatureArray);
 	self->nextToReadIdx = 0;
 }
 
-void calculateAvg(temperature_t self) {
+void temperature_calculateAvg(temperature_t self) {
 	int16_t temperaturex10Sum = 0;
 	for (int i = 0; i < 10; i++) {
 		temperaturex10Sum += self->temperatureArray[i];
@@ -114,8 +114,8 @@ int16_t temperature_get_latest_average_temperature(temperature_t self) {
 
 // TODO: use semaphores
 void temperature_set_limits(temperature_t self, int16_t maxLimit, int16_t minLimit) {
-	setMaxLimit(self, maxLimit);
-	setMinLimit(self, minLimit);
+	temperature_setMaxLimit(self, maxLimit);
+	temperature_setMinLimit(self, minLimit);
 }
 
 int8_t temperature_acceptability_status(temperature_t self) {
@@ -124,9 +124,9 @@ int8_t temperature_acceptability_status(temperature_t self) {
 
 	if (tempLatestAvgTemperature == 0) {
 		returnValue = 0;
-	} else if (tempLatestAvgTemperature > getMaxLimit(self)) {
+	} else if (tempLatestAvgTemperature > temperature_getMaxLimit(self)) {
 		returnValue = 1;
-	} else if (tempLatestAvgTemperature < getMinLimit(self)) {
+	} else if (tempLatestAvgTemperature < temperature_getMinLimit(self)) {
 		returnValue = -1;
 	}
 
@@ -157,7 +157,7 @@ void temperature_destroy(temperature_t self) {
 
 temperature_t initializeTemperature(TickType_t freequency) {
 	temperature_t _newTemperature = calloc(sizeof(temperature_st), 1);
-	resetArray(_newTemperature);
+	temperature_resetArray(_newTemperature);
 	_newTemperature->latestAvgTemperature = 0;
 	_newTemperature->latestAvgTemperatureMutex = xSemaphoreCreateMutex();
 	_newTemperature->minLimitMutex = xSemaphoreCreateMutex();
@@ -213,12 +213,12 @@ void wakeUpTemperatureSensor() {
 	}
 }
 
-void makeOneMesurment(temperature_t self) {
+void temperature_makeOneMesurment(temperature_t self) {
 	wakeUpTemperatureSensor();
 	
 	switch(hih8120_measure()) {
 		case HIH8120_OK:
-			recordMeasurment(self);
+			temperature_recordMeasurment(self);
 			break;
 		case HIH8120_TWI_BUSY:
 			// TODO:
@@ -228,20 +228,20 @@ void makeOneMesurment(temperature_t self) {
 			break;
 		default:
 			if (DEBUG) {
-				recordMeasurment(self);
+				temperature_recordMeasurment(self);
 			}
 			// TODO:
 			break;
 	}
 	
 	if (self->nextToReadIdx >= 10) {
-		calculateAvg(self);
-		resetArray(self);
+		temperature_calculateAvg(self);
+		temperature_resetArray(self);
 		xTaskDelayUntil(&(self->lastMessureCircleTime), self->mesureCircleFrequency);
 	}
 }
 
-int16_t getMaxLimit(temperature_t self) {
+int16_t temperature_getMaxLimit(temperature_t self) {
 	int16_t limit = -100;
 	while (1) {
 		if (xSemaphoreTake(self->maxLimitMutex, pdMS_TO_TICKS(200)) == pdTRUE ) { // wait maximum 200ms
@@ -256,7 +256,7 @@ int16_t getMaxLimit(temperature_t self) {
 	return limit;
 }
 
-int16_t getMinLimit(temperature_t self) {
+int16_t temperature_getMinLimit(temperature_t self) {
 	int16_t limit = -100;
 	while (1) {
 		if (xSemaphoreTake(self->minLimitMutex, pdMS_TO_TICKS(200)) == pdTRUE ) { // wait maximum 200ms
@@ -271,7 +271,7 @@ int16_t getMinLimit(temperature_t self) {
 	return limit;
 }
 
-void setMaxLimit(temperature_t self, int16_t maxLimit) {
+void temperature_setMaxLimit(temperature_t self, int16_t maxLimit) {
 	while (1) {
 		if (xSemaphoreTake(self->maxLimitMutex, pdMS_TO_TICKS(200)) == pdTRUE ) { // wait maximum 200ms
 			self->maxLimit = maxLimit;
@@ -283,7 +283,7 @@ void setMaxLimit(temperature_t self, int16_t maxLimit) {
 	}
 }
 
-void setMinLimit(temperature_t self, int16_t minLimit) {
+void temperature_setMinLimit(temperature_t self, int16_t minLimit) {
 	while (1) {
 		if (xSemaphoreTake(self->minLimitMutex, pdMS_TO_TICKS(200)) == pdTRUE ) { // wait maximum 200ms
 			self->minLimit = minLimit;
@@ -295,7 +295,7 @@ void setMinLimit(temperature_t self, int16_t minLimit) {
 	}
 }
 
-void recordMeasurment(temperature_t self) {
+void temperature_recordMeasurment(temperature_t self) {
 	while(!hih8120_isReady()) {
 		vTaskDelay(pdMS_TO_TICKS(500)); //wait 0.5s
 	}
@@ -306,6 +306,6 @@ void recordMeasurment(temperature_t self) {
 		printf("Temp Measurement #%i: %i\n", self->nextToReadIdx + 1, currentTemperature);
 	}
 
-	addMeassurmentToArray(self, currentTemperature);
+	temperature_addMeassurmentToArray(self, currentTemperature);
 }
 

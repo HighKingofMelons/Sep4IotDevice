@@ -3,8 +3,8 @@
 extern "C"
 {
     #include "fakes.h"
-    #include "./Controls/temperature.h"
-    #include <../src/taskConfig.h>
+    #include "Controls/temperature.h"
+    #include <../include/taskConfig.h>
 }
 
 class Test_temperature : public ::testing::Test
@@ -82,7 +82,7 @@ TEST_F(Test_temperature, temperature_get_latest_average_temperature_10X10)
     xSemaphoreTake_fake.return_val = true;
     temperature_t result_temperature = temperature_create(pdMS_TO_TICKS(300000UL));
 
-    callFunctionNTimes(&makeOneMesurment, result_temperature, 10);
+    callFunctionNTimes(&temperature_makeOneMesurment, result_temperature, 10);
     int16_t result_average = temperature_get_latest_average_temperature(result_temperature);
 
     EXPECT_EQ(10, hih8120_wakeup_fake.call_count);
@@ -108,7 +108,7 @@ TEST_F(Test_temperature, temperature_acceptability_max_limit_exeeded_1)
 
 
     temperature_set_limits(result_temperature, 220, 100);
-    callFunctionNTimes(&makeOneMesurment, result_temperature, 10);
+    callFunctionNTimes(&temperature_makeOneMesurment, result_temperature, 10);
     int8_t result_acceptability = temperature_acceptability_status(result_temperature);
 
     EXPECT_EQ(10, vTaskDelay_fake.call_count);
@@ -131,7 +131,7 @@ TEST_F(Test_temperature, temperature_acceptability_min_limit_exeeded_minus1)
 
 
     temperature_set_limits(result_temperature, 220, 100);
-    callFunctionNTimes(&makeOneMesurment, result_temperature, 10);
+    callFunctionNTimes(&temperature_makeOneMesurment, result_temperature, 10);
     int8_t result_acceptability = temperature_acceptability_status(result_temperature);
 
     EXPECT_EQ(10, vTaskDelay_fake.call_count);
@@ -154,7 +154,7 @@ TEST_F(Test_temperature, temperature_acceptability_limis_not_exeeded_0)
 
 
     temperature_set_limits(result_temperature, 220, 100);
-    callFunctionNTimes(&makeOneMesurment, result_temperature, 10);
+    callFunctionNTimes(&temperature_makeOneMesurment, result_temperature, 10);
     int8_t result_acceptability = temperature_acceptability_status(result_temperature);
 
     EXPECT_EQ(10, vTaskDelay_fake.call_count);
@@ -177,7 +177,7 @@ TEST_F(Test_temperature, temperature_acceptability_temp_avg_not_calculated)
 
 
     temperature_set_limits(result_temperature, 220, 100);
-    callFunctionNTimes(&makeOneMesurment, result_temperature, 9);
+    callFunctionNTimes(&temperature_makeOneMesurment, result_temperature, 9);
     int8_t result_acceptability = temperature_acceptability_status(result_temperature);
 
     EXPECT_EQ(9, vTaskDelay_fake.call_count);
