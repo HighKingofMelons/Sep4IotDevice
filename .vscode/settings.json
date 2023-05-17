@@ -5,9 +5,5 @@
     ],
     "files.associations": {
         "freertosconfig.h": "c"
-    },
-    "github-actions.workflows.pinned.workflows": [
-        ".github/workflows/platformio.yml",
-        ".github/workflows/cmake.yml"
-    ]
+    }
 }
