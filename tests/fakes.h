@@ -4,6 +4,9 @@
 #include "task.h"
 #include "semphr.h"
 #include "display_7seg.h"
+#include "queue.h"
+#include "semphr.h"
+#include "mh_z19.h"
 #include "hih8120.h"
 
 #include "fff.h"
@@ -96,3 +99,8 @@ DECLARE_FAKE_VALUE_FUNC(hih8120_driverReturnCode_t, hih8120_measure);
 
 // int16_t hih8120_getTemperature_x10(void);
 DECLARE_FAKE_VALUE_FUNC(int16_t, hih8120_getTemperature_x10);
+
+// ----------------- mh_z19
+DECLARE_FAKE_VALUE_FUNC(mh_z19_returnCode_t, mh_z19_getCo2Ppm, int *);
+DECLARE_FAKE_VOID_FUNC(mh_z19_initialise, serial_comPort_t);
+DECLARE_FAKE_VALUE_FUNC(mh_z19_returnCode_t, mh_z19_takeMeassuring);

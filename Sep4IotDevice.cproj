@@ -20,10 +20,10 @@
     <OverrideVtor>false</OverrideVtor>
     <CacheFlash>true</CacheFlash>
     <ProgFlashFromRam>true</ProgFlashFromRam>
-    <RamSnippetAddress />
+    <RamSnippetAddress>0x20000000</RamSnippetAddress>
     <UncachedRange />
     <preserveEEPROM>true</preserveEEPROM>
-    <OverrideVtorValue />
+    <OverrideVtorValue>exception_table</OverrideVtorValue>
     <BootSegment>2</BootSegment>
     <ResetRule>0</ResetRule>
     <eraseonlaunchrule>0</eraseonlaunchrule>
@@ -40,6 +40,22 @@
         </dependencies>
       </framework-data>
     </AsfFrameworkConfig>
+    <avrtool>com.atmel.avrdbg.tool.atmelice</avrtool>
+    <avrtoolserialnumber>J41800033302</avrtoolserialnumber>
+    <avrdeviceexpectedsignature>0x1E9801</avrdeviceexpectedsignature>
+    <com_atmel_avrdbg_tool_atmelice>
+      <ToolOptions>
+        <InterfaceProperties>
+          <JtagDbgClock>308000</JtagDbgClock>
+        </InterfaceProperties>
+        <InterfaceName>JTAG</InterfaceName>
+      </ToolOptions>
+      <ToolType>com.atmel.avrdbg.tool.atmelice</ToolType>
+      <ToolNumber>J41800033302</ToolNumber>
+      <ToolName>Atmel-ICE</ToolName>
+    </com_atmel_avrdbg_tool_atmelice>
+    <avrtoolinterface>JTAG</avrtoolinterface>
+    <avrtoolinterfaceclock>308000</avrtoolinterfaceclock>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>
@@ -179,6 +195,15 @@
     <Compile Include="IoT_Semester_project\twi.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\co2\co2.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\co2\co2.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\include\utils.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\LoRaWANHandler.c">
       <SubType>compile</SubType>
     </Compile>
@@ -188,6 +213,7 @@
     <Compile Include="src\taskConfig.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\utils.c">
     <Compile Include="src\temperature\temperature.c">
       <SubType>compile</SubType>
     </Compile>
@@ -281,6 +307,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="IoT_Semester_project\" />
+    <Folder Include="src" />
+    <Folder Include="src\include" />
+    <Folder Include="src\co2" />
     <Folder Include="src\" />
     <Folder Include="src\temperature\" />
     <Folder Include="VIA_FreeRTOS_AVRMEGA\" />

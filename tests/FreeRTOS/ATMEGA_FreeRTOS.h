@@ -1,14 +1,11 @@
-#pragma once
 #include <stdint.h>
-#include <FreeRTOSConfig.h>
+#include "FreeRTOSConfig.h"
+#define tskIDLE_PRIORITY ((UBaseType_t)0U)
+#define pdTRUE ((BaseType_t)1)
+#define pdFALSE ((BaseType_t)0)
 
-typedef uint8_t UBaseType_t;
+typedef int TickType_t;
 typedef int8_t BaseType_t;
-
-typedef uint32_t TickType_t;
-
-#define pdFALSE                                  ( ( BaseType_t ) 0 )
-#define pdTRUE                                   ( ( BaseType_t ) 1 )
-
-#define pdPASS                                   ( pdTRUE )
-#define pdFAIL                                   ( pdFALSE )
+typedef uint8_t UBaseType_t;
+typedef struct TaskControlBlock_t *TaskHandle_t;
+typedef void (*TaskFunction_t)(void *);

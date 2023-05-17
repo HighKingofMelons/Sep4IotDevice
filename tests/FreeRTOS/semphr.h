@@ -1,6 +1,7 @@
 #pragma once
 
 #include "queue.h"
+#include "ATMEGA_FreeRTOS.h"
 
 typedef QueueHandle_t SemaphoreHandle_t;
 

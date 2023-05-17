@@ -16,15 +16,19 @@
 #include <stdio_driver.h>
 #include <serial.h>
 
+// co2 driver import
+//#include <mh_z19.h>
+
  // Needed for LoRaWAN
 #include <lora_driver.h>
 #include <status_leds.h>
 
-// Needed for temp measure
+#include "co2/co2.h"
 #include "temperature.h"
 
+
 // Prototype for LoRaWAN handler
-void lora_handler_initialise(UBaseType_t lora_handler_task_priority, temperature_t temperature);
+void lora_handler_initialise(UBaseType_t lora_handler_task_priority, co2_c co2, temperature_t temperature);
 
 /*-----------------------------------------------------------*/
 void initialiseSystem()
@@ -45,9 +49,9 @@ void initialiseSystem()
 	const TickType_t measureCircleFreaquency = pdMS_TO_TICKS(300000UL); // Upload message every 5 minutes (300000 ms)
 	
 	temperature_t temperature = temperature_create(measureCircleFreaquency); //TODO: change port number
+	co2_c co2 = co2_create(22, measureCircleFreaquency);
 	
-	// Create LoRaWAN task and start it up with priority 3
-	lora_handler_initialise(3, temperature);
+	lora_handler_initialise(3, temperature, co2);
 }
 
 /*-----------------------------------------------------------*/

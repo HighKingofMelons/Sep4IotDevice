@@ -1,10 +1,12 @@
 #include <gtest/gtest.h>
 
-extern "C" {
-    #include <utils.h>
+extern "C"
+{
+#include <utils.h>
 }
 
-TEST(Utils, floatToIntX10) {
+TEST(Utils, floatToIntX10)
+{
     float zero = 0.0;
     EXPECT_EQ(float_to_int_x10(zero), 0);
 

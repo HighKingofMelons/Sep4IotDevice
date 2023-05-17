@@ -6,5 +6,6 @@ IoT_Semester_project
 .vscode/c_cpp_properties.json
 .vscode/launch.json
 .vscode/ipch
+.vscode/extensions.json
 .vs
 IoT Class Diagram v0.1.asta.lock
