@@ -93,7 +93,6 @@ int16_t co2_get_latest_average_co2(co2_c self) {
 			} else {
 		}
 	}
-
 	return tmpCo2;
 }
 

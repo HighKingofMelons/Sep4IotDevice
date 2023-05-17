@@ -15,3 +15,5 @@ int16_t co2_get_latest_average_co2(co2_c self);
 int initializeCo2Driver();
 int makeOneCo2Mesurment(co2_c self);
 void addCo2(co2_c self, int16_t co2);
+void resetCo2Array(co2_c self);
+void calculateCo2(co2_c self);
