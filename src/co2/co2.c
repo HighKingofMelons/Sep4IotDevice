@@ -35,7 +35,6 @@ typedef struct co2 {
 	SemaphoreHandle_t latestAvgCo2Mutex;
 	SemaphoreHandle_t maxLimitMutex;
 	SemaphoreHandle_t minLimitMutex;
-	//uint8_t portNo;
 	TickType_t xMesureCircleFrequency;
 	TickType_t xLastMessureCircleTime;
 	int16_t maxCo2Limit;
@@ -205,7 +204,7 @@ void setMinCo2Limit(co2_c self, int16_t minCo2Limit){
 			xSemaphoreGive(self->minLimitMutex);
 			break;
 		} else {
-
+		
 		}
 	}
 }

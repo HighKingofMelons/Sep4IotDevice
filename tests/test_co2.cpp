@@ -65,12 +65,15 @@ TEST_F(Test_co2, co2_get_latest_average_co2_0)
         EXPECT_EQ(1, xSemaphoreGive_fake.call_count);
         EXPECT_EQ(0, result_average);
 }
+TEST_F(Test_co2, co2_initialize_co2_driver){
+        mh_z19_initialise((ser_USART3));
+        mh_z19_takeMeassuring_fake.return_val = MHZ19_OK;
+        xTaskGetTickCount_fake.return_val = (TickType_t)50;
+        TickType_t freaquency = pdMS_TO_TICKS(300000UL);
 
-
-
-TEST(co2, Initialize)
-{
-    EXPECT_EQ(initializeCo2Driver(), 0);
+        co2_c result_co2 = co2_create(freaquency);
+        EXPECT_EQ(1, mh_z19_takeMeassuring_fake.call_count);
+        EXPECT_EQ(1, xTaskGetTickCount_fake.call_count);
 }
 TEST(co2, Create_co2)
 {
@@ -82,8 +85,8 @@ TEST(co2, Create_co2)
 }
 TEST(co2, Avg_co2)
 {
-    BaseType_t return_sec[] = {pdFALSE, pdTRUE};
-    SET_RETURN_SEQ(xSemaphoreTake, &return_sec[1], 1);
+    BaseType_t return_sec = pdTRUE;
+    SET_RETURN_SEQ(xSemaphoreTake, &return_sec, 1);
     EXPECT_FALSE(co2_get_latest_average_co2(co2_create(pdMS_TO_TICKS((uint16_t)300000UL))));
 }
 TEST(co2, AddCo2)
