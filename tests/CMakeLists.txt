@@ -13,6 +13,7 @@ set(SOURCES_TEST
     ../src/utils.c
     ../src/co2.c
     fakes.c
+    ../src/error.c
     ../src/temperature.c
     ../src/humidity.c
 )
@@ -22,6 +23,7 @@ set(TESTS
     utils.cpp
     test_co2.cpp
     test_temperature.cpp
+    error.cpp
     test_humidity.cpp
 )
 
