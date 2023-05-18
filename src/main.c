@@ -26,10 +26,10 @@
 #include "co2/co2.h"
 #include "temperature.h"
 #include "error.h"
-
+#include "humidity.h"
 
 // Prototype for LoRaWAN handler
-void lora_handler_initialise(UBaseType_t lora_handler_task_priority, co2_c co2, temperature_t temperature, error_handler_t error);
+void lora_handler_initialise(UBaseType_t lora_handler_task_priority, temperature_t temperature, humidity_t humidity, co2_c co2, error_handler_t error);
 
 /*-----------------------------------------------------------*/
 void initialiseSystem()
@@ -50,10 +50,12 @@ void initialiseSystem()
 	const TickType_t measureCircleFreaquency = pdMS_TO_TICKS(300000UL); // Upload message every 5 minutes (300000 ms)
 	
 	error_handler_t error = error_handler_init();
-	temperature_t temperature = temperature_create(measureCircleFreaquency); //TODO: change port number
-	co2_c co2 = co2_create(22, measureCircleFreaquency);
+
+	temperature_t temperature = temperature_create(measureCircleFreaquency);
+	humidity_t humidity = humidity_create(measureCircleFreaquency);
+	co2_c co2 = co2_create(measureCircleFreaquency);
 	
-	lora_handler_initialise(3, temperature, co2, error);
+	lora_handler_initialise(3, temperature, humidity, co2);
 }
 
 /*-----------------------------------------------------------*/

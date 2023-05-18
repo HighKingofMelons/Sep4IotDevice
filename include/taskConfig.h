@@ -23,5 +23,7 @@
 /* Initial Limits */
 #define TEMP_MAX_LIMIT 25
 #define TEMP_MIN_LIMIT 18
+#define HUM_MAX_LIMIT 60
+#define HUM_MIN_LIMIT 30
 
 #define DEBUG                       1
