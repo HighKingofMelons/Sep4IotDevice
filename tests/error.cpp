@@ -1,9 +1,7 @@
 #include <gtest/gtest.h>
 
 extern "C" {
-    #include <error.h>
-    #include <private/p_error.h>
-
+    #include "Controls/error.h"
     #include "fakes.h"
 }
 
