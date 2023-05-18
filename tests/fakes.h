@@ -100,10 +100,7 @@ DECLARE_FAKE_VALUE_FUNC(hih8120_driverReturnCode_t, hih8120_measure);
 // int16_t hih8120_getTemperature_x10(void);
 DECLARE_FAKE_VALUE_FUNC(int16_t, hih8120_getTemperature_x10);
 
-// uint16_t hih8120_getTemperature_x10(void);
-DECLARE_FAKE_VALUE_FUNC(uint16_t, hih8120_getHumidityPercent_x10);
-
-// uint16_t hih8120_getTemperature_x10(void);
+// uint16_t hih8120_getHumidityPercent_x10(void);
 DECLARE_FAKE_VALUE_FUNC(uint16_t, hih8120_getHumidityPercent_x10);
 
 

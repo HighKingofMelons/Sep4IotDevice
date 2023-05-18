@@ -59,7 +59,7 @@ humidity_t humidity_create(TickType_t freequency) {
 				TASK_MESSURE_TEMP_PRIORITY,		/* Priority at which the task is created. */
 				&mesureHumidityTask			/* Used to pass out the created task's handle. */
 	);
-	
+
 	return _newHumidity;			
 }
 	
@@ -214,7 +214,7 @@ void wakeUpHumiditySensor() {
 
 void humidity_makeOneMesurment(humidity_t self) {
 	wakeUpHumiditySensor();
-	
+
 	switch(hih8120_measure()) {
 		case HIH8120_OK:
 			humidity_recordMeasurment(self);
