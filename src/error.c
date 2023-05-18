@@ -9,6 +9,7 @@
 #include <semphr.h>
 #include <display_7seg.h>
 
+#include "taskConfig.h"
 #include "error.h"
 
 struct error_handler {
@@ -72,12 +73,18 @@ void update_flags(error_handler_t self) {
     }
 
     if (item->state == ERROR_ENABLE) {
-        //printf("Flags: %i, Component: %i, Result: %i\n", self->flags, item->component, self->flags | (error_flags_t) item->component);
         self->flags = self->flags | item->component;
+
+        if (DEBUG) {
+            printf("Error: %i flagged. Flags: %i\n", item->component, self->flags);
+        }
     }
     else if (item->state == ERROR_DISABLE) {
-        //printf("Flags: %i, Component: %i, Result: %i\n", self->flags, item->component, self->flags & ( ~ item->component));
         self->flags = ( self->flags & ( ~ item->component));
+
+        if (DEBUG) {
+            printf("Error: %i unflagged. Flags: %i\n", item->component, self->flags);
+        }
     }
 
     xSemaphoreGive(self->flag_semaphore);
@@ -122,8 +129,6 @@ void update_display(error_handler_t self) {
 
     for (;;)
     {
-        // printf("%i %i %i\n", (int) pow(2, self->current_display), self->flags, (((int) pow(2, self->current_display)) & self->flags));
-
         if (!( (int) pow(2,  self->current_display) & self->flags)) {
             self->current_display = (self->current_display + 1) % 5;
             continue;
@@ -132,6 +137,10 @@ void update_display(error_handler_t self) {
         break;
     }
     
+    if (DEBUG) {
+        printf("Display Error: %i", (int) pow(2, self->current_display) & self->flags);
+    }
+
     display_7seg_display((int) pow(2, self->current_display) & self->flags, 0);
     self->current_display = (self->current_display + 1) % 5;
     xSemaphoreGive(self->flag_semaphore);

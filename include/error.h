@@ -4,11 +4,11 @@
 #include <ATMEGA_FreeRTOS.h>
 
 typedef enum {
-    ERROR_TEMP  = 1,
-    ERROR_CO2   = 2,
-    ERROR_HUMI  = 4,
-    ERROR_SOUND = 8,
-    ERROR_PIR   = 16,
+    ERROR_TEMP  = 16,
+    ERROR_HUMI  = 8,
+    ERROR_CO2   = 4,
+    ERROR_SOUND = 2,
+    ERROR_PIR   = 1,
 } error_component_t;
 
 typedef uint8_t error_flags_t;

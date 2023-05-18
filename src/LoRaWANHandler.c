@@ -17,6 +17,7 @@
 
 #include "co2/co2.h"
 #include "temperature.h"
+#include "error.h"
 
 // TODO: Restructure into ADS to make it easier to draw class diagram
 
@@ -31,13 +32,15 @@ static lora_driver_payload_t _uplink_payload;
 struct handlers {
 	temperature_t temp;
 	co2_c co2;
+	error_handler_t error;
 };
 
-void lora_handler_initialise(UBaseType_t lora_handler_task_priority, temperature_t temperature, co2_c co2)
+void lora_handler_initialise(UBaseType_t lora_handler_task_priority, temperature_t temperature, co2_c co2, error_handler_t error)
 {
 	struct handlers _handlers = {
 		temperature,
-		co2
+		co2,
+		error,
 	};
 
 	xTaskCreate(
@@ -168,7 +171,7 @@ void lora_handler_task( void *pvParameters )
 		//mh_z19_returnCode_t rc;
 		//rc = mh_z19_takeMeassuring();
 		
-		uint8_t flags = 0;//open_bit | battery_bit | temp_bit | hum_bit | co2_bit | sound_bit | light_bit | pir_bit; // dummy flags
+		uint8_t flags = error_handler_get_flags(_handlers->error);  //open_bit | battery_bit | temp_bit | hum_bit | co2_bit | sound_bit | light_bit | pir_bit; // dummy flags
 		int16_t temp = temperature_get_latest_average_temperature(_handlers->temp); // Dummy temp
 		printf("Payload.temp: %i\n", _handlers->temp);
 		uint8_t hum = 0; // Dummy humidity
