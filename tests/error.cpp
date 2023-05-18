@@ -121,10 +121,10 @@ TEST(error_handler, update_flags) {
 
     return_item = pdTRUE;
     update_flags(&_handler);
-    ASSERT_EQ(_handler.flags, (error_flags_t) 2);
+    ASSERT_EQ(_handler.flags, (error_flags_t) ERROR_CO2);
 
     update_flags(&_handler);
-    ASSERT_EQ(_handler.flags, (error_flags_t) 2);
+    ASSERT_EQ(_handler.flags, (error_flags_t) ERROR_CO2);
 
     testitem = (struct error_item) {
         ERROR_HUMI,
@@ -132,7 +132,7 @@ TEST(error_handler, update_flags) {
     };
 
     update_flags(&_handler);
-    ASSERT_EQ(_handler.flags, (error_flags_t) 2 + 4);
+    ASSERT_EQ(_handler.flags, (error_flags_t) ERROR_CO2 + ERROR_HUMI);
 
     testitem = (struct error_item) {
         ERROR_CO2,
@@ -140,10 +140,10 @@ TEST(error_handler, update_flags) {
     };
 
     update_flags(&_handler);
-    ASSERT_EQ(_handler.flags, (error_flags_t) 4);
+    ASSERT_EQ(_handler.flags, (error_flags_t) ERROR_HUMI);
 
     update_flags(&_handler);
-    ASSERT_EQ(_handler.flags, (error_flags_t) 4);
+    ASSERT_EQ(_handler.flags, (error_flags_t) ERROR_HUMI);
 
     RESET_FAKE(xQueueReceive);
     RESET_FAKE(xSemaphoreGive);

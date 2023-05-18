@@ -138,7 +138,7 @@ void update_display(error_handler_t self) {
     }
     
     if (DEBUG) {
-        printf("Display Error: %i", (int) pow(2, self->current_display) & self->flags);
+        printf("Display Error: %i\n", (int) pow(2, self->current_display) & self->flags);
     }
 
     display_7seg_display((int) pow(2, self->current_display) & self->flags, 0);
