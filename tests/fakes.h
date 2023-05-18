@@ -43,6 +43,8 @@ DECLARE_FAKE_VALUE_FUNC(BaseType_t, xQueueReceive, QueueHandle_t, void * const, 
 //                        TickType_t xTicksToWait );
 DECLARE_FAKE_VALUE_FUNC(BaseType_t, xQueueSend, QueueHandle_t, const void *, TickType_t);
 
+// void vQueueDelete( QueueHandle_t xQueue );
+DECLARE_FAKE_VOID_FUNC(vQueueDelete, QueueHandle_t);
 
 // ---------------------------- ~ TASK ~ ---------------------------------------
 
@@ -79,6 +81,8 @@ DECLARE_FAKE_VOID_FUNC(xSemaphoreGive, SemaphoreHandle_t);
 // void xSemaphoreCreateMutex(void);
 DECLARE_FAKE_VALUE_FUNC(SemaphoreHandle_t, xSemaphoreCreateMutex);
 
+//void xSemaphoreDelete(SemaphoreHandle_t xSemaphore);
+DECLARE_FAKE_VOID_FUNC(vSemaphoreDelete, SemaphoreHandle_t);
 
 // ---------------------------- ~ HIH8120 ~ ---------------------------------------
 
