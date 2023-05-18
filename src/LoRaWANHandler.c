@@ -15,7 +15,7 @@
 #include <lora_driver.h>
 #include <status_leds.h>
 
-#include "co2/co2.h"
+#include "co2.h"
 #include "temperature.h"
 #include "humidity.h"
 

@@ -51,7 +51,7 @@ void initialiseSystem()
 	
 	temperature_t temperature = temperature_create(measureCircleFreaquency);
 	humidity_t humidity = humidity_create(measureCircleFreaquency);
-	co2_c co2 = co2_create(22, measureCircleFreaquency);
+	co2_c co2 = co2_create(measureCircleFreaquency);
 	
 	lora_handler_initialise(3, temperature, humidity, co2);
 }
