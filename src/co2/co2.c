@@ -21,6 +21,10 @@ int wakeUpCo2Sensos();
 co2_c initializeCo2(TickType_t freequency);
 void calculateCo2(co2_c self);
 void resetCo2Array(co2_c self);
+int16_t getMaxCo2Limit(co2_c self);
+int16_t getMinCo2Limit(co2_c self);
+void setMaxCo2Limit(co2_c self, int16_t maxCo2Limit);
+void setMinCo2Limit(co2_c self, int16_t minCO2Limit);
 
 static TaskHandle_t mesureCo2Task = NULL;
 
@@ -29,9 +33,13 @@ typedef struct co2 {
 	int16_t nextCo2ToReadIdx;
 	int16_t latestAvgCo2;
 	SemaphoreHandle_t latestAvgCo2Mutex;
+	SemaphoreHandle_t maxLimitMutex;
+	SemaphoreHandle_t minLimitMutex;
 	//uint8_t portNo;
 	TickType_t xMesureCircleFrequency;
 	TickType_t xLastMessureCircleTime;
+	int16_t maxCo2Limit;
+	int16_t minCo2Limit;
 	} co2_st;
 	
 co2_c co2_create(TickType_t freequency){
@@ -101,7 +109,6 @@ co2_c initializeCo2(TickType_t freequency){
 	resetCo2Array(_newCo2);
 	_newCo2->latestAvgCo2 = 0;
 	_newCo2->latestAvgCo2Mutex = xSemaphoreCreateMutex();
-	//_newCo2->portNo = port;
 	_newCo2->xMesureCircleFrequency = freequency;
 	_newCo2->xLastMessureCircleTime = xTaskGetTickCount();
 	
@@ -150,4 +157,55 @@ int makeOneCo2Mesurment(co2_c self)
 		addCo2(self, ppm);
 		return 0;
 		}
+}
+int16_t getMaxCo2Limit(co2_c self){
+	int16_t limit = -100;
+	while(1){
+		if (xSemaphoreTake(self->maxLimitMutex, pdMS_TO_TICKS(200)) == pdTRUE){
+			limit = self->maxCo2Limit;
+			xSemaphoreGive(self->maxLimitMutex);
+			break;
+		} else {
+
+		}
+	}
+	return limit;
+}
+int16_t getMinCo2Limit(co2_c self){
+	int16_t limit = -100;
+	while(1){
+		if(xSemaphoreTake(self->minLimitMutex, pdMS_TO_TICKS(200)) == pdTRUE){
+			limit = self->minCo2Limit;
+			xSemaphoreGive(self->minLimitMutex);
+			break;
+		} else {
+
+		}
+	}
+	return limit;
+}
+void setMaxCo2Limit(co2_c self, int16_t maxCo2Limit){
+	while(1){
+		if (xSemaphoreTake(self->maxLimitMutex, pdMS_TO_TICKS(200)) == pdTRUE)
+		{ 
+			self->maxCo2Limit = maxCo2Limit;
+			xSemaphoreGive(self->maxLimitMutex);
+			break;
+		}
+		else
+		{
+
+		}
+	}
+}
+void setMinCo2Limit(co2_c self, int16_t minCo2Limit){
+	while(1){
+		if(xSemaphoreTake(self->maxLimitMutex, pdMS_TO_TICKS(200)) == pdTRUE){
+			self->minCo2Limit = minCo2Limit;
+			xSemaphoreGive(self->minLimitMutex);
+			break;
+		} else {
+
+		}
+	}
 }

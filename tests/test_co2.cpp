@@ -66,29 +66,7 @@ TEST_F(Test_co2, co2_get_latest_average_co2_0)
         EXPECT_EQ(0, result_average);
 }
 
-// TEST_F(Test_co2, co2_get_latest_average_co2_10X10)
-// {
-//         xTaskGetTickCount_fake.return_val = (TickType_t)50;
-//         mh_z19_takeMeassuring_fake.return_val = MHZ19_OK;
-//         mh_z19_takeMeassuring_fake.return_val = MHZ19_OK;
-//         BaseType_t mh_z19_isReadyReturnVals[11] = {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-//         SET_RETURN_SEQ(true, mh_z19_isReadyReturnVals, 11);
-//         mh_z19_getCo2_x10_fake.return_val = (int16_t)100;
-//         xSemaphoreTake_fake.return_val = true;
-//         co2_c result_co2 = co2_create(pdMS_TO_TICKS(300000UL));
 
-//         callFunctionNTimes(&makeOneMesurment, result_co2, 10);
-//         int16_t result_average = co2_get_latest_average_co2(result_co2);
-
-//         EXPECT_EQ(10, hih8120_wakeup_fake.call_count);
-//         EXPECT_EQ(10, hih8120_measure_fake.call_count);
-//         EXPECT_EQ(11, hih8120_isReady_fake.call_count);
-//         EXPECT_EQ(11, vTaskDelay_fake.call_count);
-//         EXPECT_EQ(10, mh_z19_getCo2_x10_fake.call_count);
-//         EXPECT_EQ(2, xSemaphoreGive_fake.call_count);
-//         EXPECT_EQ(1, xTaskDelayUntil_fake.call_count);
-//         EXPECT_EQ((int16_t)100, result_average);
-// }
 
 TEST(co2, Initialize)
 {
