@@ -23,7 +23,7 @@
 #include <lora_driver.h>
 #include <status_leds.h>
 
-#include "co2/co2.h"
+#include "co2.h"
 #include "temperature.h"
 #include "error.h"
 #include "humidity.h"
@@ -55,7 +55,7 @@ void initialiseSystem()
 	humidity_t humidity = humidity_create(measureCircleFreaquency);
 	co2_c co2 = co2_create(measureCircleFreaquency);
 	
-	lora_handler_initialise(3, temperature, humidity, co2);
+	lora_handler_initialise(3, temperature, humidity, co2, error);
 }
 
 /*-----------------------------------------------------------*/
