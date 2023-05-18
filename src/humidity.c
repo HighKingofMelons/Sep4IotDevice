@@ -54,9 +54,9 @@ humidity_t humidity_create(TickType_t freequency) {
 	/* Create the task, not storing the handle. */
 	xTaskCreate(humidity_mesure,				/* Function that implements the task. */
 				"messureHumidity",           /* Text name for the task. */
-				TASK_MESSURE_TEMP_STACK,		/* Stack size in words, not bytes. */
+				TASK_MESSURE_HUM_STACK,		/* Stack size in words, not bytes. */
 				(void*) _newHumidity,		/* Parameter passed into the task. */
-				TASK_MESSURE_TEMP_PRIORITY,		/* Priority at which the task is created. */
+				TASK_MESSURE_HUM_PRIORITY,		/* Priority at which the task is created. */
 				&mesureHumidityTask			/* Used to pass out the created task's handle. */
 	);
 
@@ -163,8 +163,8 @@ humidity_t initializeHumidity(TickType_t freequency) {
 	_newHumidity->maxLimitMutex = xSemaphoreCreateMutex();
 	_newHumidity->mesureCircleFrequency = freequency;
 	_newHumidity->lastMessureCircleTime = xTaskGetTickCount();
-	_newHumidity->maxLimit = TEMP_MAX_LIMIT;
-	_newHumidity->minLimit = TEMP_MIN_LIMIT;
+	_newHumidity->maxLimit = HUM_MAX_LIMIT;
+	_newHumidity->minLimit = HUM_MIN_LIMIT;
 	return _newHumidity;
 }
 
