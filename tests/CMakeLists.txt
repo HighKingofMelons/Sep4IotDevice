@@ -14,6 +14,7 @@ set(SOURCES_TEST
     ../src/co2/co2.c
     fakes.c
     ../src/temperature/temperature.c
+    ../src/error.c
 )
 
 # The tests themselves
@@ -21,6 +22,7 @@ set(TESTS
     utils.cpp
     test_co2.cpp
     test_temperature.cpp
+    error.cpp
 )
 
 include_directories(
