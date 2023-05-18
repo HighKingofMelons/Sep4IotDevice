@@ -15,8 +15,9 @@
 #include <lora_driver.h>
 #include <status_leds.h>
 
-#include "co2/co2.h"
+#include "co2.h"
 #include "temperature.h"
+#include "humidity.h"
 
 // TODO: Restructure into ADS to make it easier to draw class diagram
 
@@ -30,13 +31,15 @@ static lora_driver_payload_t _uplink_payload;
 
 struct handlers {
 	temperature_t temp;
+	humidity_t humidity;
 	co2_c co2;
 };
 
-void lora_handler_initialise(UBaseType_t lora_handler_task_priority, temperature_t temperature, co2_c co2)
+void lora_handler_initialise(UBaseType_t lora_handler_task_priority, temperature_t temperature, humidity_t humidity, co2_c co2)
 {
 	struct handlers _handlers = {
 		temperature,
+		humidity,
 		co2
 	};
 
@@ -169,9 +172,10 @@ void lora_handler_task( void *pvParameters )
 		//rc = mh_z19_takeMeassuring();
 		
 		uint8_t flags = 0;//open_bit | battery_bit | temp_bit | hum_bit | co2_bit | sound_bit | light_bit | pir_bit; // dummy flags
-		int16_t temp = temperature_get_latest_average_temperature(_handlers->temp); // Dummy temp
+		int16_t temp = temperature_get_latest_average_temperature(_handlers->temp);
 		printf("Payload.temp: %i\n", _handlers->temp);
-		uint8_t hum = 0; // Dummy humidity
+		uint8_t humidity = humidity_get_latest_average_humidity(_handlers->humidity);
+		printf("Payload.hum: %i\n", _handlers->humidity);
 		uint16_t co2_ppm = co2_get_latest_average_co2(_handlers->co2);
 		printf("Payload.co2: %i\n", _handlers->co2);
 		uint16_t sound = 0; // Dummy sound
@@ -183,7 +187,7 @@ void lora_handler_task( void *pvParameters )
 		_uplink_payload.bytes[0] = flags;
 		_uplink_payload.bytes[1] = temp >> 8;
 		_uplink_payload.bytes[2] = temp & 0xFF;
-		_uplink_payload.bytes[3] = hum;
+		_uplink_payload.bytes[3] = humidity;
 		_uplink_payload.bytes[4] = co2_ppm >> 8;
 		_uplink_payload.bytes[5] = co2_ppm & 0xFF;
 		_uplink_payload.bytes[6] = sound >> 8;

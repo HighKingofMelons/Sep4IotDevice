@@ -2,10 +2,6 @@
 DEFINE_FFF_GLOBALS;
 
 // --------------------------
-#include "display_7seg.h"
-#include "ATMEGA_FreeRTOS.h"
-#include "semphr.h"
-#include "mh_z19.h"
 
 
 // void display_7seg_initialise(void (*displayDoneCallBack)(void));
@@ -96,9 +92,14 @@ DEFINE_FAKE_VALUE_FUNC(hih8120_driverReturnCode_t, hih8120_measure);
 // int16_t hih8120_getTemperature_x10(void);
 DEFINE_FAKE_VALUE_FUNC(int16_t, hih8120_getTemperature_x10);
 
+// uint16_t hih8120_getHumidityPercent_x10(void);
+DEFINE_FAKE_VALUE_FUNC(uint16_t, hih8120_getHumidityPercent_x10);
 
-// --------------- mh_z19
+// ---------------------------- ~ MH_Z19 ~ ---------------------------------------
+
 DEFINE_FAKE_VALUE_FUNC(mh_z19_returnCode_t, mh_z19_getCo2Ppm, int *);
+
 // mh_z19_returnCode_t mh_z19_getCo2Ppm(int *ppm);
 DEFINE_FAKE_VOID_FUNC(mh_z19_initialise, serial_comPort_t);
+
 DEFINE_FAKE_VALUE_FUNC(mh_z19_returnCode_t, mh_z19_takeMeassuring);

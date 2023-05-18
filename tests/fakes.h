@@ -100,7 +100,14 @@ DECLARE_FAKE_VALUE_FUNC(hih8120_driverReturnCode_t, hih8120_measure);
 // int16_t hih8120_getTemperature_x10(void);
 DECLARE_FAKE_VALUE_FUNC(int16_t, hih8120_getTemperature_x10);
 
-// ----------------- mh_z19
+// uint16_t hih8120_getTemperature_x10(void);
+DECLARE_FAKE_VALUE_FUNC(uint16_t, hih8120_getHumidityPercent_x10);
+
+
+// ---------------------------- ~ MH_Z19 ~ ---------------------------------------
+
 DECLARE_FAKE_VALUE_FUNC(mh_z19_returnCode_t, mh_z19_getCo2Ppm, int *);
+
 DECLARE_FAKE_VOID_FUNC(mh_z19_initialise, serial_comPort_t);
+
 DECLARE_FAKE_VALUE_FUNC(mh_z19_returnCode_t, mh_z19_takeMeassuring);
