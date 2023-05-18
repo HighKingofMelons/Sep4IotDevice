@@ -43,6 +43,8 @@ DECLARE_FAKE_VALUE_FUNC(BaseType_t, xQueueReceive, QueueHandle_t, void * const, 
 //                        TickType_t xTicksToWait );
 DECLARE_FAKE_VALUE_FUNC(BaseType_t, xQueueSend, QueueHandle_t, const void *, TickType_t);
 
+// void vQueueDelete( QueueHandle_t xQueue );
+DECLARE_FAKE_VOID_FUNC(vQueueDelete, QueueHandle_t);
 
 // ---------------------------- ~ TASK ~ ---------------------------------------
 
@@ -79,6 +81,8 @@ DECLARE_FAKE_VOID_FUNC(xSemaphoreGive, SemaphoreHandle_t);
 // void xSemaphoreCreateMutex(void);
 DECLARE_FAKE_VALUE_FUNC(SemaphoreHandle_t, xSemaphoreCreateMutex);
 
+//void xSemaphoreDelete(SemaphoreHandle_t xSemaphore);
+DECLARE_FAKE_VOID_FUNC(vSemaphoreDelete, SemaphoreHandle_t);
 
 // ---------------------------- ~ HIH8120 ~ ---------------------------------------
 
@@ -100,7 +104,14 @@ DECLARE_FAKE_VALUE_FUNC(hih8120_driverReturnCode_t, hih8120_measure);
 // int16_t hih8120_getTemperature_x10(void);
 DECLARE_FAKE_VALUE_FUNC(int16_t, hih8120_getTemperature_x10);
 
-// ----------------- mh_z19
+// uint16_t hih8120_getTemperature_x10(void);
+DECLARE_FAKE_VALUE_FUNC(uint16_t, hih8120_getHumidityPercent_x10);
+
+
+// ---------------------------- ~ MH_Z19 ~ ---------------------------------------
+
 DECLARE_FAKE_VALUE_FUNC(mh_z19_returnCode_t, mh_z19_getCo2Ppm, int *);
+
 DECLARE_FAKE_VOID_FUNC(mh_z19_initialise, serial_comPort_t);
+
 DECLARE_FAKE_VALUE_FUNC(mh_z19_returnCode_t, mh_z19_takeMeassuring);

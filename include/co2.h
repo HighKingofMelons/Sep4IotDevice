@@ -6,7 +6,6 @@
  */ 
 
 #pragma once
-#include <inttypes.h>
 
 typedef struct co2 *co2_c;
 co2_c co2_create(TickType_t freequency);

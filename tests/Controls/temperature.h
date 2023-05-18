@@ -1,4 +1,4 @@
 #pragma once
 #include <temperature.h>
 
-void makeOneMesurment(temperature_t self);
+void temperature_makeOneMesurment(temperature_t self);

@@ -2,10 +2,9 @@
 
 extern "C"
 {
-#include "ATMEGA_FreeRTOS.h"
-#include <utils.h>
-#include "co2.h"
-#include "fakes.h"
+    #include "fakes.h"
+    #include "../include/co2.h"
+    #include <../include/taskConfig.h>
 }
 
 class Test_co2 : public ::testing::Test{

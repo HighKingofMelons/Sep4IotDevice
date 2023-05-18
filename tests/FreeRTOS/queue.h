@@ -21,3 +21,5 @@ BaseType_t xQueueReceive( QueueHandle_t xQueue,
 BaseType_t xQueueSend(  QueueHandle_t xQueue,
                         const void * pvItemToQueue,
                         TickType_t xTicksToWait );
+
+void vQueueDelete( QueueHandle_t xQueue );
