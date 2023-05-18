@@ -12,7 +12,7 @@
 #include <semphr.h>
 #include <message_buffer.h>
 #include <task.h>
-#include "../taskConfig.h"
+#include "../include/taskConfig.h"
 #include "../include/co2.h"
 #include <mh_z19.h>
 
