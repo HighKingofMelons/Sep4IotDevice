@@ -3,7 +3,6 @@ name: PlatformIO CI
 on:
   push:
     branches:
-      - feature/SEP4-55
       - release
   workflow_dispatch:
   workflow_run:
