@@ -11,17 +11,27 @@ enable_testing()
 # Source files to be tested
 set(SOURCES_TEST
     ../src/utils.c
+    ../src/co2.c
+    fakes.c
+    ../src/error.c
+    ../src/temperature.c
+    ../src/humidity.c
 )
 
 # The tests themselves
 set(TESTS
     utils.cpp
+    test_co2.cpp
+    test_temperature.cpp
+    error.cpp
+    test_humidity.cpp
 )
 
 include_directories(
-    ../src/include
+    ../include
     Drivers
     FreeRTOS
+    ./
 )
 
 add_executable(

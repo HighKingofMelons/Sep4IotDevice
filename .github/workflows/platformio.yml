@@ -1,0 +1,49 @@
+name: PlatformIO CI
+
+on:
+  push:
+    branches:
+      - release
+  workflow_dispatch:
+  workflow_run:
+    workflows: [Test]
+    types:
+      - completed
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      PLATFORMIO_AUTH_TOKEN: ${{ secrets.PLATFORMIO_AUTH_TOKEN }}
+      APPEUI: ${{secrets.LORAWAN_APPEUI}}
+      APPKEY: ${{secrets.LORAWAN_APPKEY}}
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Init LoRa
+        run: cd ${{github.workspace}}/scripts &&
+          chmod +x init_lora.sh &&
+          bash init_lora.sh $APPEUI $APPKEY
+        shell: bash
+
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.platformio/.cache
+            ./modules
+          key: ${{ runner.os }}-pio
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install PlatformIO Core
+        run: pip install --upgrade platformio
+
+      - name: Deploy Project to TestDevice
+        run: pio remote run -e linux --target upload --verbose
