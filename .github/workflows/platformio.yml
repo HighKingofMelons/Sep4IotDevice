@@ -3,14 +3,16 @@ name: PlatformIO CI
 on:
   push:
     branches:
-      - feature/SEP4-
+      - feature/SEP4-55
       - release
   workflow_dispatch:
+  workflow_run:
+    workflows: [Test]
+    types:
+      - completed
 
 jobs:
   Deploy:
-    uses: ./.github/workflows/cmake.yml
-    
     needs: unit-tests
 
     runs-on: ubuntu-latest
