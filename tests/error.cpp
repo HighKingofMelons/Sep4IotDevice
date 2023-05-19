@@ -110,7 +110,7 @@ TEST(error_handler, update_flags) {
 
     xQueueReceive_fake.custom_fake = xQueueRecive_custom_func;
 
-    testitem = (struct error_item) {
+    testitem = {
         ERROR_CO2,
         ERROR_ENABLE
     };
@@ -126,7 +126,7 @@ TEST(error_handler, update_flags) {
     update_flags(&_handler);
     ASSERT_EQ(_handler.flags, (error_flags_t) ERROR_CO2);
 
-    testitem = (struct error_item) {
+    testitem = {
         ERROR_HUMI,
         ERROR_ENABLE
     };
@@ -134,7 +134,7 @@ TEST(error_handler, update_flags) {
     update_flags(&_handler);
     ASSERT_EQ(_handler.flags, (error_flags_t) ERROR_CO2 + ERROR_HUMI);
 
-    testitem = (struct error_item) {
+    testitem = {
         ERROR_CO2,
         ERROR_DISABLE
     };
