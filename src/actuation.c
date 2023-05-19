@@ -43,6 +43,7 @@ void update_vent(actuation_handler_t self) {
         rc_servo_setPosition(VENTILATION, VENT_ON);
         break;
     case 0:
+    case -1:
         rc_servo_setPosition(VENTILATION, VENT_OFF);
         break;
     }
