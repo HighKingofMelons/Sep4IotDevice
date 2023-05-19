@@ -41,7 +41,7 @@ void lora_handler_initialise(UBaseType_t lora_handler_task_priority, temperature
 		temperature,
 		humidity,
 		co2,
-    error
+    	error
 	};
 
 	xTaskCreate(
@@ -132,6 +132,9 @@ static void _lora_setup(void)
 void lora_handler_task( void *pvParameters )
 {
 	struct handlers *_handlers = pvParameters;
+
+	error_handler_report(_handlers->error, ERROR_PIR);
+	error_handler_report(_handlers->error, ERROR_SOUND);
 
 	// Hardware reset of LoRaWAN transceiver
 	lora_driver_resetRn2483(1);
