@@ -6,11 +6,6 @@ on:
       - feature/SEP4-55
       - release
   workflow_dispatch:
-  workflow_run:
-    workflows: [Test]
-    branches: [feature/SEP4-55, release]
-    types:
-      - completed
 
 jobs:
   Deploy:
