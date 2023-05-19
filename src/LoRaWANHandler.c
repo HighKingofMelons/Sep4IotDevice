@@ -15,6 +15,7 @@
 #include <lora_driver.h>
 #include <status_leds.h>
 
+#include "LoRaWAN.h"
 #include "co2.h"
 #include "temperature.h"
 #include "error.h"
