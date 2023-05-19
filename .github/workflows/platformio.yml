@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - release
+      - feature/SEP4-55
   workflow_dispatch:
   workflow_run:
     workflows: [Test]
@@ -16,8 +17,8 @@ jobs:
 
     env:
       PLATFORMIO_AUTH_TOKEN: ${{ secrets.PLATFORMIO_AUTH_TOKEN }}
-      APPEUI: ${{secrets.LORA_appEUI}}
-      APPKEY: ${{secrets.LORA_appKEY}}
+      APPEUI: ${{secrets.LORAWAN_APPEUI}}
+      APPKEY: ${{secrets.LORAWAN_APPKEY}}
 
     steps:
       - uses: actions/checkout@v3
