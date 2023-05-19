@@ -8,5 +8,6 @@ IoT_Semester_project
 .vscode/ipch
 .vscode/extensions.json
 .vs
+include/LoRaWAN.h
 IoT Class Diagram v0.1.asta.lock
 IoT Class Diagram v01.svg.bak
