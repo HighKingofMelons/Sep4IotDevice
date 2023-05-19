@@ -29,3 +29,4 @@
 #define HUM_MIN_LIMIT 30
 
 #define DEBUG                       1
+#define DEBUG_ERROR                 0
