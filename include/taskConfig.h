@@ -16,9 +16,11 @@
 /* Priorities at which the tasks are created. */
 #define TASK_MESSURE_TEMP_PRIORITY	( tskIDLE_PRIORITY + 2 )
 #define	TASK_MESSURE_HUM_PRIORITY	( tskIDLE_PRIORITY + 2 )
+#define	TASK_ACTUATOR_PRIORITY	    ( tskIDLE_PRIORITY + 1 )
 /* Task stack sizes*/
 #define TASK_MESSURE_TEMP_STACK		( configMINIMAL_STACK_SIZE * 2 )
 #define	TASK_MESSURE_HUM_STACK		( configMINIMAL_STACK_SIZE )
+#define	TASK_ACTUATOR_STACK		    ( configMINIMAL_STACK_SIZE )
 #define configUSE_MUTEXES			1
 /* Initial Limits */
 #define TEMP_MAX_LIMIT 25
