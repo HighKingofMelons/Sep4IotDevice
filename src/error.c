@@ -147,10 +147,13 @@ void update_display(error_handler_t self) {
 
 error_flags_t error_handler_get_flags(error_handler_t self) {
     for (;;) {
-        if (pdTRUE == xSemaphoreTake(self->queue, 50))
+        if (pdTRUE == xSemaphoreTake(self->flag_semaphore, 50))
             break;
     }
     error_flags_t _flags = self->flags;
+    if (DEBUG_ERROR) {
+        printf("Flags: %i\n", _flags);
+    }
     xSemaphoreGive(self->flag_semaphore);
     return _flags;
 }
