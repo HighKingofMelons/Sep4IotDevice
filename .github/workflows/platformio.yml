@@ -6,11 +6,13 @@ on:
       - feature/SEP4-55
       - release
   workflow_dispatch:
+  workflow_run:
+    workflows: [Test]
+    types:
+      - completed
 
 jobs:
   Deploy:
-    needs: unit-tests
-
     runs-on: ubuntu-latest
 
     env:
