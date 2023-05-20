@@ -286,3 +286,145 @@ TEST(actuation_handler, update_vent_humid_vent_OFF2) {
     ASSERT_EQ(rc_servo_setPosition_fake.call_count, 1);
     ASSERT_EQ(rc_servo_setPosition_fake.arg1_val, VENT_OFF);
 }
+
+TEST(actuation_handler, init) {
+    RESET_FAKE(rc_servo_initialise);
+    RESET_FAKE(rc_servo_setPosition);
+    RESET_FAKE(xSemaphoreCreateMutex);
+    RESET_FAKE(xTaskCreate);
+    FFF_RESET_HISTORY();
+
+    temperature_st temp = makeTemp(0);
+    humidity_st humi = makeHumid(0);
+
+    actuation_handler_t act = actuation_handler_init(&temp, &humi);
+
+    ASSERT_EQ(rc_servo_initialise_fake.call_count, 1);
+    ASSERT_EQ(rc_servo_setPosition_fake.call_count, 2);
+    ASSERT_EQ(rc_servo_setPosition_fake.arg0_history[0], 0);
+    ASSERT_EQ(rc_servo_setPosition_fake.arg0_history[1], 1);
+    ASSERT_EQ(rc_servo_setPosition_fake.arg1_history[0], VENT_OFF);
+    ASSERT_EQ(rc_servo_setPosition_fake.arg1_history[1], AIRCON_OFF);
+    ASSERT_EQ(xSemaphoreCreateMutex_fake.call_count, 1);
+    ASSERT_EQ(xTaskCreate_fake.call_count, 1);
+
+    actuation_handler_destroy(act);
+}
+
+TEST(actuation_handler, destroy) {
+    temperature_st temp = makeTemp(0);
+    humidity_st humi = makeHumid(0);
+
+    actuation_handler_t act = actuation_handler_init(&temp, &humi);
+
+    RESET_FAKE(vTaskDelete);
+    RESET_FAKE(vSemaphoreDelete);
+    FFF_RESET_HISTORY();
+
+    actuation_handler_destroy(act);
+
+    ASSERT_EQ(vTaskDelete_fake.call_count, 1);
+    ASSERT_EQ(vSemaphoreDelete_fake.call_count, 1);
+}
+
+TEST(actuation_handler, ventilation_override_state) {
+    RESET_FAKE(xSemaphoreGive);
+    RESET_FAKE(xSemaphoreTake);
+    RESET_FAKE(rc_servo_setPosition);
+    FFF_RESET_HISTORY();
+
+    struct actuation_handler _hand = {
+        NULL,
+        NULL,
+        0,
+        pdFALSE,
+        pdFALSE
+    };
+
+    BaseType_t seq[] = {pdFALSE, pdTRUE};
+    SET_RETURN_SEQ(xSemaphoreTake, seq, 2);
+
+    actuators_ventilation_override_state(&_hand, VENT_ON);
+    
+    ASSERT_EQ(xSemaphoreTake_fake.call_count, 2);
+    ASSERT_EQ(_hand.ventilation_overriden, pdTRUE);
+    ASSERT_EQ(rc_servo_setPosition_fake.call_count, 1);
+    ASSERT_EQ(rc_servo_setPosition_fake.arg1_val, VENT_ON);
+    ASSERT_EQ(xSemaphoreGive_fake.call_count, 1);
+    ASSERT_EQ(xSemaphoreGive_fake.arg0_val, xSemaphoreTake_fake.arg0_val);
+}
+
+TEST(actuation_handler, ventilation_disable_override) {
+    RESET_FAKE(xSemaphoreGive);
+    RESET_FAKE(xSemaphoreTake);
+    FFF_RESET_HISTORY();
+
+    struct actuation_handler _hand = {
+        NULL,
+        NULL,
+        0,
+        pdFALSE,
+        pdFALSE
+    };
+
+    BaseType_t seq[] = {pdFALSE, pdTRUE};
+    SET_RETURN_SEQ(xSemaphoreTake, seq, 2);
+
+    actuators_ventilation_disable_override(&_hand);
+    
+    ASSERT_EQ(xSemaphoreTake_fake.call_count, 2);
+    ASSERT_EQ(_hand.ventilation_overriden, pdFALSE);
+    ASSERT_EQ(xSemaphoreGive_fake.call_count, 1);
+    ASSERT_EQ(xSemaphoreGive_fake.arg0_val, xSemaphoreTake_fake.arg0_val);
+}
+
+TEST(actuation_handler, aircon_override_state) {
+    RESET_FAKE(xSemaphoreGive);
+    RESET_FAKE(xSemaphoreTake);
+    RESET_FAKE(rc_servo_setPosition);
+    FFF_RESET_HISTORY();
+
+    struct actuation_handler _hand = {
+        NULL,
+        NULL,
+        0,
+        pdFALSE,
+        pdFALSE
+    };
+
+    BaseType_t seq[] = {pdFALSE, pdTRUE};
+    SET_RETURN_SEQ(xSemaphoreTake, seq, 2);
+
+    actuators_aircon_override_state(&_hand, AIRCON_COOL);
+    
+    ASSERT_EQ(xSemaphoreTake_fake.call_count, 2);
+    ASSERT_EQ(_hand.aircon_overriden, pdTRUE);
+    ASSERT_EQ(rc_servo_setPosition_fake.call_count, 1);
+    ASSERT_EQ(rc_servo_setPosition_fake.arg1_val, AIRCON_COOL);
+    ASSERT_EQ(xSemaphoreGive_fake.call_count, 1);
+    ASSERT_EQ(xSemaphoreGive_fake.arg0_val, xSemaphoreTake_fake.arg0_val);
+}
+
+TEST(actuation_handler, aircon_disable_override) {
+    RESET_FAKE(xSemaphoreGive);
+    RESET_FAKE(xSemaphoreTake);
+    FFF_RESET_HISTORY();
+
+    struct actuation_handler _hand = {
+        NULL,
+        NULL,
+        0,
+        pdFALSE,
+        pdFALSE
+    };
+
+    BaseType_t seq[] = {pdFALSE, pdTRUE};
+    SET_RETURN_SEQ(xSemaphoreTake, seq, 2);
+
+    actuators_aircon_disable_override(&_hand);
+    
+    ASSERT_EQ(xSemaphoreTake_fake.call_count, 2);
+    ASSERT_EQ(_hand.aircon_overriden, pdFALSE);
+    ASSERT_EQ(xSemaphoreGive_fake.call_count, 1);
+    ASSERT_EQ(xSemaphoreGive_fake.arg0_val, xSemaphoreTake_fake.arg0_val);
+}
