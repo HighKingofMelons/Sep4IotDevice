@@ -28,6 +28,8 @@
 #include "error.h"
 #include "humidity.h"
 
+#include "actuation.h"
+
 // Prototype for LoRaWAN handler
 void lora_handler_initialise(UBaseType_t lora_handler_task_priority, temperature_t temperature, humidity_t humidity, co2_c co2, error_handler_t error);
 
@@ -55,6 +57,7 @@ void initialiseSystem()
 	humidity_t humidity = humidity_create(measureCircleFreaquency);
 	co2_c co2 = co2_create(measureCircleFreaquency);
 	
+	actuation_handler_t act = actuation_handler_init(temperature, humidity);
 	lora_handler_initialise(3, temperature, humidity, co2, error);
 }
 

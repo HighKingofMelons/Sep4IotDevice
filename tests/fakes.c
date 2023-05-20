@@ -101,9 +101,17 @@ DEFINE_FAKE_VALUE_FUNC(uint16_t, hih8120_getHumidityPercent_x10);
 
 // ---------------------------- ~ MH_Z19 ~ ---------------------------------------
 
-DEFINE_FAKE_VALUE_FUNC(mh_z19_returnCode_t, mh_z19_getCo2Ppm, int *);
+DEFINE_FAKE_VALUE_FUNC(mh_z19_returnCode_t, mh_z19_getCo2Ppm, uint16_t *);
 
 // mh_z19_returnCode_t mh_z19_getCo2Ppm(int *ppm);
 DEFINE_FAKE_VOID_FUNC(mh_z19_initialise, serial_comPort_t);
 
 DEFINE_FAKE_VALUE_FUNC(mh_z19_returnCode_t, mh_z19_takeMeassuring);
+
+// ---------------------------- ~ RC_SERVO ~ ---------------------------------------
+
+// void rc_servo_initialise(void);
+DEFINE_FAKE_VOID_FUNC(rc_servo_initialise);
+
+// void rc_servo_setPosition(uint8_t servoNo, int8_t percent);
+DEFINE_FAKE_VOID_FUNC(rc_servo_setPosition, uint8_t, int8_t);
