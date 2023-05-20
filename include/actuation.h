@@ -1,9 +1,12 @@
 #pragma once
 #include <ATMEGA_FreeRTOS.h>
 
+#include "temperature.h"
+#include "humidity.h"
+
 typedef struct actuation_handler *actuation_handler_t;
 
-actuation_handler_t actuation_handler_init();
+actuation_handler_t actuation_handler_init(temperature_t temperature, humidity_t humidity);
 void actuation_handler_destroy(actuation_handler_t victim);
 
 typedef enum {

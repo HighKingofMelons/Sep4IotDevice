@@ -89,7 +89,7 @@ void actuation_task(void *pvParameters) {
     }
 }
 
-void actuator_init(temperature_t temperature, humidity_t humidity) {
+actuation_handler_t actuation_handler_init(temperature_t temperature, humidity_t humidity) {
     rc_servo_initialise();
 
     actuation_handler_t _handler = calloc(1, sizeof(struct actuation_handler));
