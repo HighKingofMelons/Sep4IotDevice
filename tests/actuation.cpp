@@ -10,8 +10,8 @@ extern "C" {
 }
 
 humidity_st makeHumid (int8_t accept_result) {
-    return (humidity_st) {
-        (uint16_t[10]) {0},
+    humidity_st _humi = {
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0,
         (uint8_t) (16 + (15 * accept_result)),
         0,
@@ -22,11 +22,13 @@ humidity_st makeHumid (int8_t accept_result) {
         20,
         10
     };
+
+    return _humi;
 }
 
 temperature_st makeTemp (int8_t accept_result) {
-    return (temperature_st) {
-        (int16_t[10]) {0},
+    temperature_st _temp = {
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0,
         (uint8_t) (16 + (15 * accept_result)),
         0,
@@ -37,6 +39,8 @@ temperature_st makeTemp (int8_t accept_result) {
         20,
         10
     };
+
+    return _temp;
 }
 
 TEST(actuation_handler, test_fakestructs) {
