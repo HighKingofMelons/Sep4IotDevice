@@ -21,11 +21,11 @@ set(SOURCES_TEST
 
 # The tests themselves
 set(TESTS
-    # utils.cpp
-    # test_co2.cpp
-    # test_temperature.cpp
-    # error.cpp
-    # test_humidity.cpp
+    utils.cpp
+    test_co2.cpp
+    test_temperature.cpp
+    error.cpp
+    test_humidity.cpp
     actuation.cpp
 )
 
