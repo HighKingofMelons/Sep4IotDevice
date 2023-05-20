@@ -4,7 +4,7 @@
 typedef struct actuation_handler *actuation_handler_t;
 
 actuation_handler_t actuation_handler_init();
-void actuators_destroy(actuation_handler_t victim);
+void actuation_handler_destroy(actuation_handler_t victim);
 
 typedef enum {
     VENT_ON     =  100,

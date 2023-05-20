@@ -114,6 +114,15 @@ void actuator_init(temperature_t temperature, humidity_t humidity) {
         TASK_ACTUATOR_PRIORITY,
         &actuation_task_h
     );
+
+    return _handler;
+}
+
+void actuation_handler_destroy(actuation_handler_t victim) {
+    vTaskDelete(actuation_task_h);
+    vSemaphoreDelete(victim->override_sema);
+    free(victim);
+    victim = NULL;
 }
 
 void actuators_ventilation_override_state(actuation_handler_t self, vent_state_t state) {
