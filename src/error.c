@@ -52,9 +52,9 @@ error_handler_t error_handler_init () {
     xTaskCreate (
         error_handler_task,
         "Error Handler Task",
-        configTIMER_TASK_STACK_DEPTH,
+        TASK_ERROR_PRIORITY,
         _error_handler,
-        tskIDLE_PRIORITY + 1,
+        TASK_ERROR_STACK,
         &error_task_h
     );
 
@@ -159,6 +159,7 @@ error_flags_t error_handler_get_flags(error_handler_t self) {
 }
 
 void error_handler_task (void *pvArguments) {
+    printf("Low: %i\n", uxTaskGetStackHighWaterMark(NULL));
     struct error_handler *handler = pvArguments;
     TickType_t lastWake = xTaskGetTickCount();
 
@@ -168,6 +169,7 @@ void error_handler_task (void *pvArguments) {
         update_display(handler);
         xTaskDelayUntil((TickType_t *const) &lastWake, pdMS_TO_TICKS(3000));
         lastWake = xTaskGetTickCount();
+        printf("High: %i\n", uxTaskGetStackHighWaterMark(NULL));
     }
 }
 
