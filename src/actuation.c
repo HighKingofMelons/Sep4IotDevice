@@ -39,10 +39,10 @@ void update_vent(actuation_handler_t self) {
 
     switch (humidity_acceptability_status(self->humid_handler))
     {
-    case 1:
+    case  1:
         rc_servo_setPosition(VENTILATION, VENT_ON);
         break;
-    case 0:
+    case  0:
     case -1:
         rc_servo_setPosition(VENTILATION, VENT_OFF);
         break;
