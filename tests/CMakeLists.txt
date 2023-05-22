@@ -10,12 +10,13 @@ enable_testing()
 
 # Source files to be tested
 set(SOURCES_TEST
+    fakes.c
     ../src/utils.c
     ../src/co2.c
-    fakes.c
     ../src/error.c
     ../src/temperature.c
     ../src/humidity.c
+    ../src/actuation.c
 )
 
 # The tests themselves
@@ -25,6 +26,7 @@ set(TESTS
     test_temperature.cpp
     error.cpp
     test_humidity.cpp
+    actuation.cpp
 )
 
 include_directories(

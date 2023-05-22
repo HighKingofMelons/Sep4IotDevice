@@ -15,16 +15,13 @@
 #include <lora_driver.h>
 #include <status_leds.h>
 
+#include "LoRaWAN.h"
 #include "co2.h"
 #include "temperature.h"
 #include "error.h"
 #include "humidity.h"
 
 // TODO: Restructure into ADS to make it easier to draw class diagram
-
-// Parameters for OTAA join - You have got these in a mail from IHA
-#define LORA_appEUI "49B360EEE16A8D4C"
-#define LORA_appKEY "E0597BF885F1F18CF896B91F8E211814"
 
 void lora_handler_task( void *pvParameters );
 
@@ -44,7 +41,7 @@ void lora_handler_initialise(UBaseType_t lora_handler_task_priority, temperature
 		temperature,
 		humidity,
 		co2,
-    error
+    	error
 	};
 
 	xTaskCreate(
@@ -135,6 +132,9 @@ static void _lora_setup(void)
 void lora_handler_task( void *pvParameters )
 {
 	struct handlers *_handlers = pvParameters;
+
+	error_handler_report(_handlers->error, ERROR_PIR);
+	error_handler_report(_handlers->error, ERROR_SOUND);
 
 	// Hardware reset of LoRaWAN transceiver
 	lora_driver_resetRn2483(1);

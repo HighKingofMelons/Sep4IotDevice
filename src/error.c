@@ -27,11 +27,11 @@ enum request_type {
 
 struct error_item
 {
-    error_component_t component;
+    uint8_t component;
     enum request_type state;
 };
 
-TaskHandle_t task_handle;
+TaskHandle_t error_task_h;
 
 void error_handler_task (void *pvArguments);
 
@@ -52,38 +52,38 @@ error_handler_t error_handler_init () {
     xTaskCreate (
         error_handler_task,
         "Error Handler Task",
-        configTIMER_TASK_STACK_DEPTH,
+        TASK_ERROR_PRIORITY,
         _error_handler,
-        tskIDLE_PRIORITY + 1,
-        task_handle
+        TASK_ERROR_STACK,
+        &error_task_h
     );
 
     return _error_handler;
 }
 
 void update_flags(error_handler_t self) {
-    struct error_item *item = calloc(1, sizeof(struct error_item));
+    struct error_item item;
 
     if (pdTRUE != xSemaphoreTake(self->flag_semaphore, 0))
         return;
 
-    if (pdTRUE != xQueueReceive(self->queue, item, 0)) {
+    if (pdTRUE != xQueueReceive(self->queue, &item, 0)) {
         xSemaphoreGive(self->flag_semaphore);
         return;
     }
 
-    if (item->state == ERROR_ENABLE) {
-        self->flags = self->flags | item->component;
+    if (item.state == ERROR_ENABLE) {
+        self->flags = self->flags | item.component;
 
-        if (DEBUG) {
-            printf("Error: %i flagged. Flags: %i\n", item->component, self->flags);
+        if (DEBUG_ERROR) {
+            printf("Error: %i flagged. Flags: %i\n", item.component, self->flags);
         }
     }
-    else if (item->state == ERROR_DISABLE) {
-        self->flags = ( self->flags & ( ~ item->component));
+    else if (item.state == ERROR_DISABLE) {
+        self->flags = ( self->flags & ( ~ item.component));
 
-        if (DEBUG) {
-            printf("Error: %i unflagged. Flags: %i\n", item->component, self->flags);
+        if (DEBUG_ERROR) {
+            printf("Error: %i unflagged. Flags: %i\n", item.component, self->flags);
         }
     }
 
@@ -91,13 +91,12 @@ void update_flags(error_handler_t self) {
 }
 
 BaseType_t error_handler_report(error_handler_t self, error_component_t component) {
-    struct error_item *item = calloc(1, sizeof(struct error_item));
-    *item = (struct error_item) {
+    struct error_item item = (struct error_item) {
         component,
         ERROR_ENABLE
     };
 
-    return xQueueSend(self->queue, item, 0);
+    return xQueueSend(self->queue, &item, 0);
 }
 
 BaseType_t error_handler_revoke(error_handler_t self, error_component_t component) {
@@ -129,7 +128,7 @@ void update_display(error_handler_t self) {
 
     for (;;)
     {
-        if (!( (int) pow(2,  self->current_display) & self->flags)) {
+        if (!( (int) round(pow(2, self->current_display)) & self->flags)) {
             self->current_display = (self->current_display + 1) % 5;
             continue;
         }
@@ -137,8 +136,8 @@ void update_display(error_handler_t self) {
         break;
     }
     
-    if (DEBUG) {
-        printf("Display Error: %i\n", (int) pow(2, self->current_display) & self->flags);
+    if (DEBUG_ERROR) {
+        printf("Display Error: %i\n", (int) round(pow(2, self->current_display)) & self->flags);
     }
 
     display_7seg_display((int) pow(2, self->current_display) & self->flags, 0);
@@ -148,10 +147,13 @@ void update_display(error_handler_t self) {
 
 error_flags_t error_handler_get_flags(error_handler_t self) {
     for (;;) {
-        if (pdTRUE == xSemaphoreTake(self->queue, 50))
+        if (pdTRUE == xSemaphoreTake(self->flag_semaphore, 50))
             break;
     }
     error_flags_t _flags = self->flags;
+    if (DEBUG_ERROR) {
+        printf("Flags: %i\n", _flags);
+    }
     xSemaphoreGive(self->flag_semaphore);
     return _flags;
 }
@@ -164,13 +166,13 @@ void error_handler_task (void *pvArguments) {
     {
         update_flags(handler);
         update_display(handler);
-        xTaskDelayUntil((TickType_t *const) &lastWake, pdMS_TO_TICKS(500));
+        xTaskDelayUntil((TickType_t *const) &lastWake, pdMS_TO_TICKS(3000));
         lastWake = xTaskGetTickCount();
     }
 }
 
 void error_handler_destroy(error_handler_t self) {
-    vTaskDelete(task_handle);
+    vTaskDelete(error_task_h);
     
     if (self->display_on)
         display_7seg_powerDown();
