@@ -9,13 +9,6 @@ To clone the project, as well as submodules, run the following command:
 
 `git clone https://github.com/HighKingofMelons/Sep4IotDevice --recurse-submodules`
 
-## Running on Microchip Studio
-* Open project file (`Sep4IotDevice.cproj`) in Microchip Studio
-
-* Select Programmmer/Debugger e.g. Atmel-ICE
-
-* Build then Upload and Run
-
 ## Running using PlatformIO
 * Install `PlatformIO` VSCode extension
 
