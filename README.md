@@ -17,4 +17,6 @@ To clone the project, as well as submodules, run the following command:
 * Select appropriate env according to the computer of which is used to program the device.
 E.g. if the programmer (Atmel-ICE) is plugged into a windows machine, use windows. By default Windows is selected.
 
+* Run the script `scripts/init_lora.sh` from inside its directory, and configure the tokens in the generated ´include/LoRaWAN.h´.
+
 * Press Upload/Remote Upload
