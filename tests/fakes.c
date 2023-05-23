@@ -17,7 +17,7 @@ DEFINE_FAKE_VOID_FUNC(display_7seg_display, float, uint8_t);
 // void display_7seg_displayHex(char * hexString);
 DEFINE_FAKE_VOID_FUNC(display_7seg_displayHex, char*);
 // void display_7seg_displayErr(void);
-DEFINE_FAKE_VOID_FUNC(display_7seg_displayErr)
+DEFINE_FAKE_VOID_FUNC(display_7seg_displayErr);
 
 // ------------------------
 #include "queue.h"
@@ -115,3 +115,60 @@ DEFINE_FAKE_VOID_FUNC(rc_servo_initialise);
 
 // void rc_servo_setPosition(uint8_t servoNo, int8_t percent);
 DEFINE_FAKE_VOID_FUNC(rc_servo_setPosition, uint8_t, int8_t);
+
+
+// ---------------------------- ~ LORA ~ ---------------------------------------
+
+DEFINE_FAKE_VOID_FUNC(lora_driver_initialise, serial_comPort_t, MessageBufferHandle_t);
+
+DEFINE_FAKE_VOID_FUNC(status_leds_slowBlink, status_leds_t);
+
+DEFINE_FAKE_VALUE_FUNC(char*, lora_driver_mapReturnCodeToText, lora_driver_returnCode_t);
+
+DEFINE_FAKE_VALUE_FUNC(lora_driver_returnCode_t, lora_driver_rn2483FactoryReset);
+
+DEFINE_FAKE_VALUE_FUNC(lora_driver_returnCode_t, lora_driver_configureToEu868);
+
+DEFINE_FAKE_VALUE_FUNC(lora_driver_returnCode_t, lora_driver_getRn2483Hweui, char*);
+
+DEFINE_FAKE_VALUE_FUNC(lora_driver_returnCode_t, lora_driver_setDeviceIdentifier, const char*);
+
+DEFINE_FAKE_VALUE_FUNC(lora_driver_returnCode_t, lora_driver_setOtaaIdentity, char*, char*, char*);
+
+DEFINE_FAKE_VALUE_FUNC(lora_driver_returnCode_t, lora_driver_saveMac);
+
+DEFINE_FAKE_VALUE_FUNC(lora_driver_returnCode_t, lora_driver_setAdaptiveDataRate, lora_driver_adaptiveDataRate_t);
+
+DEFINE_FAKE_VALUE_FUNC(lora_driver_returnCode_t, lora_driver_setReceiveDelay, uint16_t);
+
+DEFINE_FAKE_VALUE_FUNC(lora_driver_returnCode_t, lora_driver_join, lora_driver_joinMode_t);
+
+DEFINE_FAKE_VOID_FUNC(lora_driver_resetRn2483, uint8_t);
+
+DEFINE_FAKE_VOID_FUNC(lora_driver_flushBuffers);
+
+DEFINE_FAKE_VOID_FUNC(_lora_setup);
+
+DEFINE_FAKE_VALUE_FUNC(lora_driver_returnCode_t, lora_driver_sendUploadMessage, lora_driver_payload_t*);
+
+
+// ---------------------------- ~ STATUs_LEDS ~ ---------------------------------------
+
+DEFINE_FAKE_VOID_FUNC(status_leds_slowBlink, status_leds_t);
+
+DEFINE_FAKE_VOID_FUNC(status_leds_longPuls, status_leds_t);
+
+DEFINE_FAKE_VOID_FUNC(status_leds_ledOn, status_leds_t);
+
+DEFINE_FAKE_VOID_FUNC(status_leds_ledOff, status_leds_t);
+
+DEFINE_FAKE_VOID_FUNC(status_leds_fastBlink, status_leds_t);
+
+DEFINE_FAKE_VOID_FUNC(status_leds_shortPuls, status_leds_t);
+
+
+// ---------------------------- ~ MESSAGE_BUFFER ~ ---------------------------------------
+
+DEFINE_FAKE_VOID_FUNC(xMessageBufferReceive, MessageBufferHandle_t, lora_driver_payload_t*, unsigned long long, TickType_t);
+
+DEFINE_FAKE_VALUE_FUNC(MessageBufferHandle_t, xMessageBufferCreate, long);
