@@ -152,9 +152,6 @@ void lora_uplink_task( void *pvParameters )
 	error_handler_report(error_handler, ERROR_PIR);
 	error_handler_report(error_handler, ERROR_SOUND);
 
-	error_handler_report(_handlers->error, ERROR_PIR);
-	error_handler_report(_handlers->error, ERROR_SOUND);
-
 	// Hardware reset of LoRaWAN transceiver
 	lora_driver_resetRn2483(1);
 	vTaskDelay(2);
