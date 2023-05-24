@@ -157,6 +157,10 @@ int makeOneCo2Mesurment(co2_c self)
 		return 0;
 		}
 }
+void co2_set_limits(co2_c self, int16_t maxLimit, int16_t minLimit){
+	setMaxCo2Limit(self, maxLimit);
+	setMinCo2Limit(self, minLimit);
+}
 int16_t getMaxCo2Limit(co2_c self){
 	int16_t limit = -100;
 	while(1){
@@ -207,4 +211,26 @@ void setMinCo2Limit(co2_c self, int16_t minCo2Limit){
 		
 		}
 	}
+}
+
+int8_t co2_acceptability_status(co2_c self)
+{
+	int8_t returnValue = 0;
+	int16_t tempLatestAvgCo2 = co2_get_latest_average_co2(self);
+	printf("Avg co2: %d", tempLatestAvgCo2);
+
+	if (tempLatestAvgCo2 == 0)
+	{
+		returnValue = 0;
+	}
+	else if (tempLatestAvgCo2 > getMaxCo2Limit(self))
+	{
+		returnValue = 1;
+	}
+	else if (tempLatestAvgCo2 < getMinCo2Limit(self))
+	{
+		returnValue = -1;
+	}
+
+	return returnValue;
 }
