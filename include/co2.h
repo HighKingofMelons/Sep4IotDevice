@@ -16,3 +16,5 @@ int makeOneCo2Mesurment(co2_c self);
 void addCo2(co2_c self, int16_t co2);
 void resetCo2Array(co2_c self);
 void calculateCo2(co2_c self);
+void co2_set_limits(co2_c self, int16_t maxLimit, int16_t minLimit);
+int8_t co2_acceptability_status(co2_c self);

@@ -1,4 +1,6 @@
 #include <gtest/gtest.h>
+#include "fff.h"
+
 
 extern "C"
 {
@@ -36,6 +38,15 @@ class Test_co2 : public ::testing::Test{
             }
         }
 };
+uint16_t testitem;
+mh_z19_returnCode_t return_item;
+
+mh_z19_returnCode_t mh_z19_getCo2Ppm_custom_func(uint16_t *ppm)
+{
+        *ppm = testitem;
+
+        return return_item;
+}
 
 TEST_F(Test_co2, co2_create_freaquency_300000UL)
 {
@@ -50,7 +61,6 @@ TEST_F(Test_co2, co2_create_freaquency_300000UL)
         EXPECT_EQ(1, xSemaphoreCreateMutex_fake.call_count);
         EXPECT_EQ(result_co2, xTaskCreate_fake.arg3_val);
 }
-
 TEST_F(Test_co2, co2_get_latest_average_co2_0)
 {
         mh_z19_takeMeassuring_fake.return_val = MHZ19_OK;
@@ -112,4 +122,23 @@ TEST(co2, Calculate)
     SET_RETURN_SEQ(xSemaphoreTake, &return_sec[1], 1);
     calculateCo2(co2);
     EXPECT_TRUE(co2);
+}
+
+TEST_F(Test_co2, co2_Messure)
+{
+    xTaskGetTickCount_fake.return_val = (TickType_t)50;
+    mh_z19_takeMeassuring_fake.return_val = MHZ19_OK;
+    mh_z19_getCo2Ppm_fake.custom_fake = mh_z19_getCo2Ppm_custom_func;
+    testitem = 234;
+    return_item = MHZ19_OK;
+    
+    xSemaphoreTake_fake.return_val = true;
+    co2_c result_co2 = co2_create(pdMS_TO_TICKS(300000UL));
+    uint16_t ppm;
+    mh_z19_getCo2Ppm(&ppm);
+    co2_set_limits(result_co2, 200, 900);
+    int8_t result_acceptability = co2_acceptability_status(result_co2);
+    
+
+    EXPECT_EQ(234, ppm);
 }

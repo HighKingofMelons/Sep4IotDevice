@@ -26,6 +26,8 @@
 #define TEMP_MIN_LIMIT 18
 #define HUM_MAX_LIMIT 60
 #define HUM_MIN_LIMIT 30
+#define CO2_MAX_LIMIT 900
+#define CO2_MIN_LIMIT 100
 
 #define DEBUG                       1
 #define DEBUG_ERROR                 0
