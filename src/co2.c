@@ -25,6 +25,8 @@ int16_t getMaxCo2Limit(co2_t self);
 int16_t getMinCo2Limit(co2_t self);
 void setMaxCo2Limit(co2_t self, int16_t maxCo2Limit);
 void setMinCo2Limit(co2_t self, int16_t minCO2Limit);
+void co2_recordMeasurement(co2_t self);
+
 
 static TaskHandle_t mesureCo2Task = NULL;
 
@@ -131,24 +133,23 @@ int initializeCo2Driver() {
 		return 0;
 	}
 }
-// void co2_makeOneMesuremnt(co2_t self){
-	
-// 	switch (mh_z19_takeMeassuring())
-// 	{
-// 	case MHZ19_NO_MEASSURING_AVAILABLE:
-// 		return 3;
-// 	case MHZ19_NO_SERIAL:
-// 		return 4;
-// 	case MHZ19_PPM_MUST_BE_GT_999:
-// 		return 5;
-// 	default:
-// 		mh_z19_getCo2Ppm(&ppm);
-// 		printf("Co2 Measurement #%i: %i\n", self->nextCo2ToReadIdx + 1, ppm);
-// 		addCo2(self, ppm);
-// 		return 0;
-// 	}
-// 	}
-// }
+void co2_makeOneMesuremnt(co2_t self){
+	switch (mh_z19_takeMeassuring())
+	{
+	case MHZ19_NO_MEASSURING_AVAILABLE:
+		break;
+	case MHZ19_NO_SERIAL:
+		break;
+	case MHZ19_PPM_MUST_BE_GT_999:
+		break;
+	default:
+		if(DEBUG){
+			co2_recordMeasurement(self);
+		}
+		break;
+	}
+	}
+
 void co2_recordMeasurement(co2_t self){
 	uint16_t ppm;
 
@@ -260,6 +261,5 @@ int8_t co2_acceptability_status(co2_t self)
 	{
 		returnValue = -1;
 	}
-
 	return returnValue;
 }
