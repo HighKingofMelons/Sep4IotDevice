@@ -18,3 +18,5 @@ void resetCo2Array(co2_t self);
 void calculateCo2(co2_t self);
 void co2_set_limits(co2_t self, int16_t maxLimit, int16_t minLimit);
 int8_t co2_acceptability_status(co2_t self);
+void co2_recordMeasurement(co2_t self, uint16_t ppm);
+void co2_makeOneMesuremnt(co2_t self, uint16_t ppm);

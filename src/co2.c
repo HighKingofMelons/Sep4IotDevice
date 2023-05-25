@@ -25,8 +25,8 @@ int16_t getMaxCo2Limit(co2_t self);
 int16_t getMinCo2Limit(co2_t self);
 void setMaxCo2Limit(co2_t self, int16_t maxCo2Limit);
 void setMinCo2Limit(co2_t self, int16_t minCO2Limit);
-void co2_recordMeasurement(co2_t self);
-
+void co2_recordMeasurement(co2_t self, uint16_t ppm);
+void co2_makeOneMesuremnt(co2_t self, uint16_t ppm);
 
 static TaskHandle_t mesureCo2Task = NULL;
 
@@ -133,7 +133,8 @@ int initializeCo2Driver() {
 		return 0;
 	}
 }
-void co2_makeOneMesuremnt(co2_t self){
+void co2_makeOneMesuremnt(co2_t self, uint16_t ppm)
+{
 	switch (mh_z19_takeMeassuring())
 	{
 	case MHZ19_NO_MEASSURING_AVAILABLE:
@@ -144,16 +145,20 @@ void co2_makeOneMesuremnt(co2_t self){
 		break;
 	default:
 		if(DEBUG){
-			co2_recordMeasurement(self);
+			co2_recordMeasurement(self, ppm);
 		}
 		break;
 	}
+	if(self->nextCo2ToReadIdx >= 10){
+		calculateCo2(self);
+		resetCo2Array(self);
+		xTaskDelayUntil(&(self->xLastMessureCircleTime), self->xMesureCircleFrequency);
 	}
+}
 
-void co2_recordMeasurement(co2_t self){
-	uint16_t ppm;
+void co2_recordMeasurement(co2_t self, uint16_t ppm){
 
-	int16_t currentCo2 = mh_z19_getCo2Ppm(&ppm);
+	int16_t currentCo2 = ppm;
 	if(DEBUG){
 		printf("Co2 Measurement #%i: %i \n", self->nextCo2ToReadIdx + 1, currentCo2);
 	}

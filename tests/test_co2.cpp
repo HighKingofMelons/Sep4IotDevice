@@ -32,11 +32,11 @@ class Test_co2 : public ::testing::Test{
 
         }
 
-        void callFunctionNTimes(void (*func)(co2_t), co2_t parameter, int n)
+        void callFunctionNTimes(void (*func)(co2_t, uint16_t), co2_t parameter, uint16_t ppm, int n)
         {
             for (int i = 0; i < n; i++)
             {
-                func(parameter);
+                func(parameter, ppm);
             }
         }
 };
@@ -158,22 +158,26 @@ TEST_F(Test_co2, co2_get_latest_average_co2)
     EXPECT_EQ(1, xSemaphoreGive_fake.call_count);
     EXPECT_EQ(0, result_average);
 }
-// TEST_F(Test_co2, co2_get_latest_average_co2_10x10)
-// {
+TEST_F(Test_co2, co2_get_latest_average_co2_10x10)
+{
+    xTaskGetTickCount_fake.return_val = (TickType_t)50;
+    mh_z19_initialise_fake;
+    mh_z19_takeMeassuring_fake.return_val = MHZ19_OK;
 
-//     mh_z19_takeMeassuring_fake.return_val = MHZ19_OK;
-//     BaseType_t semaphoreTakeReturnVals[11] = {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-//     SET_RETURN_SEQ(xSemaphoreTake, semaphoreTakeReturnVals, 11);
+    mh_z19_getCo2Ppm_fake.custom_fake = mh_z19_getCo2Ppm_custom_func;
+    testitem = 234;
+    return_item = MHZ19_OK;
 
+    BaseType_t semaphoreTakeReturnVals[11] = {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+    SET_RETURN_SEQ(xSemaphoreTake, semaphoreTakeReturnVals, 11);
+    co2_t result_co2 = co2_create(pdMS_TO_TICKS(300000UL));
+    uint16_t ppm;
+    mh_z19_getCo2Ppm(&ppm);
 
-//     mh_z19_getCo2Ppm_fake.custom_fake = mh_z19_getCo2Ppm_custom_func;
-//     testitem = (int16_t) 234;
-//     co2_t result_co2 = co2_treate(pdMS_TO_TICKS(300000UL));
+    callFunctionNTimes(&co2_makeOneMesuremnt, result_co2, ppm, 10);
+    uint16_t result_average = co2_get_latest_average_co2(result_co2);
 
-//     callFunctionNTimes(&makeOneCo2Mesurment, result_co2, 10);
-//     uint16_t result_average = co2_get_latest_average_co2(result_co2);
-
-//     EXPECT_EQ(10, xSemaphoreTake_fake.call_count);
-//     EXPECT_EQ(10, xSemaphoreGive_fake.call_count);
-//     EXPECT_EQ(234, result_average);
-// }
+    EXPECT_EQ(3, xSemaphoreTake_fake.call_count);
+    EXPECT_EQ(2, xSemaphoreGive_fake.call_count);
+    EXPECT_EQ(234, result_average);
+}
