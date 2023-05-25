@@ -138,9 +138,6 @@ TEST_F(Test_co2, co2_Messure)
     co2_t result_co2 = co2_create(pdMS_TO_TICKS(300000UL));
     uint16_t ppm;
     mh_z19_getCo2Ppm(&ppm);
-    co2_set_limits(result_co2, 200, 900);
-    int8_t result_acceptability = co2_acceptability_status(result_co2);
-    
 
     EXPECT_EQ(234, ppm);
 }
@@ -180,4 +177,78 @@ TEST_F(Test_co2, co2_get_latest_average_co2_10x10)
     EXPECT_EQ(3, xSemaphoreTake_fake.call_count);
     EXPECT_EQ(2, xSemaphoreGive_fake.call_count);
     EXPECT_EQ(234, result_average);
+}
+TEST_F(Test_co2, co2_acceptability_max_limit_exeeded_1){
+    xTaskGetTickCount_fake.return_val = (TickType_t) 50;
+    mh_z19_initialise_fake;
+    mh_z19_takeMeassuring_fake.return_val = MHZ19_OK;
+
+    mh_z19_getCo2Ppm_fake.custom_fake = mh_z19_getCo2Ppm_custom_func;
+    testitem = 934;
+    return_item = MHZ19_OK;
+
+    BaseType_t semaphoreTakeReturnVals[11] = {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+    SET_RETURN_SEQ(xSemaphoreTake, semaphoreTakeReturnVals, 11);
+    co2_t result_co2 = co2_create(pdMS_TO_TICKS(300000UL));
+    uint16_t ppm;
+
+    mh_z19_getCo2Ppm(&ppm);
+    co2_set_limits(result_co2, 900, 200);
+
+    callFunctionNTimes(&co2_makeOneMesuremnt, result_co2, ppm, 10);
+    uint16_t result_average = co2_get_latest_average_co2(result_co2);
+    int8_t result_acceptability = co2_acceptability_status(result_co2);
+
+    EXPECT_EQ(934, result_average);
+    EXPECT_EQ((int8_t)1, result_acceptability);
+}
+TEST_F(Test_co2, co2_acceptability_min_limit_exeeded_minus1)
+{
+    xTaskGetTickCount_fake.return_val = (TickType_t)50;
+    mh_z19_initialise_fake;
+    mh_z19_takeMeassuring_fake.return_val = MHZ19_OK;
+
+    mh_z19_getCo2Ppm_fake.custom_fake = mh_z19_getCo2Ppm_custom_func;
+    testitem = 199;
+    return_item = MHZ19_OK;
+
+    BaseType_t semaphoreTakeReturnVals[11] = {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+    SET_RETURN_SEQ(xSemaphoreTake, semaphoreTakeReturnVals, 11);
+    co2_t result_co2 = co2_create(pdMS_TO_TICKS(300000UL));
+    uint16_t ppm;
+
+    mh_z19_getCo2Ppm(&ppm);
+    co2_set_limits(result_co2, 900, 200);
+
+    callFunctionNTimes(&co2_makeOneMesuremnt, result_co2, ppm, 10);
+    uint16_t result_average = co2_get_latest_average_co2(result_co2);
+    int8_t result_acceptability = co2_acceptability_status(result_co2);
+
+    EXPECT_EQ(199, result_average);
+    EXPECT_EQ((int8_t) -1, result_acceptability);
+}
+TEST_F(Test_co2, co2_acceptability_limit_not_exeeded_0)
+{
+    xTaskGetTickCount_fake.return_val = (TickType_t)50;
+    mh_z19_initialise_fake;
+    mh_z19_takeMeassuring_fake.return_val = MHZ19_OK;
+
+    mh_z19_getCo2Ppm_fake.custom_fake = mh_z19_getCo2Ppm_custom_func;
+    testitem = 200;
+    return_item = MHZ19_OK;
+
+    BaseType_t semaphoreTakeReturnVals[11] = {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+    SET_RETURN_SEQ(xSemaphoreTake, semaphoreTakeReturnVals, 11);
+    co2_t result_co2 = co2_create(pdMS_TO_TICKS(300000UL));
+    uint16_t ppm;
+
+    mh_z19_getCo2Ppm(&ppm);
+    co2_set_limits(result_co2, 900, 200);
+
+    callFunctionNTimes(&co2_makeOneMesuremnt, result_co2, ppm, 10);
+    uint16_t result_average = co2_get_latest_average_co2(result_co2);
+    int8_t result_acceptability = co2_acceptability_status(result_co2);
+
+    EXPECT_EQ(200, result_average);
+    EXPECT_EQ((int8_t) 0, result_acceptability);
 }
