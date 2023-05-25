@@ -18,13 +18,13 @@
 
 int wakeUpCo2Sensos();
 
-co2_c initializeCo2(TickType_t freequency);
-void calculateCo2(co2_c self);
-void resetCo2Array(co2_c self);
-int16_t getMaxCo2Limit(co2_c self);
-int16_t getMinCo2Limit(co2_c self);
-void setMaxCo2Limit(co2_c self, int16_t maxCo2Limit);
-void setMinCo2Limit(co2_c self, int16_t minCO2Limit);
+co2_t initializeCo2(TickType_t freequency);
+void calculateCo2(co2_t self);
+void resetCo2Array(co2_t self);
+int16_t getMaxCo2Limit(co2_t self);
+int16_t getMinCo2Limit(co2_t self);
+void setMaxCo2Limit(co2_t self, int16_t maxCo2Limit);
+void setMinCo2Limit(co2_t self, int16_t minCO2Limit);
 
 static TaskHandle_t mesureCo2Task = NULL;
 
@@ -41,9 +41,8 @@ typedef struct co2 {
 	int16_t minCo2Limit;
 	} co2_st;
 	
-co2_c co2_create(TickType_t freequency){
-	co2_c _newCo2 = initializeCo2(freequency);
-	
+co2_t co2_create(TickType_t freequency){
+	co2_t _newCo2 = initializeCo2(freequency);
 	initializeCo2Driver();
 	
 	xTaskCreate(co2_mesure,	
@@ -56,7 +55,7 @@ co2_c co2_create(TickType_t freequency){
 }
 
 void co2_mesure(void* pvParameters) {
-	co2_c self = (co2_c) pvParameters;
+	co2_t self = (co2_t) pvParameters;
 	
 	self->xLastMessureCircleTime = xTaskGetTickCount();
 	for(;;) {
@@ -64,21 +63,24 @@ void co2_mesure(void* pvParameters) {
 		vTaskDelay(pdMS_TO_TICKS(27000UL));
 	}
 }
-void addCo2(co2_c self, int16_t co2) {
+void addCo2(co2_t self, int16_t co2) {
 	self->co2Array[self->nextCo2ToReadIdx++] = co2;
 }
 
-void resetCo2Array(co2_c self) {
+void co2_addMessurementToArray(co2_t self, int16_t co2){
+	self->co2Array[self->nextCo2ToReadIdx++] = co2;
+}
+
+void resetCo2Array(co2_t self) {
 	memset(self->co2Array, 0, sizeof self->co2Array);
 	self->nextCo2ToReadIdx = 0;
 }
 
-void calculateCo2(co2_c self) {
+void calculateCo2(co2_t self) {
 	int16_t co2x10Sum = 0;
 	for (int i = 0; i < 10; i++) {
 		co2x10Sum += self->co2Array[i];
 	}
-
 	while (1) {
 		if (xSemaphoreTake(self->latestAvgCo2Mutex, pdMS_TO_TICKS(200)) == pdTRUE ) {
 			self->latestAvgCo2 = (int16_t) (co2x10Sum / 10);
@@ -90,7 +92,7 @@ void calculateCo2(co2_c self) {
 	}
 }
 
-int16_t co2_get_latest_average_co2(co2_c self) {
+int16_t co2_get_latest_average_co2(co2_t self) {
 	int16_t tmpCo2 = -100;
 	while (1) {
 		if (xSemaphoreTake(self->latestAvgCo2Mutex, pdMS_TO_TICKS(200)) == pdTRUE ) {
@@ -103,8 +105,8 @@ int16_t co2_get_latest_average_co2(co2_c self) {
 	return tmpCo2;
 }
 
-co2_c initializeCo2(TickType_t freequency){
-	co2_c _newCo2 = calloc(sizeof(co2_st), 1);
+co2_t initializeCo2(TickType_t freequency){
+	co2_t _newCo2 = calloc(sizeof(co2_st), 1);
 	resetCo2Array(_newCo2);
 	_newCo2->latestAvgCo2 = 0;
 	_newCo2->latestAvgCo2Mutex = xSemaphoreCreateMutex();
@@ -129,8 +131,30 @@ int initializeCo2Driver() {
 		return 0;
 	}
 }
+// void co2_makeOneMesuremnt(co2_t self){
+	
+// 	switch (mh_z19_takeMeassuring())
+// 	{
+// 	case MHZ19_NO_MEASSURING_AVAILABLE:
+// 		return 3;
+// 	case MHZ19_NO_SERIAL:
+// 		return 4;
+// 	case MHZ19_PPM_MUST_BE_GT_999:
+// 		return 5;
+// 	default:
+// 		mh_z19_getCo2Ppm(&ppm);
+// 		printf("Co2 Measurement #%i: %i\n", self->nextCo2ToReadIdx + 1, ppm);
+// 		addCo2(self, ppm);
+// 		return 0;
+// 	}
+// 	}
+// }
+// void co2_recordMeasurement(co2_t self){
+// 	int16_t correntCo2 = mh_z19_getCo2Ppm();
+	
+// }
 
-int makeOneCo2Mesurment(co2_c self)
+int makeOneCo2Mesurment(co2_t self)
 {
 	if (self->nextCo2ToReadIdx >= 10) {
 		calculateCo2(self);
@@ -157,11 +181,11 @@ int makeOneCo2Mesurment(co2_c self)
 		return 0;
 		}
 }
-void co2_set_limits(co2_c self, int16_t maxLimit, int16_t minLimit){
+void co2_set_limits(co2_t self, int16_t maxLimit, int16_t minLimit){
 	setMaxCo2Limit(self, maxLimit);
 	setMinCo2Limit(self, minLimit);
 }
-int16_t getMaxCo2Limit(co2_c self){
+int16_t getMaxCo2Limit(co2_t self){
 	int16_t limit = -100;
 	while(1){
 		if (xSemaphoreTake(self->maxLimitMutex, pdMS_TO_TICKS(200)) == pdTRUE){
@@ -174,7 +198,7 @@ int16_t getMaxCo2Limit(co2_c self){
 	}
 	return limit;
 }
-int16_t getMinCo2Limit(co2_c self){
+int16_t getMinCo2Limit(co2_t self){
 	int16_t limit = -100;
 	while(1){
 		if(xSemaphoreTake(self->minLimitMutex, pdMS_TO_TICKS(200)) == pdTRUE){
@@ -187,7 +211,7 @@ int16_t getMinCo2Limit(co2_c self){
 	}
 	return limit;
 }
-void setMaxCo2Limit(co2_c self, int16_t maxCo2Limit){
+void setMaxCo2Limit(co2_t self, int16_t maxCo2Limit){
 	while(1){
 		if (xSemaphoreTake(self->maxLimitMutex, pdMS_TO_TICKS(200)) == pdTRUE)
 		{ 
@@ -201,7 +225,7 @@ void setMaxCo2Limit(co2_c self, int16_t maxCo2Limit){
 		}
 	}
 }
-void setMinCo2Limit(co2_c self, int16_t minCo2Limit){
+void setMinCo2Limit(co2_t self, int16_t minCo2Limit){
 	while(1){
 		if(xSemaphoreTake(self->maxLimitMutex, pdMS_TO_TICKS(200)) == pdTRUE){
 			self->minCo2Limit = minCo2Limit;
@@ -213,7 +237,7 @@ void setMinCo2Limit(co2_c self, int16_t minCo2Limit){
 	}
 }
 
-int8_t co2_acceptability_status(co2_c self)
+int8_t co2_acceptability_status(co2_t self)
 {
 	int8_t returnValue = 0;
 	int16_t tempLatestAvgCo2 = co2_get_latest_average_co2(self);
