@@ -149,10 +149,15 @@ int initializeCo2Driver() {
 // 	}
 // 	}
 // }
-// void co2_recordMeasurement(co2_t self){
-// 	int16_t correntCo2 = mh_z19_getCo2Ppm();
-	
-// }
+void co2_recordMeasurement(co2_t self){
+	uint16_t ppm;
+
+	int16_t currentCo2 = mh_z19_getCo2Ppm(&ppm);
+	if(DEBUG){
+		printf("Co2 Measurement #%i: %i \n", self->nextCo2ToReadIdx + 1, currentCo2);
+	}
+	co2_addMessurementToArray(self, currentCo2);
+}
 
 int makeOneCo2Mesurment(co2_t self)
 {
