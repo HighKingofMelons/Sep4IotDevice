@@ -40,14 +40,14 @@ class Test_co2 : public ::testing::Test{
             }
         }
 };
-uint16_t testitem;
-mh_z19_returnCode_t return_item;
+uint16_t co2item;
+mh_z19_returnCode_t returnco2;
 
 mh_z19_returnCode_t mh_z19_getCo2Ppm_custom_func(uint16_t *ppm)
 {
-        *ppm = testitem;
+        *ppm = co2item;
 
-        return return_item;
+        return returnco2;
 }
 
 TEST_F(Test_co2, co2_treate_freaquency_300000UL)
@@ -131,8 +131,8 @@ TEST_F(Test_co2, co2_Messure)
     xTaskGetTickCount_fake.return_val = (TickType_t)50;
     mh_z19_takeMeassuring_fake.return_val = MHZ19_OK;
     mh_z19_getCo2Ppm_fake.custom_fake = mh_z19_getCo2Ppm_custom_func;
-    testitem = 234;
-    return_item = MHZ19_OK;
+    co2item = 234;
+    returnco2 = MHZ19_OK;
     
     xSemaphoreTake_fake.return_val = true;
     co2_t result_co2 = co2_create(pdMS_TO_TICKS(300000UL));
@@ -162,8 +162,8 @@ TEST_F(Test_co2, co2_get_latest_average_co2_10x10)
     mh_z19_takeMeassuring_fake.return_val = MHZ19_OK;
 
     mh_z19_getCo2Ppm_fake.custom_fake = mh_z19_getCo2Ppm_custom_func;
-    testitem = 234;
-    return_item = MHZ19_OK;
+    co2item = 234;
+    returnco2 = MHZ19_OK;
 
     BaseType_t semaphoreTakeReturnVals[11] = {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
     SET_RETURN_SEQ(xSemaphoreTake, semaphoreTakeReturnVals, 11);
@@ -184,8 +184,8 @@ TEST_F(Test_co2, co2_acceptability_max_limit_exeeded_1){
     mh_z19_takeMeassuring_fake.return_val = MHZ19_OK;
 
     mh_z19_getCo2Ppm_fake.custom_fake = mh_z19_getCo2Ppm_custom_func;
-    testitem = 934;
-    return_item = MHZ19_OK;
+    co2item = 934;
+    returnco2 = MHZ19_OK;
 
     BaseType_t semaphoreTakeReturnVals[11] = {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
     SET_RETURN_SEQ(xSemaphoreTake, semaphoreTakeReturnVals, 11);
@@ -209,8 +209,8 @@ TEST_F(Test_co2, co2_acceptability_min_limit_exeeded_minus1)
     mh_z19_takeMeassuring_fake.return_val = MHZ19_OK;
 
     mh_z19_getCo2Ppm_fake.custom_fake = mh_z19_getCo2Ppm_custom_func;
-    testitem = 199;
-    return_item = MHZ19_OK;
+    co2item = 199;
+    returnco2 = MHZ19_OK;
 
     BaseType_t semaphoreTakeReturnVals[11] = {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
     SET_RETURN_SEQ(xSemaphoreTake, semaphoreTakeReturnVals, 11);
@@ -234,8 +234,8 @@ TEST_F(Test_co2, co2_acceptability_limit_not_exeeded_0)
     mh_z19_takeMeassuring_fake.return_val = MHZ19_OK;
 
     mh_z19_getCo2Ppm_fake.custom_fake = mh_z19_getCo2Ppm_custom_func;
-    testitem = 200;
-    return_item = MHZ19_OK;
+    co2item = 200;
+    returnco2 = MHZ19_OK;
 
     BaseType_t semaphoreTakeReturnVals[11] = {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
     SET_RETURN_SEQ(xSemaphoreTake, semaphoreTakeReturnVals, 11);
