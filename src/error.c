@@ -52,9 +52,9 @@ error_handler_t error_handler_init () {
     xTaskCreate (
         error_handler_task,
         "Error Handler Task",
-        TASK_ERROR_PRIORITY,
-        _error_handler,
         TASK_ERROR_STACK,
+        _error_handler,
+        TASK_ERROR_PRIORITY,
         &error_task_h
     );
 
