@@ -20,3 +20,8 @@ E.g. if the programmer (Atmel-ICE) is plugged into a windows machine, use window
 * Run the script `scripts/init_lora.sh` from inside its directory, and configure the tokens in the generated ´include/LoRaWAN.h´.
 
 * Press Upload/Remote Upload
+
+## Docs
+An api reference is generated using doxygen and deployed to:
+
+https://highkingofmelons.github.io/Sep4IotDevice/
