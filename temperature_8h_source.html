@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.7"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Doxygen with github: Sep4IotDevice</title>
+<title>Doxygen with github: include/temperature.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -46,7 +46,6 @@ $(function() {
 /* @license-end */
 </script>
 <div id="main-nav"></div>
-</div><!-- top -->
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -68,29 +67,33 @@ $(function() {
 </div>
 </div>
 
-<div><div class="header">
-  <div class="headertitle"><div class="title">Sep4IotDevice </div></div>
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle"><div class="title">temperature.h</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="md__r_e_a_d_m_e"></a> </p>
-<h1><a class="anchor" id="autotoc_md1"></a>
-Requirments</h1>
-<p>This project is developed only with support for Arduino Mega2560 programmed using an Atmel-ICE Additionally a custom header is required, see <a href="https://github.com/ihavn/IoT_Semester_project">ihavn/IoT_Semester_project</a></p>
-<h1><a class="anchor" id="autotoc_md2"></a>
-Cloning Project</h1>
-<p>To clone the project, as well as submodules, run the following command:</p>
-<p><code>git clone <a href="https://github.com/HighKingofMelons/Sep4IotDevice">https://github.com/HighKingofMelons/Sep4IotDevice</a> --recurse-submodules</code></p>
-<h1><a class="anchor" id="autotoc_md3"></a>
-Running using PlatformIO</h1>
-<ul>
-<li>Install <code>PlatformIO</code> VSCode extension</li>
-<li>Open project folder</li>
-<li>Select appropriate env according to the computer of which is used to program the device. E.g. if the programmer (Atmel-ICE) is plugged into a windows machine, use windows. By default Windows is selected.</li>
-<li>Run the script <code>scripts/init_lora.sh</code> from inside its directory, and configure the tokens in the generated ´include/LoRaWAN.h´.</li>
-<li>Press Upload/Remote Upload </li>
-</ul>
-</div></div><!-- PageDoc -->
-</div><!-- contents -->
+<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment"> * temperature.h</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment"> * Created: 27/04/2023 11.42.59</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment"> *  Author: andre</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="comment"> */</span> </div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span> </div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="keyword">typedef</span> <span class="keyword">struct </span>temperature* temperature_t;</div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span>temperature_t temperature_create(TickType_t mesureCircleFreequency);</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>int16_t temperature_get_latest_average_temperature(temperature_t self);</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="keywordtype">void</span> temperature_set_limits(temperature_t self, int16_t maxLimit, int16_t minLimit);</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>int8_t temperature_acceptability_status(temperature_t self);</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="keywordtype">void</span> temperature_destroy(temperature_t self);</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
+</div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.7
