@@ -93,13 +93,14 @@ $(function() {
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#pragma once</span></div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="keyword">typedef</span> <span class="keyword">struct </span>humidity* humidity_t;</div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>humidity_t humidity_create(TickType_t mesureCircleFreequency);</div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>uint8_t humidity_get_latest_average_humidity(humidity_t self);</div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="keywordtype">void</span> humidity_set_limits(humidity_t self, uint8_t maxLimit, uint8_t minLimit);</div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>int8_t humidity_acceptability_status(humidity_t self);</div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="keywordtype">void</span> humidity_destroy(humidity_t self);</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code hl_struct" href="structhumidity.html">humidity</a>* <a class="code hl_struct" href="structhumidity.html">humidity_t</a>;</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><a class="code hl_struct" href="structhumidity.html">humidity_t</a> humidity_create(TickType_t mesureCircleFreequency);</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>uint8_t humidity_get_latest_average_humidity(<a class="code hl_struct" href="structhumidity.html">humidity_t</a> self);</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="keywordtype">void</span> humidity_set_limits(<a class="code hl_struct" href="structhumidity.html">humidity_t</a> self, uint8_t maxLimit, uint8_t minLimit);</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>int8_t humidity_acceptability_status(<a class="code hl_struct" href="structhumidity.html">humidity_t</a> self);</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="keywordtype">void</span> humidity_destroy(<a class="code hl_struct" href="structhumidity.html">humidity_t</a> self);</div>
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span> </div>
+<div class="ttc" id="astructhumidity_html"><div class="ttname"><a href="structhumidity.html">humidity</a></div><div class="ttdef"><b>Definition</b> humidity.c:35</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

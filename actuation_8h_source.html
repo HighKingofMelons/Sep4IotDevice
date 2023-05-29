@@ -82,10 +82,10 @@ $(function() {
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &quot;temperature.h&quot;</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &quot;humidity.h&quot;</span></div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span> </div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="keyword">typedef</span> <span class="keyword">struct </span>actuation_handler *actuation_handler_t;</div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code hl_struct" href="structactuation__handler.html">actuation_handler</a> *<a class="code hl_struct" href="structactuation__handler.html">actuation_handler_t</a>;</div>
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span> </div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span>actuation_handler_t actuation_handler_init(temperature_t temperature, humidity_t humidity);</div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="keywordtype">void</span> actuation_handler_destroy(actuation_handler_t victim);</div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><a class="code hl_struct" href="structactuation__handler.html">actuation_handler_t</a> actuation_handler_init(<a class="code hl_struct" href="structtemperature.html">temperature_t</a> <a class="code hl_struct" href="structtemperature.html">temperature</a>, <a class="code hl_struct" href="structhumidity.html">humidity_t</a> <a class="code hl_struct" href="structhumidity.html">humidity</a>);</div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="keywordtype">void</span> actuation_handler_destroy(<a class="code hl_struct" href="structactuation__handler.html">actuation_handler_t</a> victim);</div>
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="keyword">typedef</span> <span class="keyword">enum</span> {</div>
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>    VENT_ON     =  100,</div>
@@ -94,8 +94,8 @@ $(function() {
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="comment">/*</span></div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="comment">    Takes pdTRUE for ON and pdFALSE for OFF</span></div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="comment">*/</span></div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="keywordtype">void</span> actuators_ventilation_override_state(actuation_handler_t self, vent_state_t state);</div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="keywordtype">void</span> actuators_ventilation_disable_override(actuation_handler_t self);</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="keywordtype">void</span> actuators_ventilation_override_state(<a class="code hl_struct" href="structactuation__handler.html">actuation_handler_t</a> self, vent_state_t state);</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="keywordtype">void</span> actuators_ventilation_disable_override(<a class="code hl_struct" href="structactuation__handler.html">actuation_handler_t</a> self);</div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="keyword">typedef</span> <span class="keyword">enum</span> {</div>
 <div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>    AIRCON_HEAT =  100,</div>
@@ -103,8 +103,11 @@ $(function() {
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>    AIRCON_OFF  =  50</div>
 <div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>} aircon_state_t;</div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span> </div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="keywordtype">void</span> actuators_aircon_override_state(actuation_handler_t self, aircon_state_t state);</div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="keywordtype">void</span> actuators_aircon_disable_override(actuation_handler_t self);</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="keywordtype">void</span> actuators_aircon_override_state(<a class="code hl_struct" href="structactuation__handler.html">actuation_handler_t</a> self, aircon_state_t state);</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="keywordtype">void</span> actuators_aircon_disable_override(<a class="code hl_struct" href="structactuation__handler.html">actuation_handler_t</a> self);</div>
+<div class="ttc" id="astructactuation__handler_html"><div class="ttname"><a href="structactuation__handler.html">actuation_handler</a></div><div class="ttdef"><b>Definition</b> actuation.c:17</div></div>
+<div class="ttc" id="astructhumidity_html"><div class="ttname"><a href="structhumidity.html">humidity</a></div><div class="ttdef"><b>Definition</b> humidity.c:35</div></div>
+<div class="ttc" id="astructtemperature_html"><div class="ttname"><a href="structtemperature.html">temperature</a></div><div class="ttdef"><b>Definition</b> temperature.c:35</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
