@@ -11,7 +11,6 @@ enable_testing()
 # Source files to be tested
 set(SOURCES_TEST
     fakes.c
-    ../src/utils.c
     ../src/co2.c
     ../src/error.c
     ../src/temperature.c
@@ -21,7 +20,6 @@ set(SOURCES_TEST
 
 # The tests themselves
 set(TESTS
-    utils.cpp
     test_co2.cpp
     test_temperature.cpp
     error.cpp
