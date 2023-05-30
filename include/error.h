@@ -1,7 +1,7 @@
 /** @file
  * @brief This is a error header file.
  *
- * It handles the actuation.
+ * It handles the errors.
  */
 
 #pragma once
