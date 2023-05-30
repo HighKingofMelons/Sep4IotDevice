@@ -15,7 +15,7 @@
 /**
  * @brief Structure to store humidity information
  *
- * It hold a 10 attributes and is needed for accesing and using co2 values.
+ * It hold a 10 attributes and is needed for accesing and using temperature values.
  */
 typedef struct temperature* temperature_t;
 /**
@@ -26,7 +26,7 @@ typedef struct temperature* temperature_t;
  */
 temperature_t temperature_create(TickType_t mesureCircleFreequency);
 /**
- * @brief GEts the latest average temperature value.
+ * @brief Gets the latest average temperature value.
  *
  * @param self
  * @return int16_t

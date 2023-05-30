@@ -22,7 +22,7 @@
 /**
  * @brief Structure to store humidity information
  *
- * It hold a 10 attributes and is needed for accesing and using co2 values.
+ * It hold a 10 attributes and is needed for accesing and using humidity values.
  */
 typedef struct humidity* humidity_t;
 /**
