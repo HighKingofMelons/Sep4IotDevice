@@ -13,7 +13,7 @@
 #pragma once
 
 /**
- * @brief Structure to store co2 information
+ * @brief Structure to store co2 information.
  *  
  * It hold a 10 attributes and is needed for accesing and using co2 values.
  */

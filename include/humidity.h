@@ -20,7 +20,7 @@
 #pragma once
 
 /**
- * @brief Structure to store humidity information
+ * @brief Structure to store humidity information.
  *
  * It hold a 10 attributes and is needed for accesing and using humidity values.
  */

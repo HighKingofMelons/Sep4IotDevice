@@ -11,7 +11,7 @@
 #include "humidity.h"
 
 /**
- * @brief Structure to store actuation information
+ * @brief Structure to store actuation information.
  *
  * It hold a 5 attributes and is needed for accesing and using actuation.
  */
