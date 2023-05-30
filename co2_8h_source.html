@@ -85,19 +85,20 @@ $(function() {
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
 <div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#pragma once</span></div>
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code hl_struct" href="structco2.html">co2</a> *<a class="code hl_struct" href="structco2.html">co2_t</a>;</div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><a class="code hl_struct" href="structco2.html">co2_t</a> co2_create(TickType_t freequency);</div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="keywordtype">void</span> co2_mesure(<span class="keywordtype">void</span> *pvParameters);</div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>int16_t co2_get_latest_average_co2(<a class="code hl_struct" href="structco2.html">co2_t</a> self);</div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="keywordtype">int</span> initializeCo2Driver();</div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="keywordtype">int</span> makeOneCo2Mesurment(<a class="code hl_struct" href="structco2.html">co2_t</a> self);</div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="keywordtype">void</span> addCo2(<a class="code hl_struct" href="structco2.html">co2_t</a> self, int16_t <a class="code hl_struct" href="structco2.html">co2</a>);</div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="keywordtype">void</span> resetCo2Array(<a class="code hl_struct" href="structco2.html">co2_t</a> self);</div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="keywordtype">void</span> calculateCo2(<a class="code hl_struct" href="structco2.html">co2_t</a> self);</div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="keywordtype">void</span> co2_set_limits(<a class="code hl_struct" href="structco2.html">co2_t</a> self, int16_t maxLimit, int16_t minLimit);</div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>int8_t co2_acceptability_status(<a class="code hl_struct" href="structco2.html">co2_t</a> self);</div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="keywordtype">void</span> co2_recordMeasurement(<a class="code hl_struct" href="structco2.html">co2_t</a> self, uint16_t ppm);</div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="keywordtype">void</span> co2_makeOneMesuremnt(<a class="code hl_struct" href="structco2.html">co2_t</a> self, uint16_t ppm);</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="co2_8h.html#a26d4ac702dd092a2a8462b74f7b138fd">   36</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code hl_struct" href="structco2.html">co2</a> *<a class="code hl_typedef" href="co2_8h.html#a26d4ac702dd092a2a8462b74f7b138fd">co2_t</a>;</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span><a class="code hl_struct" href="structco2.html">co2_t</a> co2_create(TickType_t freequency);</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span><span class="keywordtype">void</span> co2_mesure(<span class="keywordtype">void</span> *pvParameters);</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>int16_t co2_get_latest_average_co2(<a class="code hl_struct" href="structco2.html">co2_t</a> self);</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span><span class="keywordtype">int</span> initializeCo2Driver();</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="keywordtype">int</span> makeOneCo2Mesurment(<a class="code hl_struct" href="structco2.html">co2_t</a> self);</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span><span class="keywordtype">void</span> addCo2(<a class="code hl_struct" href="structco2.html">co2_t</a> self, int16_t <a class="code hl_struct" href="structco2.html">co2</a>);</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span><span class="keywordtype">void</span> resetCo2Array(<a class="code hl_struct" href="structco2.html">co2_t</a> self);</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span><span class="keywordtype">void</span> calculateCo2(<a class="code hl_struct" href="structco2.html">co2_t</a> self);</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span><span class="keywordtype">void</span> co2_set_limits(<a class="code hl_struct" href="structco2.html">co2_t</a> self, int16_t maxLimit, int16_t minLimit);</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>int8_t co2_acceptability_status(<a class="code hl_struct" href="structco2.html">co2_t</a> self);</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span><span class="keywordtype">void</span> co2_recordMeasurement(<a class="code hl_struct" href="structco2.html">co2_t</a> self, uint16_t ppm);</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span><span class="keywordtype">void</span> co2_makeOneMesuremnt(<a class="code hl_struct" href="structco2.html">co2_t</a> self, uint16_t ppm);</div>
+<div class="ttc" id="aco2_8h_html_a26d4ac702dd092a2a8462b74f7b138fd"><div class="ttname"><a href="co2_8h.html#a26d4ac702dd092a2a8462b74f7b138fd">co2_t</a></div><div class="ttdeci">struct co2 * co2_t</div><div class="ttdoc">Structure to store co2 information.</div><div class="ttdef"><b>Definition</b> co2.h:36</div></div>
 <div class="ttc" id="astructco2_html"><div class="ttname"><a href="structco2.html">co2</a></div><div class="ttdef"><b>Definition</b> co2.c:33</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
