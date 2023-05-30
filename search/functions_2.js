@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['humidity_5facceptability_5fstatus_0',['humidity_acceptability_status',['../humidity_8h.html#ad2192a24cdea9ab07278b38c1f876d4d',1,'humidity.c']]],
-  ['humidity_5fcreate_1',['humidity_create',['../humidity_8h.html#a6c31d3dccabb1294ba6fb7a670192424',1,'humidity.c']]],
-  ['humidity_5fdestroy_2',['humidity_destroy',['../humidity_8h.html#ad95029a91d2e66fb63ab816b4f53ccf6',1,'humidity.c']]],
-  ['humidity_5fget_5flatest_5faverage_5fhumidity_3',['humidity_get_latest_average_humidity',['../humidity_8h.html#afd9139cded779c16741cc9ef31ac1563',1,'humidity.c']]],
-  ['humidity_5fset_5flimits_4',['humidity_set_limits',['../humidity_8h.html#a9cd5034de60392faa1d1b964602b12ca',1,'humidity.c']]]
+  ['error_5fhandler_5fdestroy_0',['error_handler_destroy',['../error_8h.html#ab52bce169cc9e973e9d8272384b0bdc1',1,'error.c']]],
+  ['error_5fhandler_5fget_5fflags_1',['error_handler_get_flags',['../error_8h.html#ac4be805b0fbc4470ba2770c80df893ac',1,'error.c']]],
+  ['error_5fhandler_5finit_2',['error_handler_init',['../error_8h.html#ac2dd9d945a8c5f652731b20eb8317459',1,'error.c']]],
+  ['error_5fhandler_5freport_3',['error_handler_report',['../error_8h.html#a2ef6f56effa7180aa3631157471ae1ff',1,'error.c']]],
+  ['error_5fhandler_5frevoke_4',['error_handler_revoke',['../error_8h.html#aab87444ae297832c6a9e762022a80931',1,'error.c']]]
 ];

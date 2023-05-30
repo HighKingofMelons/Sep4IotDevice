@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['resetco2array_0',['resetCo2Array',['../co2_8h.html#ae0a3c7329d167049750b0b4cd45925f1',1,'co2.c']]]
+  ['makeoneco2mesurment_0',['makeOneCo2Mesurment',['../co2_8h.html#afc246c191831e083b4f5969a3c6ad4d1',1,'co2.c']]]
 ];
