@@ -19,6 +19,7 @@ jobs:
     - uses: actions/checkout@v3
       with:
         submodules: recursive
+    - uses: hrishikesh-kadam/setup-lcov@v1
 
     - name: Init LoRa
       run: cd ${{github.workspace}}/scripts &&
@@ -36,3 +37,11 @@ jobs:
       working-directory: ${{github.workspace}}/build/tests
       run: ./Sep4IotDeviceTests
 
+    - name: Generate Coverage Report
+      working-directory: ${{github.workspace}}/build
+      run: make coverage
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: coverage-report
+        path: ${{github.workspace}}/build/gcoverage/lcoverage/
