@@ -15,25 +15,11 @@
 
 /**
  * @brief Structure to store co2 information
- *
- * This is a structure which contains 10 attributes.
- *
- * co2Array to hold recent co2 values.
- *
- * nextCo2ToReadIdx id for the nexr co2 reading.
- *
- * latestAvgCo2 to hold the latest co2 average.
- *
- * maxCo2Limit to hold the max co2 limit.
- *
- * minCo2Limit to hold the min co2 limit.
- *
- * xMesureCircleFrequency to hold the messure frequency.
- *
- * xLastMessureCircleTime to hold the last messure circle time.
- *
+ *  
+ * It hold a 10 attributes and is needed for accesing and using co2 values.
  */
 typedef struct co2 *co2_t;
+
 co2_t co2_create(TickType_t freequency);
 void co2_mesure(void *pvParameters);
 int16_t co2_get_latest_average_co2(co2_t self);

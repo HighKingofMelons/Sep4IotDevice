@@ -3,11 +3,20 @@
  *
  * Created: 27/04/2023 11.42.59
  *  Author: andre
- */ 
+ */
 
-
+/** @file
+ * @brief This is a temperature header file.
+ *
+ * It uses the HIH8120 driver in order to messure and use the data.
+ */
 #pragma once
 
+/**
+ * @brief Structure to store co2 information
+ *
+ * It hold a 10 attributes and is needed for accesing and using co2 values.
+ */
 typedef struct temperature* temperature_t;
 temperature_t temperature_create(TickType_t mesureCircleFreequency);
 int16_t temperature_get_latest_average_temperature(temperature_t self);
