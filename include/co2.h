@@ -27,6 +27,11 @@ typedef struct co2 *co2_t;
  * @return co2_t
  */
 co2_t co2_create(TickType_t freequency);
+/**
+ * @brief Messure co2.
+ *
+ * @param pvParameters
+ */
 void co2_mesure(void *pvParameters);
 int16_t co2_get_latest_average_co2(co2_t self);
 int initializeCo2Driver();
