@@ -3,7 +3,13 @@
  *
  * Created: 5/11/2023 3:16:53 PM
  *  Author: takat
- */ 
+ */
+
+/** @file
+ * @brief This is a co2 header file.
+ *
+ * It uses the mh_z19 driver in order to messure and use the data.
+ */
 
 #pragma once
 
