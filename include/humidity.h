@@ -12,7 +12,7 @@
  *  Author: andre
  */
 /** @file
- * @brief This is a hunmidity header file.
+ * @brief This is a humidity header file.
  *
  * It uses the HIH8120 driver in order to messure and use the data.
  */
@@ -20,7 +20,7 @@
 #pragma once
 
 /**
- * @brief Structure to store co2 information
+ * @brief Structure to store humidity information
  *
  * It hold a 10 attributes and is needed for accesing and using co2 values.
  */
