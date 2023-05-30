@@ -76,35 +76,43 @@ $(function() {
   <div class="headertitle"><div class="title">actuation.h</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#pragma once</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#include &lt;ATMEGA_FreeRTOS.h&gt;</span></div>
-<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &quot;<a class="code" href="temperature_8h.html">temperature.h</a>&quot;</span></div>
-<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &quot;<a class="code" href="humidity_8h.html">humidity.h</a>&quot;</span></div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span> </div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code hl_struct" href="structactuation__handler.html">actuation_handler</a> *<a class="code hl_struct" href="structactuation__handler.html">actuation_handler_t</a>;</div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span> </div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><a class="code hl_struct" href="structactuation__handler.html">actuation_handler_t</a> actuation_handler_init(<a class="code hl_struct" href="structtemperature.html">temperature_t</a> <a class="code hl_struct" href="structtemperature.html">temperature</a>, <a class="code hl_struct" href="structhumidity.html">humidity_t</a> <a class="code hl_struct" href="structhumidity.html">humidity</a>);</div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="keywordtype">void</span> actuation_handler_destroy(<a class="code hl_struct" href="structactuation__handler.html">actuation_handler_t</a> victim);</div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="keyword">typedef</span> <span class="keyword">enum</span> {</div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>    VENT_ON     =  100,</div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>    VENT_OFF    = -100</div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>} vent_state_t;</div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="comment">/*</span></div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="comment">    Takes pdTRUE for ON and pdFALSE for OFF</span></div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="comment">*/</span></div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="keywordtype">void</span> actuators_ventilation_override_state(<a class="code hl_struct" href="structactuation__handler.html">actuation_handler_t</a> self, vent_state_t state);</div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="keywordtype">void</span> actuators_ventilation_disable_override(<a class="code hl_struct" href="structactuation__handler.html">actuation_handler_t</a> self);</div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="keyword">typedef</span> <span class="keyword">enum</span> {</div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>    AIRCON_HEAT =  100,</div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>    AIRCON_COOL = -100,</div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>    AIRCON_OFF  =  50</div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>} aircon_state_t;</div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span> </div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="keywordtype">void</span> actuators_aircon_override_state(<a class="code hl_struct" href="structactuation__handler.html">actuation_handler_t</a> self, aircon_state_t state);</div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="keywordtype">void</span> actuators_aircon_disable_override(<a class="code hl_struct" href="structactuation__handler.html">actuation_handler_t</a> self);</div>
+<a href="actuation_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span> </div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &lt;ATMEGA_FreeRTOS.h&gt;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &quot;<a class="code" href="temperature_8h.html">temperature.h</a>&quot;</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#include &quot;<a class="code" href="humidity_8h.html">humidity.h</a>&quot;</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span> </div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno"><a class="line" href="actuation_8h.html#aaf3ab246ad38723ab1a1cf0ad4519b64">   18</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code hl_struct" href="structactuation__handler.html">actuation_handler</a> *<a class="code hl_typedef" href="actuation_8h.html#aaf3ab246ad38723ab1a1cf0ad4519b64">actuation_handler_t</a>;</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><a class="code hl_struct" href="structactuation__handler.html">actuation_handler_t</a> <a class="code hl_function" href="actuation_8h.html#a94859c52fcc0aa763182e683a3a4d998">actuation_handler_init</a>(<a class="code hl_struct" href="structtemperature.html">temperature_t</a> <a class="code hl_struct" href="structtemperature.html">temperature</a>, <a class="code hl_struct" href="structhumidity.html">humidity_t</a> <a class="code hl_struct" href="structhumidity.html">humidity</a>);</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="keywordtype">void</span> <a class="code hl_function" href="actuation_8h.html#a984c1a6ec72fa43c617712ba509b0a23">actuation_handler_destroy</a>(<a class="code hl_struct" href="structactuation__handler.html">actuation_handler_t</a> victim);</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span> </div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="keyword">typedef</span> <span class="keyword">enum</span> {</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>    VENT_ON     =  100,</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    VENT_OFF    = -100</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>} vent_state_t;</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span><span class="comment">/*</span></div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span><span class="comment">    Takes pdTRUE for ON and pdFALSE for OFF</span></div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span><span class="comment">*/</span></div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span> </div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span><span class="keywordtype">void</span> <a class="code hl_function" href="actuation_8h.html#ae88b4a0a1103b938a5f982ca26dff558">actuators_ventilation_override_state</a>(<a class="code hl_struct" href="structactuation__handler.html">actuation_handler_t</a> self, vent_state_t state);</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span><span class="keywordtype">void</span> <a class="code hl_function" href="actuation_8h.html#a19305371c686481a8f59a77569e3cc59">actuators_ventilation_disable_override</a>(<a class="code hl_struct" href="structactuation__handler.html">actuation_handler_t</a> self);</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span> </div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span><span class="keyword">typedef</span> <span class="keyword">enum</span> {</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    AIRCON_HEAT =  100,</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    AIRCON_COOL = -100,</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>    AIRCON_OFF  =  50</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>} aircon_state_t;</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span> </div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span><span class="keywordtype">void</span> <a class="code hl_function" href="actuation_8h.html#a2bb72e628f092ae14ebcf88415267b90">actuators_aircon_override_state</a>(<a class="code hl_struct" href="structactuation__handler.html">actuation_handler_t</a> self, aircon_state_t state);</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span><span class="keywordtype">void</span> <a class="code hl_function" href="actuation_8h.html#ad8f3ab1ad257d2a3c8f8275229881df0">actuators_aircon_disable_override</a>(<a class="code hl_struct" href="structactuation__handler.html">actuation_handler_t</a> self);</div>
+<div class="ttc" id="aactuation_8h_html_a19305371c686481a8f59a77569e3cc59"><div class="ttname"><a href="actuation_8h.html#a19305371c686481a8f59a77569e3cc59">actuators_ventilation_disable_override</a></div><div class="ttdeci">void actuators_ventilation_disable_override(actuation_handler_t self)</div><div class="ttdoc">Ventilation actuators disable state.</div><div class="ttdef"><b>Definition</b> actuation.c:140</div></div>
+<div class="ttc" id="aactuation_8h_html_a2bb72e628f092ae14ebcf88415267b90"><div class="ttname"><a href="actuation_8h.html#a2bb72e628f092ae14ebcf88415267b90">actuators_aircon_override_state</a></div><div class="ttdeci">void actuators_aircon_override_state(actuation_handler_t self, aircon_state_t state)</div><div class="ttdoc">Ventilation actuators overide state.</div><div class="ttdef"><b>Definition</b> actuation.c:151</div></div>
+<div class="ttc" id="aactuation_8h_html_a94859c52fcc0aa763182e683a3a4d998"><div class="ttname"><a href="actuation_8h.html#a94859c52fcc0aa763182e683a3a4d998">actuation_handler_init</a></div><div class="ttdeci">actuation_handler_t actuation_handler_init(temperature_t temperature, humidity_t humidity)</div><div class="ttdoc">Initiatizes the actuation handler.</div><div class="ttdef"><b>Definition</b> actuation.c:92</div></div>
+<div class="ttc" id="aactuation_8h_html_a984c1a6ec72fa43c617712ba509b0a23"><div class="ttname"><a href="actuation_8h.html#a984c1a6ec72fa43c617712ba509b0a23">actuation_handler_destroy</a></div><div class="ttdeci">void actuation_handler_destroy(actuation_handler_t victim)</div><div class="ttdoc">Destroys the actuation handler.</div><div class="ttdef"><b>Definition</b> actuation.c:121</div></div>
+<div class="ttc" id="aactuation_8h_html_aaf3ab246ad38723ab1a1cf0ad4519b64"><div class="ttname"><a href="actuation_8h.html#aaf3ab246ad38723ab1a1cf0ad4519b64">actuation_handler_t</a></div><div class="ttdeci">struct actuation_handler * actuation_handler_t</div><div class="ttdoc">Structure to store actuation information.</div><div class="ttdef"><b>Definition</b> actuation.h:18</div></div>
+<div class="ttc" id="aactuation_8h_html_ad8f3ab1ad257d2a3c8f8275229881df0"><div class="ttname"><a href="actuation_8h.html#ad8f3ab1ad257d2a3c8f8275229881df0">actuators_aircon_disable_override</a></div><div class="ttdeci">void actuators_aircon_disable_override(actuation_handler_t self)</div><div class="ttdoc">Ventilation actuators disable state.</div><div class="ttdef"><b>Definition</b> actuation.c:163</div></div>
+<div class="ttc" id="aactuation_8h_html_ae88b4a0a1103b938a5f982ca26dff558"><div class="ttname"><a href="actuation_8h.html#ae88b4a0a1103b938a5f982ca26dff558">actuators_ventilation_override_state</a></div><div class="ttdeci">void actuators_ventilation_override_state(actuation_handler_t self, vent_state_t state)</div><div class="ttdoc">Ventilation actuators overide state.</div><div class="ttdef"><b>Definition</b> actuation.c:128</div></div>
 <div class="ttc" id="ahumidity_8h_html"><div class="ttname"><a href="humidity_8h.html">humidity.h</a></div><div class="ttdoc">This is a humidity header file.</div></div>
 <div class="ttc" id="astructactuation__handler_html"><div class="ttname"><a href="structactuation__handler.html">actuation_handler</a></div><div class="ttdef"><b>Definition</b> actuation.c:17</div></div>
 <div class="ttc" id="astructhumidity_html"><div class="ttname"><a href="structhumidity.html">humidity</a></div><div class="ttdef"><b>Definition</b> humidity.c:35</div></div>

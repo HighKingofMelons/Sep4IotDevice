@@ -2,9 +2,9 @@ var indexSectionsWithContent =
 {
   0: "acehimrst",
   1: "aceht",
-  2: "cht",
+  2: "acht",
   3: "achimrt",
-  4: "cht",
+  4: "acht",
   5: "s"
 };
 
