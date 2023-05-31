@@ -19,7 +19,7 @@
 
 int wakeUpCo2Sensos();
 
-co2_handler_t initializeCo2(error_handler_t, TickType_t last_messure_circle_time);
+co2_handler_t initializeCo2(error_handler_t error_handler, TickType_t last_messure_circle_time);
 void initializeCo2Driver(co2_handler_t self);
 void co2_mesure(void *pvParameters);
 void makeOneCo2Mesurment(co2_handler_t self);

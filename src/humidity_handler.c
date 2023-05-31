@@ -13,12 +13,13 @@
 #include <semphr.h>
 #include <task.h>
 #include "../include/taskConfig.h"
-#include "../include/humidity.h"
+#include "../include/error_handler.h"
+#include "../include/humidity_handler.h"
 #include <hih8120.h>
 
-void initializeHumidityDriver();
-void wakeUpHumiditySensor();
-humidity_t initializeHumidity(TickType_t freequency);
+humidity_t humidity_initialize(error_handler_t error_handler, TickType_t lastMessureCircleTime);
+void humidity_init_driver(humidity_t self);
+void humidity_wake_up_sensor(humidity_t self);
 void humidity_mesure(void *pvParameters);
 void humidity_resetArray(humidity_t self);
 void humidity_makeOneMesurment(humidity_t self);
@@ -30,8 +31,6 @@ void humidity_setMaxLimit(humidity_t self, uint8_t maxLimit);
 void humidity_setMinLimit(humidity_t self, uint8_t minLimit);
 void humidity_recordMeasurment(humidity_t self);
 
-static TaskHandle_t mesureHumidityTask = NULL;
-
 typedef struct humidity {
 	uint16_t humidityArray[10];
 	uint8_t nextToReadIdx;
@@ -39,17 +38,18 @@ typedef struct humidity {
 	SemaphoreHandle_t latestAvgHumidityMutex;
 	SemaphoreHandle_t maxLimitMutex;
 	SemaphoreHandle_t minLimitMutex;
-	TickType_t mesureCircleFrequency;
 	TickType_t lastMessureCircleTime;
 	uint8_t maxLimit;
 	uint8_t minLimit;
+	error_handler_t error_handler;
+	TaskHandle_t meassure_task_h;
 } humidity_st;
 
 
-humidity_t humidity_create(TickType_t freequency) {
-	humidity_t _newHumidity = initializeHumidity(freequency);
+humidity_t humidity_create(error_handler_t error_handler, TickType_t lastMessureCircleTime) {
+	humidity_t _newHumidity = humidity_initialize(error_handler, lastMessureCircleTime);
 	
-	initializeHumidityDriver();
+	humidity_init_driver(_newHumidity);
 	
 	/* Create the task, not storing the handle. */
 	xTaskCreate(humidity_mesure,				/* Function that implements the task. */
@@ -57,7 +57,7 @@ humidity_t humidity_create(TickType_t freequency) {
 				TASK_MESSURE_HUM_STACK,		/* Stack size in words, not bytes. */
 				(void*) _newHumidity,		/* Parameter passed into the task. */
 				TASK_MESSURE_HUM_PRIORITY,		/* Priority at which the task is created. */
-				&mesureHumidityTask			/* Used to pass out the created task's handle. */
+				&(_newHumidity->meassure_task_h)			/* Used to pass out the created task's handle. */
 	);
 
 	return _newHumidity;			
@@ -118,7 +118,7 @@ void humidity_set_limits(humidity_t self, uint8_t maxLimit, uint8_t minLimit) {
 	humidity_setMinLimit(self, minLimit);
 }
 
-int8_t humidity_acceptability_status(humidity_t self) {
+int8_t humidity_get_acceptability_status(humidity_t self) {
 	int8_t returnValue = 0;
 	int16_t tempLatestAvgHumidity = humidity_get_latest_average_humidity(self);
 
@@ -134,20 +134,16 @@ int8_t humidity_acceptability_status(humidity_t self) {
 }
 	
 void humidity_destroy(humidity_t self) {	
-	if (mesureHumidityTask != NULL) {
-		vTaskDelete(mesureHumidityTask);
-		mesureHumidityTask = NULL;
+	if (self->meassure_task_h != NULL) {
+		vTaskDelete(self->meassure_task_h);
+		self->meassure_task_h = NULL;
 	}
 	
 	
 	hih8120_driverReturnCode_t returnCode;
 		
-	if((returnCode = hih8120_destroy()) == HIH8120_OK) {
-		//Destroyed successfully
-		// TODO:
-	} else {
-		//HIH8120_OUT_OF_HEAP
-		// TODO:
+	if((returnCode = hih8120_destroy()) != HIH8120_OK) {
+		error_handler_report(self->error_handler, ERROR_HUMI);
 	}
 
 	vSemaphoreDelete(self->latestAvgHumidityMutex);
@@ -159,21 +155,21 @@ void humidity_destroy(humidity_t self) {
 	}
 }
 
-humidity_t initializeHumidity(TickType_t freequency) {
+humidity_t humidity_initialize(error_handler_t error_handler, TickType_t lastMessureCircleTime) {
 	humidity_t _newHumidity = calloc(sizeof(humidity_st), 1);
 	humidity_resetArray(_newHumidity);
 	_newHumidity->latestAvgHumidity = 0;
 	_newHumidity->latestAvgHumidityMutex = xSemaphoreCreateMutex();
 	_newHumidity->minLimitMutex = xSemaphoreCreateMutex();
 	_newHumidity->maxLimitMutex = xSemaphoreCreateMutex();
-	_newHumidity->mesureCircleFrequency = freequency;
-	_newHumidity->lastMessureCircleTime = xTaskGetTickCount();
+	_newHumidity->lastMessureCircleTime = lastMessureCircleTime;
 	_newHumidity->maxLimit = HUM_MAX_LIMIT;
 	_newHumidity->minLimit = HUM_MIN_LIMIT;
+	_newHumidity->error_handler = error_handler;
 	return _newHumidity;
 }
 
-void initializeHumidityDriver() {
+void humidity_init_driver(humidity_t self) {
 	hih8120_driverReturnCode_t returnCode;
 	switch (returnCode = hih8120_initialise()) {
 		case HIH8120_OK:
@@ -181,13 +177,9 @@ void initializeHumidityDriver() {
 			// Always check what hih8120_initialise() returns
 			break;
 		case HIH8120_OUT_OF_HEAP:
-			// TODO:
-			break;
 		case HIH8120_TWI_BUSY:
-			// TODO:
-			break;
 		case HIH8120_DRIVER_NOT_INITIALISED:
-			// TODO:
+			error_handler_report(self->error_handler, ERROR_HUMI);
 			break;
 		default:
 			// TODO:
@@ -195,7 +187,7 @@ void initializeHumidityDriver() {
 	}
 }
 
-void wakeUpHumiditySensor() {
+void humidity_wake_up_sensor(humidity_t self) {
 	switch (hih8120_wakeup()) {
 		case HIH8120_OK:
 			vTaskDelay(pdMS_TO_TICKS(100));
@@ -203,10 +195,8 @@ void wakeUpHumiditySensor() {
 			// Always check what hih8120_initialise() returns
 			break;
 		case HIH8120_TWI_BUSY:
-			// TODO:
-			break;
 		case HIH8120_DRIVER_NOT_INITIALISED:
-			// TODO:
+			error_handler_report(self->error_handler, ERROR_HUMI);
 			break;
 		default:
 			if (DEBUG) {
@@ -218,17 +208,15 @@ void wakeUpHumiditySensor() {
 }
 
 void humidity_makeOneMesurment(humidity_t self) {
-	wakeUpHumiditySensor();
+	humidity_wake_up_sensor(self);
 
 	switch(hih8120_measure()) {
 		case HIH8120_OK:
 			humidity_recordMeasurment(self);
 			break;
 		case HIH8120_TWI_BUSY:
-			// TODO:
-			break;
 		case HIH8120_DRIVER_NOT_INITIALISED:
-			// TODO:
+			error_handler_report(self->error_handler, ERROR_HUMI);
 			break;
 		default:
 			if (DEBUG) {
@@ -241,7 +229,7 @@ void humidity_makeOneMesurment(humidity_t self) {
 	if (self->nextToReadIdx >= 10) {
 		humidity_calculateAvg(self);
 		humidity_resetArray(self);
-		xTaskDelayUntil(&(self->lastMessureCircleTime), self->mesureCircleFrequency);
+		xTaskDelayUntil(&(self->lastMessureCircleTime), pdMS_TO_TICKS(MESURE_CIRCLE_FREAQUENCY));
 	}
 }
 
