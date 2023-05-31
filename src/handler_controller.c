@@ -71,7 +71,6 @@ void handler_controller_task(void *pvParameters) {
         create_uplink_payload(self);;
 		vTaskDelay(pdMS_TO_TICKS(30000UL));
         parse_downlink_payload(self);
-		printf("HC hw: %i\n", uxTaskGetStackHighWaterMark(self->handler_controller_h));
     } 
 }
 
