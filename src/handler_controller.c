@@ -16,7 +16,7 @@
 #include "co2_handler.h"
 #include "error_handler.h"
 #include "actuation.h"
-#include "LoRaWANHandler.h"
+#include "lorawan_handler.h"
 #include "handler_controller.h"
 
 typedef struct handler_controller {
