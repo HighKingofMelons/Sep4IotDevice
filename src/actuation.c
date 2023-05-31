@@ -8,7 +8,7 @@
 
 #include "taskConfig.h"
 #include "temperature.h"
-#include "humidity.h"
+#include "humidity_handler.h"
 #include "co2_handler.h"
 
 #include "actuation.h"
@@ -42,7 +42,7 @@ void update_vent(actuation_handler_t self) {
         return;
     }
 
-    switch (humidity_acceptability_status(self->humid_handler))
+    switch (humidity_get_acceptability_status(self->humid_handler))
     {
     case  1:
         rc_servo_setPosition(VENTILATION, VENT_ON);

@@ -1,5 +1,5 @@
 #pragma once
-#include <humidity.h>
+#include <humidity_handler.h>
 
 void humidity_makeOneMesurment(humidity_t self);
 
@@ -10,8 +10,9 @@ typedef struct humidity {
 	SemaphoreHandle_t latestAvgHumidityMutex;
 	SemaphoreHandle_t maxLimitMutex;
 	SemaphoreHandle_t minLimitMutex;
-	TickType_t mesureCircleFrequency;
 	TickType_t lastMessureCircleTime;
 	uint8_t maxLimit;
 	uint8_t minLimit;
+	error_handler_t error_handler;
+	TaskHandle_t meassure_task_h;
 } humidity_st;
