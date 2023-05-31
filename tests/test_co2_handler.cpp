@@ -5,7 +5,7 @@
 extern "C"
 {
     #include "fakes.h"
-    #include "Controls/error.h"
+    #include "Controls/error_handler.h"
     #include "Controls/co2_handler.h"
     #include <../include/taskConfig.h>
 }
