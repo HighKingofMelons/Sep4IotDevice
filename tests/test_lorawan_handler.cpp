@@ -5,7 +5,7 @@ extern "C"
     #include "fakes.h"
     #include <taskConfig.h>
     #include "Controls/lorawan_handler.h"
-    #include "Controls/temperature.h"
+    #include "Controls/temperature_handler.h"
     #include "Controls/humidity_handler.h"
     #include "Controls/co2_handler.h"
     #include "Controls/actuation.h"
