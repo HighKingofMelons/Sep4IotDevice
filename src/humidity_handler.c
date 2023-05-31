@@ -23,7 +23,7 @@ void humidity_wake_up_sensor(humidity_t self);
 void humidity_mesure(void *pvParameters);
 void humidity_resetArray(humidity_t self);
 void humidity_makeOneMesurment(humidity_t self);
-void humidity_addMeassurmentToArray(humidity_t self, uint16_t humidity);
+void humidity_addMeasurmentToArray(humidity_t self, uint16_t humidity);
 void humidity_calculateAvg(humidity_t self);
 uint8_t humidity_getMaxLimit(humidity_t self);
 uint8_t humidity_getMinLimit(humidity_t self);
@@ -72,7 +72,7 @@ void humidity_mesure(void* pvParameters) {
 	}
 }
 
-void humidity_addMeassurmentToArray(humidity_t self, uint16_t humidity) {
+void humidity_addMeasurmentToArray(humidity_t self, uint16_t humidity) {
 	self->humidityArray[self->nextToReadIdx++] = humidity;
 }
 
@@ -300,6 +300,6 @@ void humidity_recordMeasurment(humidity_t self) {
 		printf("Hum Measurement #%i: %i\n", self->nextToReadIdx + 1, currentHumidity);
 	}
 
-	humidity_addMeassurmentToArray(self, currentHumidity);
+	humidity_addMeasurmentToArray(self, currentHumidity);
 }
 

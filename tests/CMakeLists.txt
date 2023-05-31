@@ -15,7 +15,7 @@ set(SOURCES_TEST
     fakes.c
     ../src/co2_handler.c
     ../src/error_handler.c
-    ../src/temperature.c
+    ../src/temperature_handler.c
     ../src/humidity_handler.c
     ../src/actuation.c
     ../src/lorawan_handler.c
@@ -27,7 +27,7 @@ set(GCOV_FILES
     ${OBJECT_DIR}co2_handler.c.gcda
     ${OBJECT_DIR}error_handler.c.gcda
     ${OBJECT_DIR}humidity_handler.c.gcda
-    ${OBJECT_DIR}temperature.c.gcda
+    ${OBJECT_DIR}temperature_handler.c.gcda
     ${OBJECT_DIR}lorawan_handler.c.gcda
     ${OBJECT_DIR}handler_controller.c.gcda
 )
@@ -35,7 +35,7 @@ set(GCOV_FILES
 # The tests themselves
 set(TESTS
     test_co2_handler.cpp
-    test_temperature.cpp
+    test_temperature_handler.cpp
     test_error_handler.cpp
     test_humidity_handler.cpp
     actuation.cpp

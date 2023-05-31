@@ -3,7 +3,7 @@
 extern "C" {
     #include <stdint.h>
     #include "fakes.h"
-    #include "Controls/temperature.h"
+    #include "Controls/temperature_handler.h"
     #include "Controls/humidity_handler.h"
     #include "Controls/actuation.h"
 }
@@ -35,9 +35,10 @@ temperature_st makeTemp (int8_t accept_result) {
         0,
         0,
         1,
-        1,
         20,
-        10
+        10,
+        0,
+        0
     };
 
     return _temp;
@@ -62,9 +63,9 @@ TEST(actuation_handler, test_fakestructs) {
     temperature_st tem2 = makeTemp(0);
     temperature_st tem3 = makeTemp(-1);
 
-    ASSERT_EQ(temperature_acceptability_status(&tem1), 1);
-    ASSERT_EQ(temperature_acceptability_status(&tem2), 0);
-    ASSERT_EQ(temperature_acceptability_status(&tem3), -1);
+    ASSERT_EQ(temperature_get_acceptability_status(&tem1), 1);
+    ASSERT_EQ(temperature_get_acceptability_status(&tem2), 0);
+    ASSERT_EQ(temperature_get_acceptability_status(&tem3), -1);
 }
 
 TEST(actuation_handler, update_aircon_overrides) {

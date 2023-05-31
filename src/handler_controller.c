@@ -11,10 +11,10 @@
 #include <status_leds.h>
 
 #include "taskConfig.h"
-#include "temperature.h"
+#include "error_handler.h"
+#include "temperature_handler.h"
 #include "humidity_handler.h"
 #include "co2_handler.h"
-#include "error_handler.h"
 #include "actuation.h"
 #include "lorawan_handler.h"
 #include "handler_controller.h"
@@ -81,12 +81,11 @@ handler_controller_t initialise_handler_controller() {
 	
 	status_leds_initialise(5); // Priority 5 for internal task
 
-	const TickType_t measureCircleFreaquency = pdMS_TO_TICKS(MESURE_CIRCLE_FREAQUENCY); // Upload message every 5 minutes (300000 ms)
-    TickType_t last_messure_circle_time = xTaskGetTickCount();
+	TickType_t last_messure_circle_time = xTaskGetTickCount();
     handler_controller_t _new_handler_controller = calloc(sizeof(handler_controller_st), 1);
 	_new_handler_controller->last_messure_circle_time = last_messure_circle_time;
-	_new_handler_controller->temperature_handler = temperature_create(measureCircleFreaquency);
 	_new_handler_controller->error_handler = error_handler_init();
+	_new_handler_controller->temperature_handler = temperature_create(_new_handler_controller->error_handler, last_messure_circle_time);
 	_new_handler_controller->humidity_handler = humidity_create(_new_handler_controller->error_handler, last_messure_circle_time);
 	_new_handler_controller->co2_handler = co2_create(_new_handler_controller->error_handler, last_messure_circle_time);
 	_new_handler_controller->actuation_handler = actuation_handler_init(_new_handler_controller->temperature_handler, _new_handler_controller->humidity_handler);
