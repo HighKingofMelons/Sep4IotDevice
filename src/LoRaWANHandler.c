@@ -77,6 +77,9 @@ void lorawan_handler_destroy(lorawan_handler_t self) {
 		self->lora_uplink_task_h = NULL;
 	}
 
+	vSemaphoreDelete(self->downlink_payload_mut);
+	vSemaphoreDelete(self->uplink_payload_mut);
+
 	if (self != NULL) {
 		free(self);
 	}

@@ -134,16 +134,11 @@ int8_t temperature_acceptability_status(temperature_t self) {
 	return returnValue;
 }
 	
-void temperature_destroy(temperature_t self) {
-	if (self != NULL) {
-		free(self);
-	}
-	
+void temperature_destroy(temperature_t self) {	
 	if (mesureTemperatureTask != NULL) {
 		vTaskDelete(mesureTemperatureTask);
 		mesureTemperatureTask = NULL;
 	}
-	
 	
 	hih8120_driverReturnCode_t returnCode;
 		
@@ -153,6 +148,15 @@ void temperature_destroy(temperature_t self) {
 	} else {
 		//HIH8120_OUT_OF_HEAP
 		// TODO:
+	}
+
+	vSemaphoreDelete(self->latestAvgTemperatureMutex);
+	vSemaphoreDelete(self->maxLimitMutex);
+	vSemaphoreDelete(self->minLimitMutex);
+
+	if (self != NULL) {
+		free(self);
+		self = NULL;
 	}
 }
 
