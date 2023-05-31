@@ -28,7 +28,8 @@ set(GCOV_FILES
     ${OBJECT_DIR}error.c.gcda
     ${OBJECT_DIR}humidity.c.gcda
     ${OBJECT_DIR}temperature.c.gcda
-    ${OBJECT_DIR}utils.c.gcda
+    ${OBJECT_DIR}LoRaWANHandler.c.gcda
+    ${OBJECT_DIR}handler_controller.c.gcda
 )
 
 # The tests themselves
