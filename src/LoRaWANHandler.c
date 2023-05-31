@@ -8,8 +8,10 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <ATMEGA_FreeRTOS.h>
+#include <task.h>
 #include <lora_driver.h>
 #include <status_leds.h>
 #include <message_buffer.h>
@@ -17,52 +19,80 @@
 
 #include "LoRaWAN.h"
 #include "taskConfig.h"
-#include "temperature.h"
-#include "humidity.h"
-#include "co2.h"
-#include "error.h"
-#include "handlers.h"
 #include "LoRaWANHandler.h"
 
-lorawan_handler_t initialize_lorawan_handler(handlers_t handlers, TickType_t last_messure_circle_time);
-void _lora_setup(void);
-void lora_uplink_task(void *pvParameters );
-void lora_downlink_task(void *pvParameters);
-
-static MessageBufferHandle_t downlink_message_buffer_handle;
-
-static TaskHandle_t loraUplinkTask = NULL;
-static TaskHandle_t loraDownlinkTask = NULL;
-
 typedef struct lorawan_handler {
-	handlers_t handlers;
+	MessageBufferHandle_t downlink_message_buffer_handle;
+	lora_driver_payload_t uplink_payload;
+	uint8_t downlink_payload_bytes[7];
+	SemaphoreHandle_t uplink_payload_mut;
+	SemaphoreHandle_t downlink_payload_mut;
 	TickType_t last_messure_circle_time_uplink;
-	TickType_t last_messure_circle_time_downlink;
+	TaskHandle_t lora_uplink_task_h;
 } lorawan_handler_st;
 
-lorawan_handler_t lorawan_handler_create(handlers_t handlers, TickType_t last_messure_circle_time)
-{
-	downlink_message_buffer_handle = xMessageBufferCreate(sizeof(lora_driver_payload_t) * 2); // Here I make room for two downlink messages in the message buffer
-	lora_driver_initialise(1, downlink_message_buffer_handle);
+lorawan_handler_t initialize_lorawan_handler(TickType_t last_messure_circle_time);
+void _lora_setup(void);
+void lora_uplink_task(void *pvParameters );
+void lora_uplink_task_(uint8_t test, void *pvParameters );
+lora_driver_returnCode_t lora_upload_uplink(lorawan_handler_t self);
+void lora_download_downlink(lorawan_handler_t self);
 
-	lorawan_handler_t _new_lorawan_handler = initialize_lorawan_handler(handlers, last_messure_circle_time);
+lorawan_handler_t lorawan_handler_create(TickType_t last_messure_circle_time)
+{
+	lorawan_handler_t self = initialize_lorawan_handler(last_messure_circle_time);
+	xSemaphoreTake(self->uplink_payload_mut, pdMS_TO_TICKS(10));
+	xSemaphoreTake(self->downlink_payload_mut, pdMS_TO_TICKS(10));
+	lora_driver_initialise(ser_USART1, self->downlink_message_buffer_handle);
 
 	xTaskCreate(
 		lora_uplink_task,
 		"LoRaWAN_uplink",  // A name just for humans
 		TASK_LORA_UPLINK_STACK,  // This stack size can be checked & adjusted by reading the Stack Highwater
-		_new_lorawan_handler, // TODO: test if this works
+		self, 
 		TASK_LORA_UPLINK_PRIORITY,    // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
-		&loraUplinkTask);
+		&(self->lora_uplink_task_h));
 
-	return _new_lorawan_handler;
+	return self;
 }
 
-lorawan_handler_t initialize_lorawan_handler(handlers_t handlers, TickType_t last_messure_circle_time) {
+void lorawan_handler_set_uplink(lorawan_handler_t self, uint8_t bytes[10]) {
+	memcpy((self->uplink_payload).bytes, bytes, sizeof(uint8_t) * 10);
+	printf("lorawan_handler_set_uplink byte[0]: %u\n", (self->uplink_payload).bytes[0]);
+	xSemaphoreGive(self->uplink_payload_mut);
+}
+
+uint8_t lorawan_handler_get_downlink(lorawan_handler_t self, uint8_t* bytes) {
+	if (xSemaphoreTake(self->downlink_payload_mut, pdMS_TO_TICKS(60000)) == pdTRUE ) {
+		memcpy(bytes, self->downlink_payload_bytes, sizeof(uint8_t) * 7);
+		return 1;
+	}
+
+	return 0;
+}
+
+void lorawan_handler_destroy(lorawan_handler_t self) {
+	if (self->lora_uplink_task_h != NULL) {
+		vTaskDelete(self->lora_uplink_task_h);
+		self->lora_uplink_task_h = NULL;
+	}
+
+	if (self != NULL) {
+		free(self);
+	}
+}
+
+lorawan_handler_t initialize_lorawan_handler(TickType_t last_messure_circle_time) {
 	lorawan_handler_t _new_lorawan_handler = calloc(sizeof(lorawan_handler_st), 1);
-	_new_lorawan_handler->handlers = handlers;
+	_new_lorawan_handler->downlink_message_buffer_handle = xMessageBufferCreate(sizeof(lora_driver_payload_t) * 2); // Here I make room for two downlink messages in the message buffer
+	_new_lorawan_handler->uplink_payload.portNo = 1;
+	_new_lorawan_handler->uplink_payload.len = 10;
+	memset((_new_lorawan_handler->uplink_payload).bytes, 0, sizeof((_new_lorawan_handler->uplink_payload).bytes));
+	memset(_new_lorawan_handler->downlink_payload_bytes, 0, sizeof(_new_lorawan_handler->downlink_payload_bytes));
+	_new_lorawan_handler->uplink_payload_mut = xSemaphoreCreateMutex();
+	_new_lorawan_handler->downlink_payload_mut = xSemaphoreCreateMutex();
 	_new_lorawan_handler->last_messure_circle_time_uplink = last_messure_circle_time;
-	_new_lorawan_handler->last_messure_circle_time_downlink = last_messure_circle_time;
+	_new_lorawan_handler->lora_uplink_task_h = NULL;
 	return _new_lorawan_handler;
 }
 
@@ -140,17 +170,13 @@ void _lora_setup(void)
 }
 
 /*-----------------------------------------------------------*/
-void lora_uplink_task( void *pvParameters )
+void lora_uplink_task(void *pvParameters ) {
+	lora_uplink_task_(0, pvParameters);
+}
+
+void lora_uplink_task_(uint8_t test, void *pvParameters )
 {
 	lorawan_handler_t self = (lorawan_handler_t) pvParameters;
-	handlers_t handlers = self->handlers;
-	error_handler_t error_handler = get_error_handler(handlers);
-	temperature_t temperature_handler = get_temperature_handler(handlers);
-	humidity_t humidity_handler = get_humidity_handler(handlers);
-	co2_t co2_handler = get_co2_handler(handlers);
-
-	error_handler_report(error_handler, ERROR_PIR);
-	error_handler_report(error_handler, ERROR_SOUND);
 
 	// Hardware reset of LoRaWAN transceiver
 	lora_driver_resetRn2483(1);
@@ -162,111 +188,70 @@ void lora_uplink_task( void *pvParameters )
 	lora_driver_flushBuffers(); // get rid of first version string from module after reset!
 
 	_lora_setup();
-	
-	lora_driver_payload_t _uplink_payload;
-	_uplink_payload.len = 10;
-	_uplink_payload.portNo = 1;
 
-	uint8_t flags;
-	uint8_t max_temp_limit;
-	uint8_t min_temp_limit;
-	uint8_t max_hum_limit;
-	uint8_t min_hum_limit;
-	uint16_t max_co2_limit;
-	lora_driver_payload_t _downlink_payload;
 	const TickType_t xFrequency = pdMS_TO_TICKS(MESURE_CIRCLE_FREAQUENCY); // Upload message every 5 minutes (300000 ms)
-
-	for(;;) {	
-    	UBaseType_t uxHighWaterMark;
-		uxHighWaterMark = uxTaskGetStackHighWaterMark( loraUplinkTask );
-		printf("Lora uplink uxHighWaterMark1: %i\n", uxHighWaterMark);
+	for(;;) {
 		xTaskDelayUntil(&(self->last_messure_circle_time_uplink), xFrequency);
-		flags = error_handler_get_flags(error_handler); 
-		int16_t temp = temperature_get_latest_average_temperature(temperature_handler);
-		uint8_t humidity = humidity_get_latest_average_humidity(humidity_handler);
-		uint16_t co2_ppm = co2_get_latest_average_co2(co2_handler);
-		uint16_t sound = 0; // Dummy sound
-		uint16_t light = 0; // Dummy lux
-		_uplink_payload.bytes[0] = flags;
-		_uplink_payload.bytes[1] = temp >> 8;
-		_uplink_payload.bytes[2] = temp & 0xFF;
-		_uplink_payload.bytes[3] = humidity;
-		_uplink_payload.bytes[4] = co2_ppm >> 8;
-		_uplink_payload.bytes[5] = co2_ppm & 0xFF;
-		_uplink_payload.bytes[6] = sound >> 8;
-		_uplink_payload.bytes[7] = sound & 0xFF;
-		_uplink_payload.bytes[8] = light >> 8;
-		_uplink_payload.bytes[9] = light & 0xFF;
-
-		printf("Payload: ");
-		for (int i = 0; i < _uplink_payload.len; i++)
-		{
-			printf("%i ", _uplink_payload.bytes[i]);
+		lora_driver_returnCode_t rc = lora_upload_uplink(self);
+		vTaskDelay(pdMS_TO_TICKS(5000));
+		if (rc == LORA_MAC_TX_OK) {
+			// The uplink message is sent - Do nothing
+        	printf("Lor hw: %i\n", uxTaskGetStackHighWaterMark(self->lora_uplink_task_h));
+		} else if (rc == LORA_MAC_RX) {
+			// The uplink message is sent and a downlink message is received
+        	lora_download_downlink(self);
 		}
 
-		printf("\n");
+		vTaskDelay(pdMS_TO_TICKS(5000));
+		printf("Upload Message >%s<\n", lora_driver_mapReturnCodeToText(rc));
+		if (test) {
+			break;
+		}
+	}
+}
 
-		status_leds_shortPuls(led_ST4);  // OPTIONAL
-		lora_driver_returnCode_t rc;
-		if ((rc = lora_driver_sendUploadMessage(false, &_uplink_payload)) == LORA_MAC_TX_OK ) {
-			// Do nothing
-		}	else if (rc == LORA_MAC_RX)
-		{
-		// The uplink message is sent and a downlink message is received
-			flags = 0;
-			max_temp_limit = 0;
-			min_temp_limit = 0;
-			max_hum_limit = 0;
-			min_hum_limit = 0;
-			max_co2_limit = 0;
-			_downlink_payload.portNo = 1;
-			xMessageBufferReceive(downlink_message_buffer_handle, &_downlink_payload, sizeof(lora_driver_payload_t), pdMS_TO_TICKS(30000)); // wait maximum 0.5m
-			printf("DOWN LINK: from port: %i with %i bytes received!\n", _downlink_payload.portNo, _downlink_payload.len); // Just for Debug
+lora_driver_returnCode_t lora_upload_uplink(lorawan_handler_t self) {
+	lora_driver_returnCode_t rc;
+	while (1) {
+		if (xSemaphoreTake(self->uplink_payload_mut, pdMS_TO_TICKS(60000UL)) == pdTRUE ) {
 			printf("Payload: ");
-			for (int i = 0; i < _downlink_payload.len; i++)
+			for (int i = 0; i < (self->uplink_payload).len; i++)
 			{
-				printf("%u ", _downlink_payload.bytes[i]);
+				printf("%i ", (self->uplink_payload).bytes[i]);
 			}
 
 			printf("\n");
 
-			if (7 == _downlink_payload.len) // Check that we have got the expected 7 bytes
-			{
-      			// decode the payload into our variales
-				flags = _downlink_payload.bytes[0];
-				// TODO: set open, etc. on actuators.
-				max_temp_limit = ((int16_t) _downlink_payload.bytes[1]) * 10;
-				min_temp_limit = ((int16_t) _downlink_payload.bytes[2]) * 10;
-				temperature_set_limits(temperature_handler, max_temp_limit, min_temp_limit);
-				max_hum_limit = _downlink_payload.bytes[3];
-				min_hum_limit = _downlink_payload.bytes[4];
-				humidity_set_limits(humidity_handler, max_hum_limit, min_hum_limit);
-      			max_co2_limit = (_downlink_payload.bytes[5] << 8) + _downlink_payload.bytes[6];
-				// TODO: set co2 limits
-				break;
-			} else {
-				printf("\n Downlink payload was not received\n");
-			} 
+			status_leds_shortPuls(led_ST4);  // OPTIONAL
+			rc = lora_driver_sendUploadMessage(false, &(self->uplink_payload));
+			break;
 		}
-
-		printf("Upload Message >%s<\n", lora_driver_mapReturnCodeToText(rc));
-		uxHighWaterMark = uxTaskGetStackHighWaterMark( loraUplinkTask );
-		printf("Lora uplink uxHighWaterMark2: %i\n", uxHighWaterMark);
 	}
+
+	return rc;
 }
 
-void lorawan_handler_destroy(lorawan_handler_t self) {
-	if (self != NULL) {
-		free(self);
-	}
-	
-	if (loraUplinkTask != NULL) {
-		vTaskDelete(loraUplinkTask);
-		loraUplinkTask = NULL;
-	}
-	
-	if (loraDownlinkTask != NULL) {
-		vTaskDelete(loraDownlinkTask);
-		loraDownlinkTask = NULL;
+void lora_download_downlink(lorawan_handler_t self) {
+	// The uplink message is sent and a downlink message is received
+    printf("Lor hw: %i\n", uxTaskGetStackHighWaterMark(self->lora_uplink_task_h));
+	lora_driver_payload_t _downlink_payload;
+	size_t downlink_size = xMessageBufferReceive(self->downlink_message_buffer_handle, &_downlink_payload, sizeof(lora_driver_payload_t), pdMS_TO_TICKS(180000)); // wait maximum 0.5m
+    printf("Lor hw: %i\n", uxTaskGetStackHighWaterMark(self->lora_uplink_task_h));
+	vTaskDelay(pdMS_TO_TICKS(5000));
+	printf("downlink_size: %i\n", downlink_size);
+	if(downlink_size > 0 && _downlink_payload.len == 7) {
+		printf("\n Downlink payload received\n");
+		printf("Payload: ");
+		for (int i = 0; i < 7; i++)
+		{
+			printf("%u ", _downlink_payload.bytes[i]);
+		}
+
+		printf("\n");
+    	printf("Lor hw: %i\n", uxTaskGetStackHighWaterMark(self->lora_uplink_task_h));
+		vTaskDelay(pdMS_TO_TICKS(5000));
+		memcpy(self->downlink_payload_bytes, _downlink_payload.bytes, sizeof(uint8_t) * 7);
+    	printf("Lor hw: %i\n", uxTaskGetStackHighWaterMark(self->lora_uplink_task_h));
+		xSemaphoreGive(self->downlink_payload_mut);
 	}
 }

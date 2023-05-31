@@ -1,17 +1,20 @@
 #pragma once
 
 #include "ATMEGA_FreeRTOS.h"
+#include "avr_io.h"
+#include "serial.h"
 #include "task.h"
-#include "semphr.h"
 #include "display_7seg.h"
 #include "queue.h"
 #include "semphr.h"
-#include "mh_z19.h"
 #include "hih8120.h"
 #include "rc_servo.h"
-#include <status_leds.h>
-#include <message_buffer.h>
+#include "status_leds.h"
+#include "message_buffer.h"
+#include <stdbool.h>
+#include "mh_z19.h"
 #include "lora_driver.h"
+#include "stdio_driver.h"
 
 
 #include "fff.h"
@@ -75,6 +78,12 @@ DECLARE_FAKE_VALUE_FUNC(TickType_t, xTaskGetTickCount);
 //void vTaskDelete( TaskHandle_t xTaskToDelete )
 DECLARE_FAKE_VOID_FUNC(vTaskDelete, TaskHandle_t);
 
+//void portYIELD( void )
+DECLARE_FAKE_VOID_FUNC(taskYIELD);
+
+//UBaseType_t uxTaskGetStackHighWaterMark( TaskHandle_t xTask )
+DECLARE_FAKE_VALUE_FUNC(UBaseType_t, uxTaskGetStackHighWaterMark, TaskHandle_t);
+
 // ---------------------------- ~ SEMPHR ~ ---------------------------------------
 
 // BaseType_t xSemaphoreTake(SemaphoreHandle_t xSemaphore, TickType_t xTicksToWait );
@@ -133,8 +142,6 @@ DECLARE_FAKE_VOID_FUNC(rc_servo_setPosition, uint8_t, int8_t);
 
 DECLARE_FAKE_VOID_FUNC(lora_driver_initialise, serial_comPort_t, MessageBufferHandle_t);
 
-DECLARE_FAKE_VOID_FUNC(status_leds_slowBlink, status_leds_t);
-
 DECLARE_FAKE_VALUE_FUNC(char*, lora_driver_mapReturnCodeToText, lora_driver_returnCode_t);
 
 DECLARE_FAKE_VALUE_FUNC(lora_driver_returnCode_t, lora_driver_rn2483FactoryReset);
@@ -159,12 +166,12 @@ DECLARE_FAKE_VOID_FUNC(lora_driver_resetRn2483, uint8_t);
 
 DECLARE_FAKE_VOID_FUNC(lora_driver_flushBuffers);
 
-DECLARE_FAKE_VOID_FUNC(_lora_setup);
-
-DECLARE_FAKE_VALUE_FUNC(lora_driver_returnCode_t, lora_driver_sendUploadMessage, lora_driver_payload_t*);
+DECLARE_FAKE_VALUE_FUNC(lora_driver_returnCode_t, lora_driver_sendUploadMessage, bool, lora_driver_payload_t*);
 
 
 // ---------------------------- ~ STATUs_LEDS ~ ---------------------------------------
+
+DECLARE_FAKE_VOID_FUNC(status_leds_initialise, UBaseType_t);
 
 DECLARE_FAKE_VOID_FUNC(status_leds_slowBlink, status_leds_t);
 
@@ -181,7 +188,11 @@ DECLARE_FAKE_VOID_FUNC(status_leds_shortPuls, status_leds_t);
 
 // ---------------------------- ~ MESSAGE_BUFFER ~ ---------------------------------------
 
-DECLARE_FAKE_VOID_FUNC(xMessageBufferReceive, MessageBufferHandle_t, lora_driver_payload_t*, unsigned long long, TickType_t);
+DECLARE_FAKE_VALUE_FUNC(size_t, xMessageBufferReceive, MessageBufferHandle_t, void*, size_t, TickType_t);
 
 DECLARE_FAKE_VALUE_FUNC(MessageBufferHandle_t, xMessageBufferCreate, long);
+
+// ---------------------------- ~ STDIO_DRIVER ~ ---------------------------------------
+
+DECLARE_FAKE_VOID_FUNC(stdio_initialise, uint8_t);
 

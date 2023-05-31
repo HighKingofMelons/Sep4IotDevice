@@ -20,7 +20,6 @@ DEFINE_FAKE_VOID_FUNC(display_7seg_displayHex, char*);
 DEFINE_FAKE_VOID_FUNC(display_7seg_displayErr);
 
 // ------------------------
-#include "queue.h"
 
 // QueueHandle_t xQueueCreate( UBaseType_t uxQueueLength, UBaseType_t uxItemSize );
 DEFINE_FAKE_VALUE_FUNC(QueueHandle_t, xQueueCreate, UBaseType_t, UBaseType_t);
@@ -60,6 +59,12 @@ DEFINE_FAKE_VALUE_FUNC(TickType_t, xTaskGetTickCount);
 
 //void vTaskDelete( TaskHandle_t xTaskToDelete )
 DEFINE_FAKE_VOID_FUNC(vTaskDelete, TaskHandle_t);
+
+//void portYIELD( void )
+DEFINE_FAKE_VOID_FUNC(taskYIELD);
+
+//UBaseType_t uxTaskGetStackHighWaterMark( TaskHandle_t xTask )
+DEFINE_FAKE_VALUE_FUNC(UBaseType_t, uxTaskGetStackHighWaterMark, TaskHandle_t);
 
 
 // ---------------------------- ~ SEMPHR ~ ---------------------------------------
@@ -121,8 +126,6 @@ DEFINE_FAKE_VOID_FUNC(rc_servo_setPosition, uint8_t, int8_t);
 
 DEFINE_FAKE_VOID_FUNC(lora_driver_initialise, serial_comPort_t, MessageBufferHandle_t);
 
-DEFINE_FAKE_VOID_FUNC(status_leds_slowBlink, status_leds_t);
-
 DEFINE_FAKE_VALUE_FUNC(char*, lora_driver_mapReturnCodeToText, lora_driver_returnCode_t);
 
 DEFINE_FAKE_VALUE_FUNC(lora_driver_returnCode_t, lora_driver_rn2483FactoryReset);
@@ -147,12 +150,12 @@ DEFINE_FAKE_VOID_FUNC(lora_driver_resetRn2483, uint8_t);
 
 DEFINE_FAKE_VOID_FUNC(lora_driver_flushBuffers);
 
-DEFINE_FAKE_VOID_FUNC(_lora_setup);
-
-DEFINE_FAKE_VALUE_FUNC(lora_driver_returnCode_t, lora_driver_sendUploadMessage, lora_driver_payload_t*);
+DEFINE_FAKE_VALUE_FUNC(lora_driver_returnCode_t, lora_driver_sendUploadMessage, bool, lora_driver_payload_t*);
 
 
 // ---------------------------- ~ STATUs_LEDS ~ ---------------------------------------
+
+DEFINE_FAKE_VOID_FUNC(status_leds_initialise, UBaseType_t);
 
 DEFINE_FAKE_VOID_FUNC(status_leds_slowBlink, status_leds_t);
 
@@ -169,6 +172,10 @@ DEFINE_FAKE_VOID_FUNC(status_leds_shortPuls, status_leds_t);
 
 // ---------------------------- ~ MESSAGE_BUFFER ~ ---------------------------------------
 
-DEFINE_FAKE_VOID_FUNC(xMessageBufferReceive, MessageBufferHandle_t, lora_driver_payload_t*, unsigned long long, TickType_t);
+DEFINE_FAKE_VALUE_FUNC(size_t, xMessageBufferReceive, MessageBufferHandle_t, void*, size_t, TickType_t);
 
 DEFINE_FAKE_VALUE_FUNC(MessageBufferHandle_t, xMessageBufferCreate, long);
+
+// ---------------------------- ~ STDIO_DRIVER ~ ---------------------------------------
+
+DEFINE_FAKE_VOID_FUNC(stdio_initialise, uint8_t);

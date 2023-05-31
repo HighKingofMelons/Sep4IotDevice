@@ -1,8 +1,4 @@
 #pragma once
-#include <ATMEGA_FreeRTOS.h>
-
-#include "temperature.h"
-#include "humidity.h"
 
 typedef struct actuation_handler *actuation_handler_t;
 
@@ -25,5 +21,12 @@ typedef enum {
     AIRCON_OFF  =  50
 } aircon_state_t;
 
+typedef enum {
+    ACTUATORS_ON =  1,
+    ACTUATORS_OFF = 0,
+} actuator_state_t;
+
 void actuators_aircon_override_state(actuation_handler_t self, aircon_state_t state);
 void actuators_aircon_disable_override(actuation_handler_t self);
+
+void actuators_turn_on_of(actuation_handler_t self, actuator_state_t state);
