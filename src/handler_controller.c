@@ -89,7 +89,7 @@ handler_controller_t initialise_handler_controller() {
 	_new_handler_controller->humidity_handler = humidity_create(measureCircleFreaquency);
 	_new_handler_controller->co2_handler = co2_create(measureCircleFreaquency);
 	_new_handler_controller->error_handler = error_handler_init();
-	_new_handler_controller->actuation_handler = actuation_handler_init(_new_handler_controller->temperature_handler, _new_handler_controller->humidity_handler);
+	_new_handler_controller->actuation_handler = actuation_handler_init(_new_handler_controller->temperature_handler, _new_handler_controller->humidity_handler, _new_handler_controller->co2_handler);
 	_new_handler_controller->lorawan_handler = lorawan_handler_create(last_messure_circle_time);
 	_new_handler_controller->handler_controller_h = NULL;
     return _new_handler_controller;

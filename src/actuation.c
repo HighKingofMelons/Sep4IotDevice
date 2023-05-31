@@ -6,10 +6,10 @@
 #include <semphr.h>
 #include <rc_servo.h>
 
-#include "taskConfig.h"
-#include "temperature.h"
-#include "humidity.h"
-#include "co2.h"
+#include <taskConfig.h>
+#include <temperature.h>
+#include <humidity.h>
+#include <co2.h>
 
 #include "actuation.h"
 
@@ -18,6 +18,7 @@ TaskHandle_t actuation_task_h;
 struct actuation_handler {
     temperature_t temp_handler;
     humidity_t humid_handler;
+    co2_t co2_handler;
 
     SemaphoreHandle_t override_sema;
     SemaphoreHandle_t actuator_state_sema;
@@ -42,17 +43,15 @@ void update_vent(actuation_handler_t self) {
         return;
     }
 
-    switch (humidity_acceptability_status(self->humid_handler))
+    if (0 != humidity_acceptability_status(self->humid_handler) | 0 != co2_acceptability_status(self->co2_handler)) 
     {
-    case  1:
         rc_servo_setPosition(VENTILATION, VENT_ON);
         printf("VENT_ON\n");
-        break;
-    case  0:
-    case -1:
+    }
+    else
+    {
         rc_servo_setPosition(VENTILATION, VENT_OFF);
         printf("VENT_OFF\n");
-        break;
     }
 
     xSemaphoreGive(self->override_sema);
@@ -104,7 +103,7 @@ void actuation_task(void *pvParameters) {
     }
 }
 
-actuation_handler_t actuation_handler_init(temperature_t temperature, humidity_t humidity) {
+actuation_handler_t actuation_handler_init(temperature_t temperature, humidity_t humidity, co2_t co2) {
     rc_servo_initialise();
 
     actuation_handler_t _handler = calloc(1, sizeof(struct actuation_handler));
@@ -112,6 +111,7 @@ actuation_handler_t actuation_handler_init(temperature_t temperature, humidity_t
     *_handler = (struct actuation_handler) {
         temperature,
         humidity,
+        co2,
 
         xSemaphoreCreateMutex(),
         xSemaphoreCreateMutex(),
