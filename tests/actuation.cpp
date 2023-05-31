@@ -4,8 +4,8 @@ extern "C" {
     #include <stdint.h>
     #include "fakes.h"
     #include "Controls/temperature.h"
-    #include "Controls/humidity.h"
-    #include "Controls/co2.h"
+    #include "Controls/co2_handler.h"
+    #include "Controls/humidity_handler.h"
     #include "Controls/actuation.h"
 }
 
@@ -18,9 +18,10 @@ humidity_st makeHumid (int8_t accept_result) {
         0,
         0,
         1,
-        1,
         20,
-        10
+        10,
+        0,
+        0
     };
 
     return _humi;
@@ -71,9 +72,9 @@ TEST(actuation_handler, test_fakestructs) {
 
     xSemaphoreTake_fake.return_val = pdTRUE;
 
-    ASSERT_EQ(humidity_acceptability_status(&hum1), 1);
-    ASSERT_EQ(humidity_acceptability_status(&hum2), 0);
-    ASSERT_EQ(humidity_acceptability_status(&hum3), -1);
+    ASSERT_EQ(humidity_get_acceptability_status(&hum1), 1);
+    ASSERT_EQ(humidity_get_acceptability_status(&hum2), 0);
+    ASSERT_EQ(humidity_get_acceptability_status(&hum3), -1);
 
     temperature_st tem1 = makeTemp(1);
     temperature_st tem2 = makeTemp(0);

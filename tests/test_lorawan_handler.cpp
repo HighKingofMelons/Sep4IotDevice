@@ -4,12 +4,7 @@ extern "C"
 {
     #include "fakes.h"
     #include <taskConfig.h>
-    #include "Controls/temperature.h"
-    #include "Controls/humidity.h"
-    #include "Controls/co2.h"
-    #include "Controls/error.h"
-    #include "Controls/actuation.h"
-    #include "Controls/LoRaWANHandler.h"
+    #include "Controls/lorawan_handler.h"
 }
 
 class Test_lorawan_handler : public ::testing::Test
@@ -127,7 +122,7 @@ protected:
 
         return _actuation;
     }
-
+  
     void copyArrayMembers(uint8_t dest[], uint8_t src[], int size)
     { 
         for(int i = 0; i < size; i++) {

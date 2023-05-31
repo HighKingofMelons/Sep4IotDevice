@@ -11,7 +11,7 @@
 #include <display_7seg.h>
 
 #include "taskConfig.h"
-#include "error.h"
+#include "error_handler.h"
 
 struct error_handler {
     QueueHandle_t queue;
@@ -19,6 +19,7 @@ struct error_handler {
     error_flags_t flags;
     BaseType_t display_on;
     uint8_t current_display;
+    TaskHandle_t error_task_h;
 };
 
 enum request_type {
@@ -32,34 +33,34 @@ struct error_item
     enum request_type state;
 };
 
-TaskHandle_t error_task_h;
-
 void error_handler_task (void *pvArguments);
 
 error_handler_t error_handler_init () {
     display_7seg_initialise(NULL);
 
-    error_handler_t _error_handler = calloc(1, sizeof(struct error_handler));
+    error_handler_t self = calloc(1, sizeof(struct error_handler));
 
-    *_error_handler = (struct error_handler) {
+    *self = (struct error_handler) {
         xQueueCreate(10, sizeof(struct error_item)),
         xSemaphoreCreateMutex(),
         0,
-        pdFALSE
+        pdFALSE,
+        0,
+        NULL
     };
 
-    xSemaphoreGive(_error_handler->flag_semaphore);
+    xSemaphoreGive(self->flag_semaphore);
 
     xTaskCreate (
         error_handler_task,
         "Error Handler Task",
         TASK_ERROR_STACK,
-        _error_handler,
+        self,
         TASK_ERROR_PRIORITY,
-        &error_task_h
+        &(self->error_task_h)
     );
 
-    return _error_handler;
+    return self;
 }
 
 void update_flags(error_handler_t self) {
@@ -160,21 +161,21 @@ error_flags_t error_handler_get_flags(error_handler_t self) {
 }
 
 void error_handler_task (void *pvArguments) {
-    struct error_handler *handler = pvArguments;
+    error_handler_t self = (error_handler_t) pvArguments;
     TickType_t lastWake = xTaskGetTickCount();
 
     for (;;)
     {
-        update_flags(handler);
-        update_display(handler);
+        update_flags(self);
+        update_display(self);
         xTaskDelayUntil((TickType_t *const) &lastWake, pdMS_TO_TICKS(15000));
         lastWake = xTaskGetTickCount();
-        printf("Err hw: %i\n", uxTaskGetStackHighWaterMark(error_task_h));
+        printf("Err hw: %i\n", uxTaskGetStackHighWaterMark(self->error_task_h));
     }
 }
 
 void error_handler_destroy(error_handler_t self) {
-    vTaskDelete(error_task_h);
+    vTaskDelete(self->error_task_h);
     
     if (self->display_on)
         display_7seg_powerDown();

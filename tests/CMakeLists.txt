@@ -13,31 +13,31 @@ set(OBJECT_DIR ${CMAKE_SOURCE_DIR}/build/tests/CMakeFiles/Sep4IotDeviceTests.dir
 # Source files to be tested
 set(SOURCES_TEST
     fakes.c
-    ../src/co2.c
-    ../src/error.c
+    ../src/co2_handler.c
+    ../src/error_handler.c
     ../src/temperature.c
-    ../src/humidity.c
+    ../src/humidity_handler.c
     ../src/actuation.c
-    ../src/LoRaWANHandler.c
+    ../src/lorawan_handler.c
     ../src/handler_controller.c
 )
 
 set(GCOV_FILES
     ${OBJECT_DIR}actuation.c.gcda
-    ${OBJECT_DIR}co2.c.gcda
-    ${OBJECT_DIR}error.c.gcda
-    ${OBJECT_DIR}humidity.c.gcda
+    ${OBJECT_DIR}co2_handler.c.gcda
+    ${OBJECT_DIR}error_handler.c.gcda
+    ${OBJECT_DIR}humidity_handler.c.gcda
     ${OBJECT_DIR}temperature.c.gcda
-    ${OBJECT_DIR}LoRaWANHandler.c.gcda
+    ${OBJECT_DIR}lorawan_handler.c.gcda
     ${OBJECT_DIR}handler_controller.c.gcda
 )
 
 # The tests themselves
 set(TESTS
-    test_co2.cpp
+    test_co2_handler.cpp
     test_temperature.cpp
-    error.cpp
-    test_humidity.cpp
+    test_error_handler.cpp
+    test_humidity_handler.cpp
     actuation.cpp
     test_lorawan_handler.cpp
     test_handler_controller.cpp

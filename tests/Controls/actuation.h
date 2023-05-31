@@ -1,8 +1,8 @@
 #pragma once
 #include <actuation.h>
 #include <temperature.h>
-#include <humidity.h>
-#include <co2.h>
+#include <co2_handler.h>
+#include <humidity_handler.h>
 
 void update_aircon(actuation_handler_t self);
 void update_vent(actuation_handler_t self);

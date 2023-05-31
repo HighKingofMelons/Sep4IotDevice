@@ -6,10 +6,10 @@
 #include <semphr.h>
 #include <rc_servo.h>
 
-#include <taskConfig.h>
-#include <temperature.h>
-#include <humidity.h>
-#include <co2.h>
+#include "taskConfig.h"
+#include "temperature.h"
+#include "humidity_handler.h"
+#include "co2_handler.h"
 
 #include "actuation.h"
 
