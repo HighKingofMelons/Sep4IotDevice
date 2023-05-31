@@ -53,7 +53,6 @@ co2_st makeCo2 (int8_t accept_result) {
         0,
         0,
         1,
-        1,
         20,
         10
     };

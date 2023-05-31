@@ -10,7 +10,7 @@ void update_vent(actuation_handler_t self);
 struct actuation_handler {
     temperature_t temp_handler;
     humidity_t humid_handler;
-    co2_t co2_handler;
+    co2_handler_t co2_handler;
 
     SemaphoreHandle_t override_sema;
     SemaphoreHandle_t actuator_state_sema;

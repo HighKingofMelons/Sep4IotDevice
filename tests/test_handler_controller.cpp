@@ -91,7 +91,7 @@ protected:
         return _error;
     }
 
-    actuation_handler makeActuation(temperature_t temp, humidity_t hum, co2_t co2) {
+    actuation_handler makeActuation(temperature_t temp, humidity_t hum, co2_handler_t co2) {
         actuation_handler _actuation = {
             temp,
             hum,

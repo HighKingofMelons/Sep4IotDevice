@@ -5,6 +5,11 @@ extern "C"
     #include "fakes.h"
     #include <taskConfig.h>
     #include "Controls/lorawan_handler.h"
+    #include "Controls/temperature.h"
+    #include "Controls/humidity_handler.h"
+    #include "Controls/co2_handler.h"
+    #include "Controls/actuation.h"
+    #include "Controls/error_handler.h"
 }
 
 class Test_lorawan_handler : public ::testing::Test
@@ -96,7 +101,7 @@ protected:
         return _co2;
     }
 
-    error_handler makeError() {
+    struct error_handler makeError() {
         error_handler _error = {
             0,
             0,
@@ -108,7 +113,7 @@ protected:
         return _error;
     }
 
-    actuation_handler makeActuation(temperature_t temp, humidity_t hum, co2_t co2) {
+    actuation_handler makeActuation(temperature_t temp, humidity_t hum, co2_handler_t co2) {
         actuation_handler _actuation = {
             temp,
             hum,
