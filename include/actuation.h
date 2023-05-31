@@ -29,4 +29,4 @@ typedef enum {
 void actuators_aircon_override_state(actuation_handler_t self, aircon_state_t state);
 void actuators_aircon_disable_override(actuation_handler_t self);
 
-void actuators_turn_on_of(actuation_handler_t self, actuator_state_t state);
+void actuators_turn_on_off(actuation_handler_t self, actuator_state_t state);

@@ -189,7 +189,7 @@ void actuators_aircon_disable_override(actuation_handler_t self) {
     xSemaphoreGive(self->override_sema);
 }
 
-void actuators_turn_on_of(actuation_handler_t self, actuator_state_t state) {
+void actuators_turn_on_off(actuation_handler_t self, actuator_state_t state) {
     while(1) {
         if (pdTRUE == xSemaphoreTake(self->actuator_state_sema, pdMS_TO_TICKS(50))) {
            break;
