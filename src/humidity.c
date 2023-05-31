@@ -133,11 +133,7 @@ int8_t humidity_acceptability_status(humidity_t self) {
 	return returnValue;
 }
 	
-void humidity_destroy(humidity_t self) {
-	if (self != NULL) {
-		free(self);
-	}
-	
+void humidity_destroy(humidity_t self) {	
 	if (mesureHumidityTask != NULL) {
 		vTaskDelete(mesureHumidityTask);
 		mesureHumidityTask = NULL;
@@ -152,6 +148,14 @@ void humidity_destroy(humidity_t self) {
 	} else {
 		//HIH8120_OUT_OF_HEAP
 		// TODO:
+	}
+
+	vSemaphoreDelete(self->latestAvgHumidityMutex);
+	vSemaphoreDelete(self->maxLimitMutex);
+	vSemaphoreDelete(self->minLimitMutex);
+
+	if (self != NULL) {
+		free(self);
 	}
 }
 
