@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.7"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Doxygen with github: include/humidity.h Source File</title>
+<title>Doxygen with github: include/humidity_handler.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -73,34 +73,28 @@ $(function() {
 </div>
 </div><!-- top -->
 <div class="header">
-  <div class="headertitle"><div class="title">humidity.h</div></div>
+  <div class="headertitle"><div class="title">humidity_handler.h</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment"> * humidity.h</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment"> * humidity_handler.h</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment"> *</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment"> * Created: 27/04/2023 11.42.59</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment"> *  Author: andre</span></div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="comment"> */</span> </div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="comment">/*</span></div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="comment"> * humidity.h</span></div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="comment"> *</span></div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="comment"> * Created: 27/04/2023 11.42.59</span></div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="comment"> *  Author: andre</span></div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="comment"> */</span> </div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span> </div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &quot;error_handler.h&quot;</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code hl_struct" href="structhumidity.html">humidity</a>* <a class="code hl_struct" href="structhumidity.html">humidity_t</a>;</div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><a class="code hl_struct" href="structhumidity.html">humidity_t</a> humidity_create(<a class="code hl_struct" href="structerror__handler.html">error_handler_t</a> <a class="code hl_struct" href="structerror__handler.html">error_handler</a>, TickType_t lastMessureCircleTime);</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>uint8_t humidity_get_latest_average_humidity(<a class="code hl_struct" href="structhumidity.html">humidity_t</a> self);</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="keywordtype">void</span> humidity_set_limits(<a class="code hl_struct" href="structhumidity.html">humidity_t</a> self, uint8_t maxLimit, uint8_t minLimit);</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>int8_t humidity_get_acceptability_status(<a class="code hl_struct" href="structhumidity.html">humidity_t</a> self);</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="keywordtype">void</span> humidity_destroy(<a class="code hl_struct" href="structhumidity.html">humidity_t</a> self);</div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code hl_struct" href="structhumidity.html">humidity</a>* <a class="code hl_struct" href="structhumidity.html">humidity_t</a>;</div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><a class="code hl_struct" href="structhumidity.html">humidity_t</a> humidity_create(TickType_t mesureCircleFreequency);</div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>uint8_t humidity_get_latest_average_humidity(<a class="code hl_struct" href="structhumidity.html">humidity_t</a> self);</div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="keywordtype">void</span> humidity_set_limits(<a class="code hl_struct" href="structhumidity.html">humidity_t</a> self, uint8_t maxLimit, uint8_t minLimit);</div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>int8_t humidity_acceptability_status(<a class="code hl_struct" href="structhumidity.html">humidity_t</a> self);</div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="keywordtype">void</span> humidity_destroy(<a class="code hl_struct" href="structhumidity.html">humidity_t</a> self);</div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span> </div>
-<div class="ttc" id="astructhumidity_html"><div class="ttname"><a href="structhumidity.html">humidity</a></div><div class="ttdef"><b>Definition</b> humidity.c:35</div></div>
+<div class="ttc" id="astructerror__handler_html"><div class="ttname"><a href="structerror__handler.html">error_handler</a></div><div class="ttdef"><b>Definition</b> error_handler.c:16</div></div>
+<div class="ttc" id="astructhumidity_html"><div class="ttname"><a href="structhumidity.html">humidity</a></div><div class="ttdef"><b>Definition</b> humidity_handler.c:34</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
