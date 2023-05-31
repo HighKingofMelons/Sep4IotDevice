@@ -9,7 +9,7 @@
 #include "taskConfig.h"
 #include "temperature.h"
 #include "humidity.h"
-#include "co2.h"
+#include "co2_handler.h"
 
 #include "actuation.h"
 

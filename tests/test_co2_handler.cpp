@@ -5,7 +5,8 @@
 extern "C"
 {
     #include "fakes.h"
-    #include "../include/co2.h"
+    #include "Controls/error.h"
+    #include "Controls/co2_handler.h"
     #include <../include/taskConfig.h>
 }
 
@@ -25,21 +26,32 @@ class Test_co2 : public ::testing::Test{
             RESET_FAKE(xTaskDelayUntil);
             RESET_FAKE(mh_z19_takeMeassuring);
             RESET_FAKE(mh_z19_getCo2Ppm);
-
         }
 
         void TearDown() override{
-
         }
 
-        void callFunctionNTimes(void (*func)(co2_t, uint16_t), co2_t parameter, uint16_t ppm, int n)
+        void callFunctionNTimes(void (*func)(co2_handler_t, uint16_t), co2_handler_t parameter, uint16_t ppm, int n)
         {
             for (int i = 0; i < n; i++)
             {
                 func(parameter, ppm);
             }
         }
+
+    error_handler makeErrorHandler() {
+        error_handler _error = {
+            0,
+            0,
+            0,
+            0,
+            0
+        };
+
+        return _error;
+    }
 };
+
 uint16_t co2item;
 mh_z19_returnCode_t returnco2;
 
@@ -56,19 +68,23 @@ TEST_F(Test_co2, co2_treate_freaquency_300000UL)
         xTaskGetTickCount_fake.return_val = (TickType_t)50;
         TickType_t freaquency = pdMS_TO_TICKS(300000UL);
 
-        co2_t result_co2 = co2_create(freaquency);
+        error_handler error_handler = makeErrorHandler();
+        co2_handler_t result_co2 = co2_create(&error_handler, freaquency);
+
         EXPECT_EQ(1, mh_z19_takeMeassuring_fake.call_count);
         EXPECT_EQ(1, mh_z19_takeMeassuring_fake.call_count);
-        EXPECT_EQ(1, xTaskGetTickCount_fake.call_count);
+        EXPECT_EQ(0, xTaskGetTickCount_fake.call_count);
         EXPECT_EQ(1, xSemaphoreCreateMutex_fake.call_count);
         EXPECT_EQ(result_co2, xTaskCreate_fake.arg3_val);
 }
+
 TEST_F(Test_co2, co2_get_latest_average_co2_0)
 {
         mh_z19_takeMeassuring_fake.return_val = MHZ19_OK;
         BaseType_t semaphoreTakeReturnVals[3] = {0, 0, 1};
         SET_RETURN_SEQ(xSemaphoreTake, semaphoreTakeReturnVals, 3);
-        co2_t result_co2 = co2_create(pdMS_TO_TICKS(300000UL));
+        error_handler error_handler = makeErrorHandler();
+        co2_handler_t result_co2 = co2_create(&error_handler, pdMS_TO_TICKS(300000UL));
 
         uint16_t result_average = co2_get_latest_average_co2(result_co2);
 
@@ -76,50 +92,75 @@ TEST_F(Test_co2, co2_get_latest_average_co2_0)
         EXPECT_EQ(1, xSemaphoreGive_fake.call_count);
         EXPECT_EQ(0, result_average);
 }
+
 TEST_F(Test_co2, co2_initialize_co2_driver){
         mh_z19_initialise((ser_USART3));
         mh_z19_takeMeassuring_fake.return_val = MHZ19_OK;
         xTaskGetTickCount_fake.return_val = (TickType_t)50;
         TickType_t freaquency = pdMS_TO_TICKS(300000UL);
 
-        co2_t result_co2 = co2_create(freaquency);
+        error_handler error_handler = makeErrorHandler();
+        co2_handler_t result_co2 = co2_create(&error_handler, freaquency);
+
         EXPECT_EQ(1, mh_z19_takeMeassuring_fake.call_count);
-        EXPECT_EQ(1, xTaskGetTickCount_fake.call_count);
+        EXPECT_EQ(0, xTaskGetTickCount_fake.call_count);
 }
-TEST(co2, Create_co2)
+
+TEST_F(Test_co2, create_co2)
 {
-    co2_t co2_1 = co2_create(pdMS_TO_TICKS((uint16_t)300000UL));
-    co2_t co2_2 = co2_1;
-    co2_t co2_3 = co2_create(pdMS_TO_TICKS((uint16_t)300000UL));
+    error_handler error_handler = makeErrorHandler();
+    co2_handler_t co2_1 = co2_create(&error_handler, pdMS_TO_TICKS(300000UL));
+    co2_handler_t co2_2 = co2_1;
+    co2_handler_t co2_3 = co2_create(&error_handler, pdMS_TO_TICKS(300000UL));
     EXPECT_EQ(co2_1, co2_2);
     EXPECT_FALSE(co2_1 == co2_3);
 }
-TEST(co2, Avg_co2)
+
+TEST_F(Test_co2, avg_co2)
 {
     BaseType_t return_sec = pdTRUE;
     SET_RETURN_SEQ(xSemaphoreTake, &return_sec, 1);
-    EXPECT_FALSE(co2_get_latest_average_co2(co2_create(pdMS_TO_TICKS((uint16_t)300000UL))));
+
+    error_handler error_handler = makeErrorHandler();
+    co2_handler_t result_co2 = co2_create(&error_handler, pdMS_TO_TICKS((uint16_t)300000UL));
+
+    EXPECT_FALSE(co2_get_latest_average_co2(result_co2));
 }
-TEST(co2, AddCo2)
+
+TEST_F(Test_co2, addCo2)
 {
-    co2_t co2 = co2_create(pdMS_TO_TICKS((uint16_t)300000UL));
+    error_handler error_handler = makeErrorHandler();
+    co2_handler_t co2 = co2_create(&error_handler, pdMS_TO_TICKS((uint16_t)300000UL));
     addCo2(co2, 666);
     EXPECT_TRUE(co2);
 }
-TEST(co2, Mesure)
+
+TEST_F(Test_co2, mesure)
 {
-    co2_t co2 = co2_create(pdMS_TO_TICKS((uint16_t)300000UL));
-    EXPECT_EQ(makeOneCo2Mesurment(co2), 0);
+    xSemaphoreTake_fake.return_val = pdTRUE;
+    error_handler error_handler = makeErrorHandler();
+    co2_handler_t co2 = co2_create(&error_handler, pdMS_TO_TICKS((uint16_t)300000UL));
+
+    makeOneCo2Mesurment(co2);
+
+    EXPECT_EQ(error_handler_get_flags(&error_handler), 0);
 }
-TEST(co2, Reset)
+
+TEST_F(Test_co2, reset)
 {
-    co2_t co2 = co2_create(pdMS_TO_TICKS((uint16_t)300000UL));
+    error_handler error_handler = makeErrorHandler();
+    co2_handler_t co2 = co2_create(&error_handler, pdMS_TO_TICKS((uint16_t)300000UL));
+
     resetCo2Array(co2);
+
     EXPECT_TRUE(co2);
 }
-TEST(co2, Calculate)
+
+TEST_F(Test_co2, calculate)
 {
-    co2_t co2 = co2_create(pdMS_TO_TICKS((uint16_t)300000UL));
+    error_handler error_handler = makeErrorHandler();
+    co2_handler_t co2 = co2_create(&error_handler, pdMS_TO_TICKS((uint16_t)300000UL));
+
     BaseType_t return_sec[] = {pdFALSE, pdTRUE};
     SET_RETURN_SEQ(xSemaphoreTake, &return_sec[1], 1);
     calculateCo2(co2);
@@ -135,7 +176,8 @@ TEST_F(Test_co2, co2_Messure)
     returnco2 = MHZ19_OK;
     
     xSemaphoreTake_fake.return_val = true;
-    co2_t result_co2 = co2_create(pdMS_TO_TICKS(300000UL));
+    error_handler error_handler = makeErrorHandler();
+    co2_handler_t result_co2 = co2_create(&error_handler, pdMS_TO_TICKS((uint16_t)300000UL));
     uint16_t ppm;
     mh_z19_getCo2Ppm(&ppm);
 
@@ -147,7 +189,8 @@ TEST_F(Test_co2, co2_get_latest_average_co2)
     mh_z19_takeMeassuring_fake.return_val = MHZ19_OK;
     BaseType_t semaphoreTakeReturnVals[3] = {0, 0, 1};
     SET_RETURN_SEQ(xSemaphoreTake, semaphoreTakeReturnVals, 3);
-    co2_t result_co2 = co2_create(pdMS_TO_TICKS(300000UL));
+    error_handler error_handler = makeErrorHandler();
+    co2_handler_t result_co2 = co2_create(&error_handler, pdMS_TO_TICKS((uint16_t)300000UL));
 
     uint16_t result_average = co2_get_latest_average_co2(result_co2);
 
@@ -155,6 +198,7 @@ TEST_F(Test_co2, co2_get_latest_average_co2)
     EXPECT_EQ(1, xSemaphoreGive_fake.call_count);
     EXPECT_EQ(0, result_average);
 }
+
 TEST_F(Test_co2, co2_get_latest_average_co2_10x10)
 {
     xTaskGetTickCount_fake.return_val = (TickType_t)50;
@@ -167,7 +211,8 @@ TEST_F(Test_co2, co2_get_latest_average_co2_10x10)
 
     BaseType_t semaphoreTakeReturnVals[11] = {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
     SET_RETURN_SEQ(xSemaphoreTake, semaphoreTakeReturnVals, 11);
-    co2_t result_co2 = co2_create(pdMS_TO_TICKS(300000UL));
+    error_handler error_handler = makeErrorHandler();
+    co2_handler_t result_co2 = co2_create(&error_handler, pdMS_TO_TICKS((uint16_t)300000UL));
     uint16_t ppm;
     mh_z19_getCo2Ppm(&ppm);
 
@@ -178,6 +223,7 @@ TEST_F(Test_co2, co2_get_latest_average_co2_10x10)
     EXPECT_EQ(2, xSemaphoreGive_fake.call_count);
     EXPECT_EQ(234, result_average);
 }
+
 TEST_F(Test_co2, co2_acceptability_max_limit_exeeded_1){
     xTaskGetTickCount_fake.return_val = (TickType_t) 50;
     mh_z19_initialise_fake;
@@ -189,7 +235,8 @@ TEST_F(Test_co2, co2_acceptability_max_limit_exeeded_1){
 
     BaseType_t semaphoreTakeReturnVals[11] = {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
     SET_RETURN_SEQ(xSemaphoreTake, semaphoreTakeReturnVals, 11);
-    co2_t result_co2 = co2_create(pdMS_TO_TICKS(300000UL));
+    error_handler error_handler = makeErrorHandler();
+    co2_handler_t result_co2 = co2_create(&error_handler, pdMS_TO_TICKS((uint16_t)300000UL));
     uint16_t ppm;
 
     mh_z19_getCo2Ppm(&ppm);
@@ -202,6 +249,7 @@ TEST_F(Test_co2, co2_acceptability_max_limit_exeeded_1){
     EXPECT_EQ(934, result_average);
     EXPECT_EQ((int8_t)1, result_acceptability);
 }
+
 TEST_F(Test_co2, co2_acceptability_min_limit_exeeded_minus1)
 {
     xTaskGetTickCount_fake.return_val = (TickType_t)50;
@@ -214,7 +262,8 @@ TEST_F(Test_co2, co2_acceptability_min_limit_exeeded_minus1)
 
     BaseType_t semaphoreTakeReturnVals[11] = {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
     SET_RETURN_SEQ(xSemaphoreTake, semaphoreTakeReturnVals, 11);
-    co2_t result_co2 = co2_create(pdMS_TO_TICKS(300000UL));
+    error_handler error_handler = makeErrorHandler();
+    co2_handler_t result_co2 = co2_create(&error_handler, pdMS_TO_TICKS((uint16_t)300000UL));
     uint16_t ppm;
 
     mh_z19_getCo2Ppm(&ppm);
@@ -227,6 +276,7 @@ TEST_F(Test_co2, co2_acceptability_min_limit_exeeded_minus1)
     EXPECT_EQ(199, result_average);
     EXPECT_EQ((int8_t) -1, result_acceptability);
 }
+
 TEST_F(Test_co2, co2_acceptability_limit_not_exeeded_0)
 {
     xTaskGetTickCount_fake.return_val = (TickType_t)50;
@@ -239,7 +289,8 @@ TEST_F(Test_co2, co2_acceptability_limit_not_exeeded_0)
 
     BaseType_t semaphoreTakeReturnVals[11] = {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
     SET_RETURN_SEQ(xSemaphoreTake, semaphoreTakeReturnVals, 11);
-    co2_t result_co2 = co2_create(pdMS_TO_TICKS(300000UL));
+    error_handler error_handler = makeErrorHandler();
+    co2_handler_t result_co2 = co2_create(&error_handler, pdMS_TO_TICKS((uint16_t)300000UL));
     uint16_t ppm;
 
     mh_z19_getCo2Ppm(&ppm);

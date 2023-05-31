@@ -13,7 +13,7 @@
 #include "taskConfig.h"
 #include "temperature.h"
 #include "humidity.h"
-#include "co2.h"
+#include "co2_handler.h"
 #include "error.h"
 #include "actuation.h"
 #include "LoRaWANHandler.h"
@@ -23,7 +23,7 @@ typedef struct handler_controller {
 	TickType_t last_messure_circle_time;
 	temperature_t temperature_handler;
     humidity_t humidity_handler;
-	co2_t co2_handler;
+	co2_handler_t co2_handler;
 	error_handler_t error_handler;
 	actuation_handler_t actuation_handler;
     lorawan_handler_t lorawan_handler;
@@ -87,8 +87,8 @@ handler_controller_t initialise_handler_controller() {
 	_new_handler_controller->last_messure_circle_time = last_messure_circle_time;
 	_new_handler_controller->temperature_handler = temperature_create(measureCircleFreaquency);
 	_new_handler_controller->humidity_handler = humidity_create(measureCircleFreaquency);
-	_new_handler_controller->co2_handler = co2_create(measureCircleFreaquency);
 	_new_handler_controller->error_handler = error_handler_init();
+	_new_handler_controller->co2_handler = co2_create(_new_handler_controller->error_handler, last_messure_circle_time);
 	_new_handler_controller->actuation_handler = actuation_handler_init(_new_handler_controller->temperature_handler, _new_handler_controller->humidity_handler);
 	_new_handler_controller->lorawan_handler = lorawan_handler_create(last_messure_circle_time);
 	_new_handler_controller->handler_controller_h = NULL;

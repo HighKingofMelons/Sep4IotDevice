@@ -6,7 +6,7 @@ extern "C"
     #include <taskConfig.h>
     #include "Controls/temperature.h"
     #include "Controls/humidity.h"
-    #include "Controls/co2.h"
+    #include "Controls/co2_handler.h"
     #include "Controls/error.h"
     #include "Controls/actuation.h"
     #include "Controls/LoRaWANHandler.h"

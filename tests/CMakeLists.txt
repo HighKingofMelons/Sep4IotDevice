@@ -13,7 +13,7 @@ set(OBJECT_DIR ${CMAKE_SOURCE_DIR}/build/tests/CMakeFiles/Sep4IotDeviceTests.dir
 # Source files to be tested
 set(SOURCES_TEST
     fakes.c
-    ../src/co2.c
+    ../src/co2_handler.c
     ../src/error.c
     ../src/temperature.c
     ../src/humidity.c
@@ -24,7 +24,7 @@ set(SOURCES_TEST
 
 set(GCOV_FILES
     ${OBJECT_DIR}actuation.c.gcda
-    ${OBJECT_DIR}co2.c.gcda
+    ${OBJECT_DIR}co2_handler.c.gcda
     ${OBJECT_DIR}error.c.gcda
     ${OBJECT_DIR}humidity.c.gcda
     ${OBJECT_DIR}temperature.c.gcda
@@ -34,7 +34,7 @@ set(GCOV_FILES
 
 # The tests themselves
 set(TESTS
-    test_co2.cpp
+    test_co2_handler.cpp
     test_temperature.cpp
     error.cpp
     test_humidity.cpp
