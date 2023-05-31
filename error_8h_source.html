@@ -76,36 +76,30 @@ $(function() {
   <div class="headertitle"><div class="title">error.h</div></div>
 </div><!--header-->
 <div class="contents">
-<a href="error_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span> </div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#pragma once</span></div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span> </div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &lt;stdint.h&gt;</span></div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &lt;ATMEGA_FreeRTOS.h&gt;</span></div>
+<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span> </div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="keyword">typedef</span> <span class="keyword">enum</span> {</div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span>    ERROR_LIGHT  = 32,</div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span>    ERROR_TEMP  = 16,</div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span>    ERROR_HUMI  = 8,</div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span>    ERROR_CO2   = 4,</div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span>    ERROR_SOUND = 2,</div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span>    ERROR_PIR   = 1,</div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span>} error_component_t;</div>
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="keyword">typedef</span> <span class="keyword">enum</span> {</div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>    ERROR_TEMP  = 16,</div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>    ERROR_HUMI  = 8,</div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>    ERROR_CO2   = 4,</div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>    ERROR_SOUND = 2,</div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>    ERROR_PIR   = 1,</div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>} error_component_t;</div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="keyword">typedef</span> uint8_t error_flags_t;</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code hl_struct" href="structerror__handler.html">error_handler</a> *<a class="code hl_struct" href="structerror__handler.html">error_handler_t</a>;</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span> </div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><a class="code hl_struct" href="structerror__handler.html">error_handler_t</a> error_handler_init();</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span> </div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>BaseType_t error_handler_report(<a class="code hl_struct" href="structerror__handler.html">error_handler_t</a> self, error_component_t component);</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>BaseType_t error_handler_revoke(<a class="code hl_struct" href="structerror__handler.html">error_handler_t</a> self, error_component_t component);</div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span> </div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="keyword">typedef</span> uint8_t error_flags_t;</div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno"><a class="line" href="error_8h.html#a9dfc98ff18dbfd4e9f30db88c4956865">   26</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code hl_struct" href="structerror__handler.html">error_handler</a> *<a class="code hl_typedef" href="error_8h.html#a9dfc98ff18dbfd4e9f30db88c4956865">error_handler_t</a>;</div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><a class="code hl_struct" href="structerror__handler.html">error_handler_t</a> <a class="code hl_function" href="error_8h.html#ac2dd9d945a8c5f652731b20eb8317459">error_handler_init</a>();</div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>BaseType_t <a class="code hl_function" href="error_8h.html#a2ef6f56effa7180aa3631157471ae1ff">error_handler_report</a>(<a class="code hl_struct" href="structerror__handler.html">error_handler_t</a> self, error_component_t component);</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>BaseType_t <a class="code hl_function" href="error_8h.html#aab87444ae297832c6a9e762022a80931">error_handler_revoke</a>(<a class="code hl_struct" href="structerror__handler.html">error_handler_t</a> self, error_component_t component);</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span> </div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span><span class="comment">/* The first 3 bits of the return are always 0 */</span></div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>error_flags_t <a class="code hl_function" href="error_8h.html#ac4be805b0fbc4470ba2770c80df893ac">error_handler_get_flags</a>(<a class="code hl_struct" href="structerror__handler.html">error_handler_t</a> self);</div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span><span class="keywordtype">void</span> <a class="code hl_function" href="error_8h.html#ab52bce169cc9e973e9d8272384b0bdc1">error_handler_destroy</a>(<a class="code hl_struct" href="structerror__handler.html">error_handler_t</a> self);</div>
-<div class="ttc" id="aerror_8h_html_a2ef6f56effa7180aa3631157471ae1ff"><div class="ttname"><a href="error_8h.html#a2ef6f56effa7180aa3631157471ae1ff">error_handler_report</a></div><div class="ttdeci">BaseType_t error_handler_report(error_handler_t self, error_component_t component)</div><div class="ttdoc">The error handler report function.</div><div class="ttdef"><b>Definition</b> error.c:93</div></div>
-<div class="ttc" id="aerror_8h_html_a9dfc98ff18dbfd4e9f30db88c4956865"><div class="ttname"><a href="error_8h.html#a9dfc98ff18dbfd4e9f30db88c4956865">error_handler_t</a></div><div class="ttdeci">struct error_handler * error_handler_t</div><div class="ttdoc">Structure to store error information.</div><div class="ttdef"><b>Definition</b> error.h:26</div></div>
-<div class="ttc" id="aerror_8h_html_aab87444ae297832c6a9e762022a80931"><div class="ttname"><a href="error_8h.html#aab87444ae297832c6a9e762022a80931">error_handler_revoke</a></div><div class="ttdeci">BaseType_t error_handler_revoke(error_handler_t self, error_component_t component)</div><div class="ttdoc">The error handler revoke function.</div><div class="ttdef"><b>Definition</b> error.c:102</div></div>
-<div class="ttc" id="aerror_8h_html_ab52bce169cc9e973e9d8272384b0bdc1"><div class="ttname"><a href="error_8h.html#ab52bce169cc9e973e9d8272384b0bdc1">error_handler_destroy</a></div><div class="ttdeci">void error_handler_destroy(error_handler_t self)</div><div class="ttdoc">Destroys the error handler.</div><div class="ttdef"><b>Definition</b> error.c:174</div></div>
-<div class="ttc" id="aerror_8h_html_ac2dd9d945a8c5f652731b20eb8317459"><div class="ttname"><a href="error_8h.html#ac2dd9d945a8c5f652731b20eb8317459">error_handler_init</a></div><div class="ttdeci">error_handler_t error_handler_init()</div><div class="ttdoc">Initiatizes the error handler.</div><div class="ttdef"><b>Definition</b> error.c:38</div></div>
-<div class="ttc" id="aerror_8h_html_ac4be805b0fbc4470ba2770c80df893ac"><div class="ttname"><a href="error_8h.html#ac4be805b0fbc4470ba2770c80df893ac">error_handler_get_flags</a></div><div class="ttdeci">error_flags_t error_handler_get_flags(error_handler_t self)</div><div class="ttdoc">The error handler get flags function.</div><div class="ttdef"><b>Definition</b> error.c:148</div></div>
-<div class="ttc" id="astructerror__handler_html"><div class="ttname"><a href="structerror__handler.html">error_handler</a></div><div class="ttdef"><b>Definition</b> error.c:15</div></div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="comment">/* The first 3 bits of the return are always 0 */</span></div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>error_flags_t error_handler_get_flags(<a class="code hl_struct" href="structerror__handler.html">error_handler_t</a> self);</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span> </div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="keywordtype">void</span> error_handler_destroy(<a class="code hl_struct" href="structerror__handler.html">error_handler_t</a> self);</div>
+<div class="ttc" id="astructerror__handler_html"><div class="ttname"><a href="structerror__handler.html">error_handler</a></div><div class="ttdef"><b>Definition</b> error.c:16</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

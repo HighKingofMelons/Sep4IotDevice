@@ -76,7 +76,7 @@ $(function() {
   <div class="headertitle"><div class="title">humidity.h</div></div>
 </div><!--header-->
 <div class="contents">
-<a href="humidity_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
+<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment"> * humidity.h</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment"> *</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment"> * Created: 27/04/2023 11.42.59</span></div>
@@ -88,22 +88,18 @@ $(function() {
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="comment"> *</span></div>
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="comment"> * Created: 27/04/2023 11.42.59</span></div>
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="comment"> *  Author: andre</span></div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="comment"> */</span></div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">#pragma once</span></div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="humidity_8h.html#ad94698da72740268e3ea5ab11b739147">   27</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code hl_struct" href="structhumidity.html">humidity</a>* <a class="code hl_typedef" href="humidity_8h.html#ad94698da72740268e3ea5ab11b739147">humidity_t</a>;</div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><a class="code hl_struct" href="structhumidity.html">humidity_t</a> <a class="code hl_function" href="humidity_8h.html#a6c31d3dccabb1294ba6fb7a670192424">humidity_create</a>(TickType_t mesureCircleFreequency);</div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>uint8_t <a class="code hl_function" href="humidity_8h.html#afd9139cded779c16741cc9ef31ac1563">humidity_get_latest_average_humidity</a>(<a class="code hl_struct" href="structhumidity.html">humidity_t</a> self);</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span><span class="keywordtype">void</span> <a class="code hl_function" href="humidity_8h.html#a9cd5034de60392faa1d1b964602b12ca">humidity_set_limits</a>(<a class="code hl_struct" href="structhumidity.html">humidity_t</a> self, uint8_t maxLimit, uint8_t minLimit);</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>int8_t <a class="code hl_function" href="humidity_8h.html#ad2192a24cdea9ab07278b38c1f876d4d">humidity_acceptability_status</a>(<a class="code hl_struct" href="structhumidity.html">humidity_t</a> self);</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span><span class="keywordtype">void</span> <a class="code hl_function" href="humidity_8h.html#ad95029a91d2e66fb63ab816b4f53ccf6">humidity_destroy</a>(<a class="code hl_struct" href="structhumidity.html">humidity_t</a> self);</div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span> </div>
-<div class="ttc" id="ahumidity_8h_html_a6c31d3dccabb1294ba6fb7a670192424"><div class="ttname"><a href="humidity_8h.html#a6c31d3dccabb1294ba6fb7a670192424">humidity_create</a></div><div class="ttdeci">humidity_t humidity_create(TickType_t mesureCircleFreequency)</div><div class="ttdoc">Create humidity.</div><div class="ttdef"><b>Definition</b> humidity.c:49</div></div>
-<div class="ttc" id="ahumidity_8h_html_a9cd5034de60392faa1d1b964602b12ca"><div class="ttname"><a href="humidity_8h.html#a9cd5034de60392faa1d1b964602b12ca">humidity_set_limits</a></div><div class="ttdeci">void humidity_set_limits(humidity_t self, uint8_t maxLimit, uint8_t minLimit)</div><div class="ttdoc">Sets the humidity limits.</div><div class="ttdef"><b>Definition</b> humidity.c:115</div></div>
-<div class="ttc" id="ahumidity_8h_html_ad2192a24cdea9ab07278b38c1f876d4d"><div class="ttname"><a href="humidity_8h.html#ad2192a24cdea9ab07278b38c1f876d4d">humidity_acceptability_status</a></div><div class="ttdeci">int8_t humidity_acceptability_status(humidity_t self)</div><div class="ttdoc">Checks the humidity acceptability status and returns the status.</div><div class="ttdef"><b>Definition</b> humidity.c:120</div></div>
-<div class="ttc" id="ahumidity_8h_html_ad94698da72740268e3ea5ab11b739147"><div class="ttname"><a href="humidity_8h.html#ad94698da72740268e3ea5ab11b739147">humidity_t</a></div><div class="ttdeci">struct humidity * humidity_t</div><div class="ttdoc">Structure to store humidity information.</div><div class="ttdef"><b>Definition</b> humidity.h:27</div></div>
-<div class="ttc" id="ahumidity_8h_html_ad95029a91d2e66fb63ab816b4f53ccf6"><div class="ttname"><a href="humidity_8h.html#ad95029a91d2e66fb63ab816b4f53ccf6">humidity_destroy</a></div><div class="ttdeci">void humidity_destroy(humidity_t self)</div><div class="ttdoc">Destrys the humidity struct.</div><div class="ttdef"><b>Definition</b> humidity.c:135</div></div>
-<div class="ttc" id="ahumidity_8h_html_afd9139cded779c16741cc9ef31ac1563"><div class="ttname"><a href="humidity_8h.html#afd9139cded779c16741cc9ef31ac1563">humidity_get_latest_average_humidity</a></div><div class="ttdeci">uint8_t humidity_get_latest_average_humidity(humidity_t self)</div><div class="ttdoc">Gets the latest average humidity value.</div><div class="ttdef"><b>Definition</b> humidity.c:100</div></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="comment"> */</span> </div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span> </div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code hl_struct" href="structhumidity.html">humidity</a>* <a class="code hl_struct" href="structhumidity.html">humidity_t</a>;</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><a class="code hl_struct" href="structhumidity.html">humidity_t</a> humidity_create(TickType_t mesureCircleFreequency);</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>uint8_t humidity_get_latest_average_humidity(<a class="code hl_struct" href="structhumidity.html">humidity_t</a> self);</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="keywordtype">void</span> humidity_set_limits(<a class="code hl_struct" href="structhumidity.html">humidity_t</a> self, uint8_t maxLimit, uint8_t minLimit);</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>int8_t humidity_acceptability_status(<a class="code hl_struct" href="structhumidity.html">humidity_t</a> self);</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="keywordtype">void</span> humidity_destroy(<a class="code hl_struct" href="structhumidity.html">humidity_t</a> self);</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span> </div>
 <div class="ttc" id="astructhumidity_html"><div class="ttname"><a href="structhumidity.html">humidity</a></div><div class="ttdef"><b>Definition</b> humidity.c:35</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

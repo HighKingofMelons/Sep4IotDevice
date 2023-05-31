@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.7"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Doxygen with github: actuation_handler Struct Reference</title>
+<title>Doxygen with github: lorawan_handler Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -71,37 +71,37 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-attribs">Public Attributes</a> &#124;
-<a href="structactuation__handler-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">actuation_handler Struct Reference</div></div>
+<a href="structlorawan__handler-members.html">List of all members</a>  </div>
+  <div class="headertitle"><div class="title">lorawan_handler Struct Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a77c8288907dc1067d5c50ed73112e9b6"><td class="memItemLeft" align="right" valign="top"><a id="a77c8288907dc1067d5c50ed73112e9b6" name="a77c8288907dc1067d5c50ed73112e9b6"></a>
-<a class="el" href="structtemperature.html">temperature_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>temp_handler</b></td></tr>
-<tr class="separator:a77c8288907dc1067d5c50ed73112e9b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4b798ca45731ecfaa27a91312c5eb9fa"><td class="memItemLeft" align="right" valign="top"><a id="a4b798ca45731ecfaa27a91312c5eb9fa" name="a4b798ca45731ecfaa27a91312c5eb9fa"></a>
-<a class="el" href="structhumidity.html">humidity_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>humid_handler</b></td></tr>
-<tr class="separator:a4b798ca45731ecfaa27a91312c5eb9fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a95f1ebbbfe49ef12cb61651d8c3cb552"><td class="memItemLeft" align="right" valign="top"><a id="a95f1ebbbfe49ef12cb61651d8c3cb552" name="a95f1ebbbfe49ef12cb61651d8c3cb552"></a>
-SemaphoreHandle_t&#160;</td><td class="memItemRight" valign="bottom"><b>override_sema</b></td></tr>
-<tr class="separator:a95f1ebbbfe49ef12cb61651d8c3cb552"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a427f205b6d405ccb61a28beba43d3e96"><td class="memItemLeft" align="right" valign="top"><a id="a427f205b6d405ccb61a28beba43d3e96" name="a427f205b6d405ccb61a28beba43d3e96"></a>
-SemaphoreHandle_t&#160;</td><td class="memItemRight" valign="bottom"><b>actuator_state_sema</b></td></tr>
-<tr class="separator:a427f205b6d405ccb61a28beba43d3e96"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afaf8c0f265b791e1729c873d3be76bbb"><td class="memItemLeft" align="right" valign="top"><a id="afaf8c0f265b791e1729c873d3be76bbb" name="afaf8c0f265b791e1729c873d3be76bbb"></a>
-BaseType_t&#160;</td><td class="memItemRight" valign="bottom"><b>ventilation_overriden</b></td></tr>
-<tr class="separator:afaf8c0f265b791e1729c873d3be76bbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3e56d0805c854dc60089186dc02cb20d"><td class="memItemLeft" align="right" valign="top"><a id="a3e56d0805c854dc60089186dc02cb20d" name="a3e56d0805c854dc60089186dc02cb20d"></a>
-BaseType_t&#160;</td><td class="memItemRight" valign="bottom"><b>aircon_overriden</b></td></tr>
-<tr class="separator:a3e56d0805c854dc60089186dc02cb20d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a322b6263e50811bb1dfe5e5cf7ca49dd"><td class="memItemLeft" align="right" valign="top"><a id="a322b6263e50811bb1dfe5e5cf7ca49dd" name="a322b6263e50811bb1dfe5e5cf7ca49dd"></a>
-actuator_state_t&#160;</td><td class="memItemRight" valign="bottom"><b>actuator_state</b></td></tr>
-<tr class="separator:a322b6263e50811bb1dfe5e5cf7ca49dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99c67bb3f7b368a2e9b58f507ef25b82"><td class="memItemLeft" align="right" valign="top"><a id="a99c67bb3f7b368a2e9b58f507ef25b82" name="a99c67bb3f7b368a2e9b58f507ef25b82"></a>
+MessageBufferHandle_t&#160;</td><td class="memItemRight" valign="bottom"><b>downlink_message_buffer_handle</b></td></tr>
+<tr class="separator:a99c67bb3f7b368a2e9b58f507ef25b82"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a05f1cdf3a77960e1052762feb1cdf71b"><td class="memItemLeft" align="right" valign="top"><a id="a05f1cdf3a77960e1052762feb1cdf71b" name="a05f1cdf3a77960e1052762feb1cdf71b"></a>
+lora_driver_payload_t&#160;</td><td class="memItemRight" valign="bottom"><b>uplink_payload</b></td></tr>
+<tr class="separator:a05f1cdf3a77960e1052762feb1cdf71b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a83301e0f4bd8e54dfdf74c7c47665996"><td class="memItemLeft" align="right" valign="top"><a id="a83301e0f4bd8e54dfdf74c7c47665996" name="a83301e0f4bd8e54dfdf74c7c47665996"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>downlink_payload_bytes</b> [7]</td></tr>
+<tr class="separator:a83301e0f4bd8e54dfdf74c7c47665996"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a864576afdc6cf269a55493a77998f16f"><td class="memItemLeft" align="right" valign="top"><a id="a864576afdc6cf269a55493a77998f16f" name="a864576afdc6cf269a55493a77998f16f"></a>
+SemaphoreHandle_t&#160;</td><td class="memItemRight" valign="bottom"><b>uplink_payload_mut</b></td></tr>
+<tr class="separator:a864576afdc6cf269a55493a77998f16f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac4b77fe281e84e74499299fd27467ad5"><td class="memItemLeft" align="right" valign="top"><a id="ac4b77fe281e84e74499299fd27467ad5" name="ac4b77fe281e84e74499299fd27467ad5"></a>
+SemaphoreHandle_t&#160;</td><td class="memItemRight" valign="bottom"><b>downlink_payload_mut</b></td></tr>
+<tr class="separator:ac4b77fe281e84e74499299fd27467ad5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad67bf50e63cfa47e0f88f2bfe17291c7"><td class="memItemLeft" align="right" valign="top"><a id="ad67bf50e63cfa47e0f88f2bfe17291c7" name="ad67bf50e63cfa47e0f88f2bfe17291c7"></a>
+TickType_t&#160;</td><td class="memItemRight" valign="bottom"><b>last_messure_circle_time_uplink</b></td></tr>
+<tr class="separator:ad67bf50e63cfa47e0f88f2bfe17291c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0dfc3667fb9dc6987f36a7de252c3a67"><td class="memItemLeft" align="right" valign="top"><a id="a0dfc3667fb9dc6987f36a7de252c3a67" name="a0dfc3667fb9dc6987f36a7de252c3a67"></a>
+TaskHandle_t&#160;</td><td class="memItemRight" valign="bottom"><b>lora_uplink_task_h</b></td></tr>
+<tr class="separator:a0dfc3667fb9dc6987f36a7de252c3a67"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>src/actuation.c</li>
+<li>src/LoRaWANHandler.c</li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
