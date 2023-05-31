@@ -43,7 +43,14 @@ void update_vent(actuation_handler_t self) {
         return;
     }
 
-    if (0 != humidity_get_acceptability_status(self->humid_handler) | 0 != co2_acceptability_status(self->co2_handler)) 
+    int8_t humi = humidity_get_acceptability_status(self->humid_handler);
+    int8_t co2222 = co2_acceptability_status(self->co2_handler);
+
+    if (DEBUG) {
+        printf("humi: %i co2222: %i\n", humi, co2222);
+    }
+
+    if ((0 != humi) | (0 != co2222)) 
     {
         rc_servo_setPosition(VENTILATION, VENT_ON);
         printf("VENT_ON\n");
@@ -66,7 +73,13 @@ void update_aircon(actuation_handler_t self) {
         return;
     }
 
-    switch (temperature_get_acceptability_status(self->temp_handler))
+    int8_t temp = temperature_get_acceptability_status(self->temp_handler);
+
+    if (DEBUG) {
+        printf("temp: %i\n", temp);
+    }
+
+    switch (temp)
     {
     case -1:
         rc_servo_setPosition(AIRCON, AIRCON_HEAT);
