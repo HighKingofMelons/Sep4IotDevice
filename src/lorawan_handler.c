@@ -1,5 +1,5 @@
 /*
-* loraWANHandler.c
+* lorawan_handler.c
 *
 * Created: 12/04/2019 10:09:05
 *  Author: IHA
@@ -19,7 +19,7 @@
 
 #include "LoRaWAN.h"
 #include "taskConfig.h"
-#include "LoRaWANHandler.h"
+#include "lorawan_handler.h"
 
 typedef struct lorawan_handler {
 	MessageBufferHandle_t downlink_message_buffer_handle;

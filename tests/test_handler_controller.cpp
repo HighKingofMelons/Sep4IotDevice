@@ -9,7 +9,7 @@ extern "C"
     #include "Controls/co2_handler.h"
     #include "Controls/error_handler.h"
     #include "Controls/actuation.h"
-    #include "Controls/LoRaWANHandler.h"
+    #include "Controls/lorawan_handler.h"
     #include "Controls/handler_controller.h"
 }
 

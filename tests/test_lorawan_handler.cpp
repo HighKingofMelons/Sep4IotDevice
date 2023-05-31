@@ -4,7 +4,7 @@ extern "C"
 {
     #include "fakes.h"
     #include <taskConfig.h>
-    #include "Controls/LoRaWANHandler.h"
+    #include "Controls/lorawan_handler.h"
 }
 
 class Test_lorawan_handler : public ::testing::Test

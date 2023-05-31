@@ -18,7 +18,7 @@ set(SOURCES_TEST
     ../src/temperature.c
     ../src/humidity_handler.c
     ../src/actuation.c
-    ../src/LoRaWANHandler.c
+    ../src/lorawan_handler.c
     ../src/handler_controller.c
 )
 
@@ -28,7 +28,7 @@ set(GCOV_FILES
     ${OBJECT_DIR}error_handler.c.gcda
     ${OBJECT_DIR}humidity_handler.c.gcda
     ${OBJECT_DIR}temperature.c.gcda
-    ${OBJECT_DIR}LoRaWANHandler.c.gcda
+    ${OBJECT_DIR}lorawan_handler.c.gcda
     ${OBJECT_DIR}handler_controller.c.gcda
 )
 
