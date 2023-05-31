@@ -7,7 +7,6 @@ typedef enum {
 	,led_ST4		/**< Status led ST4 (BLUE)*/
 } status_leds_t;
 
-
 void status_leds_initialise(UBaseType_t ledTaskPriority);
 
 void status_leds_longPuls(status_leds_t led);

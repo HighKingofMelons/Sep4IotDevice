@@ -1,9 +1,8 @@
 #pragma once
 #include <stdbool.h>
-#include <ATMEGA_FreeRTOS.h>
-#include <message_buffer.h>
-
-#include <serial.h>
+#include <stdint.h>
+#include "message_buffer.h"
+#include "serial.h"
 
 #define LORA_MAX_PAYLOAD_LENGTH	20 /* bytes - Must newer be changed!!!*/
 
@@ -54,13 +53,17 @@ typedef enum lora_driver_automaticReplyModes {
 
 void lora_driver_initialise(serial_comPort_t comPort, MessageBufferHandle_t downlinkMessageBuffer);
 
+char* lora_driver_mapReturnCodeToText(lora_driver_returnCode_t rc);
+
 lora_driver_returnCode_t lora_driver_setOtaaIdentity(char appEUI[17], char appKEY[33], char devEUI[17]);
+
+lora_driver_returnCode_t lora_driver_saveMac(void);
 
 lora_driver_returnCode_t lora_driver_configureToEu868(void);
 
 lora_driver_returnCode_t lora_driver_join(lora_driver_joinMode_t mode);
 
-lora_driver_returnCode_t lora_driver_sendUploadMessage(bool confirmed, lora_driver_payload_t * payload);
+lora_driver_returnCode_t lora_driver_sendUploadMessage(bool confirmed, lora_driver_payload_t* payload);
 
 lora_driver_returnCode_t lora_driver_setDeviceIdentifier(const char devEUI[17]);
 
@@ -83,3 +86,4 @@ void lora_driver_flushBuffers(void);
 lora_driver_returnCode_t lora_driver_getRn2483Hweui(char hwDevEUI[17]);
 
 lora_driver_returnCode_t lora_driver_rn2483FactoryReset(void);
+

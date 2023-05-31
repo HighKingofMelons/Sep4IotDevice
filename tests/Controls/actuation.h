@@ -11,6 +11,8 @@ struct actuation_handler {
     humidity_t humid_handler;
 
     SemaphoreHandle_t override_sema;
+    SemaphoreHandle_t actuator_state_sema;
     BaseType_t ventilation_overriden;
     BaseType_t aircon_overriden;
+    actuator_state_t actuator_state;
 };

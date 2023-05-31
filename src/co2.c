@@ -62,6 +62,7 @@ void co2_mesure(void* pvParameters) {
 	self->xLastMessureCircleTime = xTaskGetTickCount();
 	for(;;) {
 		makeOneCo2Mesurment(self);
+    	//printf("CO2 hw: %i\n", uxTaskGetStackHighWaterMark(mesureCo2Task));
 		vTaskDelay(pdMS_TO_TICKS(27000UL));
 	}
 }
@@ -228,6 +229,7 @@ void setMaxCo2Limit(co2_t self, int16_t maxCo2Limit){
 		{ 
 			self->maxCo2Limit = maxCo2Limit;
 			xSemaphoreGive(self->maxLimitMutex);
+        	printf("CO2 MAX LIM: %i \n", maxCo2Limit);
 			break;
 		}
 		else
@@ -241,6 +243,7 @@ void setMinCo2Limit(co2_t self, int16_t minCo2Limit){
 		if(xSemaphoreTake(self->maxLimitMutex, pdMS_TO_TICKS(200)) == pdTRUE){
 			self->minCo2Limit = minCo2Limit;
 			xSemaphoreGive(self->minLimitMutex);
+        	printf("CO2 MAX LIM: %i \n", minCo2Limit);
 			break;
 		} else {
 		

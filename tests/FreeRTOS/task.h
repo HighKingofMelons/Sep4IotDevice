@@ -1,5 +1,4 @@
-#include "ATMEGA_FreeRTOS.h"
-#include <stdint.h>
+#pragma once 
 
 #define pdMS_TO_TICKS( xTimeInMs )   xTimeInMs
 
@@ -19,3 +18,7 @@ BaseType_t xTaskDelayUntil(TickType_t * const pxPreviousWakeTime, const TickType
 TickType_t xTaskGetTickCount( void );
 
 void vTaskDelete( TaskHandle_t xTaskToDelete );
+
+void taskYIELD(void);
+
+UBaseType_t uxTaskGetStackHighWaterMark( TaskHandle_t xTask );

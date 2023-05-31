@@ -3,10 +3,9 @@
 extern "C" {
     #include <stdint.h>
     #include "fakes.h"
-
-    #include "Controls/actuation.h"
     #include "Controls/temperature.h"
     #include "Controls/humidity.h"
+    #include "Controls/actuation.h"
 }
 
 humidity_st makeHumid (int8_t accept_result) {
@@ -79,8 +78,10 @@ TEST(actuation_handler, update_aircon_overrides) {
         &temp,
         NULL,
         0,
+        0,
         pdFALSE,
-        pdTRUE
+        pdTRUE,
+        ACTUATORS_ON
     };
 
     xSemaphoreTake_fake.return_val = pdFALSE;
@@ -116,8 +117,10 @@ TEST(actuation_handler, update_vent_overrides) {
         NULL,
         &humid,
         0,
+        0,
         pdTRUE,
-        pdFALSE
+        pdFALSE,
+        ACTUATORS_ON
     };
 
     xSemaphoreTake_fake.return_val = pdFALSE;
@@ -153,8 +156,10 @@ TEST(actuation_handler, update_aircon_temp_aircon_OFF) {
         &temp,
         NULL,
         0,
+        0,
         pdTRUE,
-        pdFALSE
+        pdFALSE,
+        ACTUATORS_ON
     };
 
     xSemaphoreTake_fake.return_val = pdTRUE;
@@ -178,8 +183,10 @@ TEST(actuation_handler, update_aircon_temp_aircon_COOL) {
         &temp,
         NULL,
         0,
+        0,
         pdTRUE,
-        pdFALSE
+        pdFALSE,
+        ACTUATORS_ON
     };
 
     xSemaphoreTake_fake.return_val = pdTRUE;
@@ -203,8 +210,10 @@ TEST(actuation_handler, update_aircon_temp_aircon_HEAT) {
         &temp,
         NULL,
         0,
+        0,
         pdTRUE,
-        pdFALSE
+        pdFALSE,
+        ACTUATORS_ON
     };
 
     xSemaphoreTake_fake.return_val = pdTRUE;
@@ -228,8 +237,10 @@ TEST(actuation_handler, update_vent_humid_vent_ON) {
         NULL,
         &humid,
         0,
+        0,
         pdFALSE,
-        pdTRUE
+        pdTRUE,
+        ACTUATORS_ON
     };
 
     xSemaphoreTake_fake.return_val = pdTRUE;
@@ -253,8 +264,10 @@ TEST(actuation_handler, update_vent_humid_vent_OFF1) {
         NULL,
         &humid,
         0,
+        0,
         pdFALSE,
-        pdTRUE
+        pdTRUE,
+        ACTUATORS_ON
     };
 
     xSemaphoreTake_fake.return_val = pdTRUE;
@@ -278,8 +291,10 @@ TEST(actuation_handler, update_vent_humid_vent_OFF2) {
         NULL,
         &humid,
         0,
+        0,
         pdFALSE,
-        pdTRUE
+        pdTRUE,
+        ACTUATORS_ON
     };
 
     xSemaphoreTake_fake.return_val = pdTRUE;
@@ -309,7 +324,7 @@ TEST(actuation_handler, init) {
     ASSERT_EQ(rc_servo_setPosition_fake.arg0_history[1], 1);
     ASSERT_EQ(rc_servo_setPosition_fake.arg1_history[0], VENT_OFF);
     ASSERT_EQ(rc_servo_setPosition_fake.arg1_history[1], AIRCON_OFF);
-    ASSERT_EQ(xSemaphoreCreateMutex_fake.call_count, 1);
+    ASSERT_EQ(xSemaphoreCreateMutex_fake.call_count, 2);
     ASSERT_EQ(xTaskCreate_fake.call_count, 1);
 
     actuation_handler_destroy(act);
@@ -328,7 +343,7 @@ TEST(actuation_handler, destroy) {
     actuation_handler_destroy(act);
 
     ASSERT_EQ(vTaskDelete_fake.call_count, 1);
-    ASSERT_EQ(vSemaphoreDelete_fake.call_count, 1);
+    ASSERT_EQ(vSemaphoreDelete_fake.call_count, 2);
 }
 
 TEST(actuation_handler, ventilation_override_state) {
@@ -341,8 +356,10 @@ TEST(actuation_handler, ventilation_override_state) {
         NULL,
         NULL,
         0,
+        0,
         pdFALSE,
-        pdFALSE
+        pdFALSE,
+        ACTUATORS_ON
     };
 
     BaseType_t seq[] = {pdFALSE, pdTRUE};
@@ -367,8 +384,10 @@ TEST(actuation_handler, ventilation_disable_override) {
         NULL,
         NULL,
         0,
+        0,
         pdFALSE,
-        pdFALSE
+        pdFALSE,
+        ACTUATORS_ON
     };
 
     BaseType_t seq[] = {pdFALSE, pdTRUE};
@@ -392,8 +411,10 @@ TEST(actuation_handler, aircon_override_state) {
         NULL,
         NULL,
         0,
+        0,
         pdFALSE,
-        pdFALSE
+        pdFALSE,
+        ACTUATORS_ON
     };
 
     BaseType_t seq[] = {pdFALSE, pdTRUE};
@@ -418,8 +439,10 @@ TEST(actuation_handler, aircon_disable_override) {
         NULL,
         NULL,
         0,
+        0,
         pdFALSE,
-        pdFALSE
+        pdFALSE,
+        ACTUATORS_ON
     };
 
     BaseType_t seq[] = {pdFALSE, pdTRUE};

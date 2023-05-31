@@ -1,9 +1,7 @@
 #pragma once
 
-#include <stdint.h>
-#include <ATMEGA_FreeRTOS.h>
-
 typedef enum {
+    ERROR_LIGHT  = 32,
     ERROR_TEMP  = 16,
     ERROR_HUMI  = 8,
     ERROR_CO2   = 4,

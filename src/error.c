@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <stdint.h>
 
 #include <ATMEGA_FreeRTOS.h>
 #include <FreeRTOSConfig.h>
@@ -166,8 +167,9 @@ void error_handler_task (void *pvArguments) {
     {
         update_flags(handler);
         update_display(handler);
-        xTaskDelayUntil((TickType_t *const) &lastWake, pdMS_TO_TICKS(3000));
+        xTaskDelayUntil((TickType_t *const) &lastWake, pdMS_TO_TICKS(60000));
         lastWake = xTaskGetTickCount();
+        printf("Err hw: %i\n", uxTaskGetStackHighWaterMark(error_task_h));
     }
 }
 

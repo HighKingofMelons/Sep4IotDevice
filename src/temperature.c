@@ -67,6 +67,7 @@ void temperature_mesure(void* pvParameters) {
 	temperature_t self = (temperature_t) pvParameters; // TODO: IS THIS CORRECT?
 	for(;;) {
 		temperature_makeOneMesurment(self);
+        //printf("Tem hw: %i\n", uxTaskGetStackHighWaterMark(mesureTemperatureTask));
 		vTaskDelay(pdMS_TO_TICKS(27000UL)); // 27s delay, to make ~10 measurements in 4.5-5min
 	}
 }
@@ -276,6 +277,7 @@ void temperature_setMaxLimit(temperature_t self, int16_t maxLimit) {
 		if (xSemaphoreTake(self->maxLimitMutex, pdMS_TO_TICKS(200)) == pdTRUE ) { // wait maximum 200ms
 			self->maxLimit = maxLimit;
 			xSemaphoreGive(self->maxLimitMutex);
+        	printf("Temp MAX LIM: %i \n", maxLimit);
 			break;
 		} else {
 			/* We timed out and could not obtain the mutex and cant therefore not access the shared resource safely. */
@@ -288,6 +290,7 @@ void temperature_setMinLimit(temperature_t self, int16_t minLimit) {
 		if (xSemaphoreTake(self->minLimitMutex, pdMS_TO_TICKS(200)) == pdTRUE ) { // wait maximum 200ms
 			self->minLimit = minLimit;
 			xSemaphoreGive(self->minLimitMutex);
+        	printf("Temp MIN LIM: %i \n", minLimit);
 			break;
 		} else {
 			/* We timed out and could not obtain the mutex and cant therefore not access the shared resource safely. */

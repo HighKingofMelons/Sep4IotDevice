@@ -18,6 +18,8 @@ set(SOURCES_TEST
     ../src/temperature.c
     ../src/humidity.c
     ../src/actuation.c
+    ../src/LoRaWANHandler.c
+    ../src/handler_controller.c
 )
 
 set(GCOV_FILES
@@ -36,6 +38,8 @@ set(TESTS
     error.cpp
     test_humidity.cpp
     actuation.cpp
+    test_lorawan_handler.cpp
+    test_handler_controller.cpp
 )
 
 include_directories(

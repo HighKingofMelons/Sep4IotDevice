@@ -1,5 +1,5 @@
 /*
- * CFile1.c
+ * humidity.c
  *
  * Created: 17/05/2023 18.02.18
  *  Author: andre
@@ -67,6 +67,7 @@ void humidity_mesure(void* pvParameters) {
 	humidity_t self = (humidity_t) pvParameters; // TODO: IS THIS CORRECT?
 	for(;;) {
 		humidity_makeOneMesurment(self);
+        //printf("Hum hw: %i\n", uxTaskGetStackHighWaterMark(mesureHumidityTask));
 		vTaskDelay(pdMS_TO_TICKS(27000UL)); // 27s delay, to make ~10 measurements in 4.5-5min
 	}
 }
@@ -275,6 +276,7 @@ void humidity_setMaxLimit(humidity_t self, uint8_t maxLimit) {
 		if (xSemaphoreTake(self->maxLimitMutex, pdMS_TO_TICKS(200)) == pdTRUE ) { // wait maximum 200ms
 			self->maxLimit = maxLimit;
 			xSemaphoreGive(self->maxLimitMutex);
+        	printf("Hum MAX LIM: %i \n", maxLimit);
 			break;
 		} else {
 			/* We timed out and could not obtain the mutex and cant therefore not access the shared resource safely. */
@@ -287,6 +289,7 @@ void humidity_setMinLimit(humidity_t self, uint8_t minLimit) {
 		if (xSemaphoreTake(self->minLimitMutex, pdMS_TO_TICKS(200)) == pdTRUE ) { // wait maximum 200ms
 			self->minLimit = minLimit;
 			xSemaphoreGive(self->minLimitMutex);
+        	printf("Hum MIN LIM: %i \n", minLimit);
 			break;
 		} else {
 			/* We timed out and could not obtain the mutex and cant therefore not access the shared resource safely. */
