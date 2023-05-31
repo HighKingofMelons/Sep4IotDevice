@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ATMEGA_FreeRTOS.h"
+#include <stddef.h>
 
 typedef void * MessageBufferHandle_t;
 
