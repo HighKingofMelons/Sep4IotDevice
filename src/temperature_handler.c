@@ -13,24 +13,23 @@
 #include <semphr.h>
 #include <task.h>
 #include "../include/taskConfig.h"
-#include "../include/temperature.h"
+#include "../include/error_handler.h"
+#include "../include/temperature_handler.h"
 #include <hih8120.h>
 
-void initializeTemperatureDriver();
-void wakeUpTemperatureSensor();
-temperature_t initializeTemperature(TickType_t freequency);
+temperature_t temperature_initialize(error_handler_t error_handler, TickType_t last_meassure_circle_time);
+void temperature_initialize_driver();
+void temperature_wake_up_sensor();
 void temperature_mesure(void *pvParameters);
 void temperature_resetArray(temperature_t self);
-void temperature_makeOneMesurment(temperature_t self);
-void temperature_addMeassurmentToArray(temperature_t self, int16_t temperature);
+void temperature_make_one_measurement(temperature_t self);
+void temperature_add_measurment_to_array(temperature_t self, int16_t temperature);
 void temperature_calculateAvg(temperature_t self);
-int16_t temperature_getMaxLimit(temperature_t self);
-int16_t temperature_getMinLimit(temperature_t self);
-void temperature_setMaxLimit(temperature_t self, int16_t maxLimit);
-void temperature_setMinLimit(temperature_t self, int16_t minLimit);
-void temperature_recordMeasurment(temperature_t self);
-
-static TaskHandle_t mesureTemperatureTask = NULL;
+int16_t temperature_get_max_limit(temperature_t self);
+int16_t temperature_get_min_limit(temperature_t self);
+void temperature_set_max_limit(temperature_t self, int16_t maxLimit);
+void temperature_set_min_limit(temperature_t self, int16_t minLimit);
+void temperature_record_measurment(temperature_t self);
 
 typedef struct temperature {
 	int16_t temperatureArray[10];
@@ -39,25 +38,25 @@ typedef struct temperature {
 	SemaphoreHandle_t latestAvgTemperatureMutex;
 	SemaphoreHandle_t maxLimitMutex;
 	SemaphoreHandle_t minLimitMutex;
-	TickType_t mesureCircleFrequency;
-	TickType_t lastMessureCircleTime;
+	TickType_t last_meassure_circle_time;
 	int16_t maxLimit;
 	int16_t minLimit;
+	error_handler_t error_handler;
+	TaskHandle_t temperature_measure_h;
 } temperature_st;
 
-
-temperature_t temperature_create(TickType_t freequency) {
-	temperature_t _newTemperature = initializeTemperature(freequency);
+temperature_t temperature_create(error_handler_t error_handler, TickType_t last_meassure_circle_time) {
+	temperature_t _newTemperature = temperature_initialize(error_handler, last_meassure_circle_time);
 	
-	initializeTemperatureDriver();
+	temperature_initialize_driver(_newTemperature);
 	
 	/* Create the task, not storing the handle. */
 	xTaskCreate(temperature_mesure,				/* Function that implements the task. */
 				"messureTemperature",           /* Text name for the task. */
 				TASK_MESSURE_TEMP_STACK,		/* Stack size in words, not bytes. */
-				(void*) _newTemperature,		/* Parameter passed into the task. */
+				_newTemperature,		/* Parameter passed into the task. */
 				TASK_MESSURE_TEMP_PRIORITY,		/* Priority at which the task is created. */
-				&mesureTemperatureTask			/* Used to pass out the created task's handle. */
+				&(_newTemperature->temperature_measure_h)			/* Used to pass out the created task's handle. */
 	);
 	
 	return _newTemperature;			
@@ -66,13 +65,13 @@ temperature_t temperature_create(TickType_t freequency) {
 void temperature_mesure(void* pvParameters) {
 	temperature_t self = (temperature_t) pvParameters; // TODO: IS THIS CORRECT?
 	for(;;) {
-		temperature_makeOneMesurment(self);
+		temperature_make_one_measurement(self);
         //printf("Tem hw: %i\n", uxTaskGetStackHighWaterMark(mesureTemperatureTask));
 		vTaskDelay(pdMS_TO_TICKS(27000UL)); // 27s delay, to make ~10 measurements in 4.5-5min
 	}
 }
 
-void temperature_addMeassurmentToArray(temperature_t self, int16_t temperature) {
+void temperature_add_measurment_to_array(temperature_t self, int16_t temperature) {
 	self->temperatureArray[self->nextToReadIdx++] = temperature;
 }
 
@@ -115,19 +114,19 @@ int16_t temperature_get_latest_average_temperature(temperature_t self) {
 
 // TODO: use semaphores
 void temperature_set_limits(temperature_t self, int16_t maxLimit, int16_t minLimit) {
-	temperature_setMaxLimit(self, maxLimit);
-	temperature_setMinLimit(self, minLimit);
+	temperature_set_max_limit(self, maxLimit);
+	temperature_set_min_limit(self, minLimit);
 }
 
-int8_t temperature_acceptability_status(temperature_t self) {
+int8_t temperature_get_acceptability_status(temperature_t self) {
 	int8_t returnValue = 0;
 	int16_t tempLatestAvgTemperature = temperature_get_latest_average_temperature(self);
 
 	if (tempLatestAvgTemperature == 0) {
 		returnValue = 0;
-	} else if (tempLatestAvgTemperature > temperature_getMaxLimit(self)) {
+	} else if (tempLatestAvgTemperature > temperature_get_max_limit(self)) {
 		returnValue = 1;
-	} else if (tempLatestAvgTemperature < temperature_getMinLimit(self)) {
+	} else if (tempLatestAvgTemperature < temperature_get_min_limit(self)) {
 		returnValue = -1;
 	}
 
@@ -135,19 +134,13 @@ int8_t temperature_acceptability_status(temperature_t self) {
 }
 	
 void temperature_destroy(temperature_t self) {	
-	if (mesureTemperatureTask != NULL) {
-		vTaskDelete(mesureTemperatureTask);
-		mesureTemperatureTask = NULL;
+	if (self->temperature_measure_h != NULL) {
+		vTaskDelete(self->temperature_measure_h);
+		self->temperature_measure_h = NULL;
 	}
-	
-	hih8120_driverReturnCode_t returnCode;
 		
-	if((returnCode = hih8120_destroy()) == HIH8120_OK) {
-		//Destroyed successfully
-		// TODO:
-	} else {
-		//HIH8120_OUT_OF_HEAP
-		// TODO:
+	if (hih8120_destroy() != HIH8120_OK) {
+		error_handler_report(self->error_handler, ERROR_TEMP);
 	}
 
 	vSemaphoreDelete(self->latestAvgTemperatureMutex);
@@ -160,43 +153,36 @@ void temperature_destroy(temperature_t self) {
 	}
 }
 
-temperature_t initializeTemperature(TickType_t freequency) {
+temperature_t temperature_initialize(error_handler_t error_handler, TickType_t last_meassure_circle_time) {
 	temperature_t _newTemperature = calloc(sizeof(temperature_st), 1);
 	temperature_resetArray(_newTemperature);
 	_newTemperature->latestAvgTemperature = 0;
 	_newTemperature->latestAvgTemperatureMutex = xSemaphoreCreateMutex();
 	_newTemperature->minLimitMutex = xSemaphoreCreateMutex();
 	_newTemperature->maxLimitMutex = xSemaphoreCreateMutex();
-	_newTemperature->mesureCircleFrequency = freequency;
-	_newTemperature->lastMessureCircleTime = xTaskGetTickCount();
+	_newTemperature->last_meassure_circle_time = last_meassure_circle_time;
 	_newTemperature->maxLimit = TEMP_MAX_LIMIT;
 	_newTemperature->minLimit = TEMP_MIN_LIMIT;
+	_newTemperature->error_handler = error_handler;
 	return _newTemperature;
 }
 
-void initializeTemperatureDriver() {
+void temperature_initialize_driver(temperature_t self) {
 	hih8120_driverReturnCode_t returnCode;
 	switch (returnCode = hih8120_initialise()) {
-		case HIH8120_OK:
-			// Driver initialized OK
-			// Always check what hih8120_initialise() returns
-			break;
 		case HIH8120_OUT_OF_HEAP:
-			// TODO:
-			break;
 		case HIH8120_TWI_BUSY:
-			// TODO:
-			break;
 		case HIH8120_DRIVER_NOT_INITIALISED:
-			// TODO:
+			error_handler_report(self->error_handler, ERROR_TEMP);
 			break;
+		case HIH8120_OK:
 		default:
-			// TODO:
+			// everithing is well
 			break;
 	}
 }
 
-void wakeUpTemperatureSensor() {
+void temperature_wake_up_sensor(temperature_t self) {
 	switch (hih8120_wakeup()) {
 		case HIH8120_OK:
 			vTaskDelay(pdMS_TO_TICKS(100));
@@ -204,49 +190,44 @@ void wakeUpTemperatureSensor() {
 			// Always check what hih8120_initialise() returns
 			break;
 		case HIH8120_TWI_BUSY:
-			// TODO:
-			break;
 		case HIH8120_DRIVER_NOT_INITIALISED:
-			// TODO:
+			error_handler_report(self->error_handler, ERROR_TEMP);
 			break;
 		default:
 			if (DEBUG) {
 				vTaskDelay(pdMS_TO_TICKS(100));
 			}
-			// TODO:
 			break;
 	}
 }
 
-void temperature_makeOneMesurment(temperature_t self) {
-	wakeUpTemperatureSensor();
+void temperature_make_one_measurement(temperature_t self) {
+	temperature_wake_up_sensor(self);
 	
 	switch(hih8120_measure()) {
 		case HIH8120_OK:
-			temperature_recordMeasurment(self);
+			temperature_record_measurment(self);
 			break;
 		case HIH8120_TWI_BUSY:
-			// TODO:
-			break;
 		case HIH8120_DRIVER_NOT_INITIALISED:
-			// TODO:
+			error_handler_report(self->error_handler, ERROR_TEMP);
 			break;
 		default:
 			if (DEBUG) {
-				temperature_recordMeasurment(self);
+				temperature_record_measurment(self);
 			}
-			// TODO:
+
 			break;
 	}
 	
 	if (self->nextToReadIdx >= 10) {
 		temperature_calculateAvg(self);
 		temperature_resetArray(self);
-		xTaskDelayUntil(&(self->lastMessureCircleTime), self->mesureCircleFrequency);
+		xTaskDelayUntil(&(self->last_meassure_circle_time), pdMS_TO_TICKS(MESURE_CIRCLE_FREAQUENCY));
 	}
 }
 
-int16_t temperature_getMaxLimit(temperature_t self) {
+int16_t temperature_get_max_limit(temperature_t self) {
 	int16_t limit = -100;
 	while (1) {
 		if (xSemaphoreTake(self->maxLimitMutex, pdMS_TO_TICKS(200)) == pdTRUE ) { // wait maximum 200ms
@@ -261,7 +242,7 @@ int16_t temperature_getMaxLimit(temperature_t self) {
 	return limit;
 }
 
-int16_t temperature_getMinLimit(temperature_t self) {
+int16_t temperature_get_min_limit(temperature_t self) {
 	int16_t limit = -100;
 	while (1) {
 		if (xSemaphoreTake(self->minLimitMutex, pdMS_TO_TICKS(200)) == pdTRUE ) { // wait maximum 200ms
@@ -276,7 +257,7 @@ int16_t temperature_getMinLimit(temperature_t self) {
 	return limit;
 }
 
-void temperature_setMaxLimit(temperature_t self, int16_t maxLimit) {
+void temperature_set_max_limit(temperature_t self, int16_t maxLimit) {
 	while (1) {
 		if (xSemaphoreTake(self->maxLimitMutex, pdMS_TO_TICKS(200)) == pdTRUE ) { // wait maximum 200ms
 			self->maxLimit = maxLimit;
@@ -289,7 +270,7 @@ void temperature_setMaxLimit(temperature_t self, int16_t maxLimit) {
 	}
 }
 
-void temperature_setMinLimit(temperature_t self, int16_t minLimit) {
+void temperature_set_min_limit(temperature_t self, int16_t minLimit) {
 	while (1) {
 		if (xSemaphoreTake(self->minLimitMutex, pdMS_TO_TICKS(200)) == pdTRUE ) { // wait maximum 200ms
 			self->minLimit = minLimit;
@@ -302,7 +283,7 @@ void temperature_setMinLimit(temperature_t self, int16_t minLimit) {
 	}
 }
 
-void temperature_recordMeasurment(temperature_t self) {
+void temperature_record_measurment(temperature_t self) {
 	while(!hih8120_isReady()) {
 		vTaskDelay(pdMS_TO_TICKS(500)); //wait 0.5s
 	}
@@ -313,6 +294,6 @@ void temperature_recordMeasurment(temperature_t self) {
 		printf("Temp Measurement #%i: %i\n", self->nextToReadIdx + 1, currentTemperature);
 	}
 
-	temperature_addMeassurmentToArray(self, currentTemperature);
+	temperature_add_measurment_to_array(self, currentTemperature);
 }
 
