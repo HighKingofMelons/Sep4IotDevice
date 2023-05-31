@@ -7,7 +7,7 @@
 #include <rc_servo.h>
 
 #include "taskConfig.h"
-#include "temperature.h"
+#include "temperature_handler.h"
 #include "humidity_handler.h"
 #include "co2_handler.h"
 
@@ -66,7 +66,7 @@ void update_aircon(actuation_handler_t self) {
         return;
     }
 
-    switch (temperature_acceptability_status(self->temp_handler))
+    switch (temperature_get_acceptability_status(self->temp_handler))
     {
     case -1:
         rc_servo_setPosition(AIRCON, AIRCON_HEAT);
