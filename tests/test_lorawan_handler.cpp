@@ -46,6 +46,7 @@ protected:
         RESET_FAKE(xSemaphoreCreateMutex);
         RESET_FAKE(xSemaphoreTake);
         RESET_FAKE(xSemaphoreGive);
+        RESET_FAKE(vTaskDelete);
         FFF_RESET_HISTORY();
     }
 
