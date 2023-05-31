@@ -1,6 +1,6 @@
 #pragma once
 #include <semphr.h>
-#include <error.h>
+#include <error_handler.h>
 
 struct error_handler {
     QueueHandle_t queue;

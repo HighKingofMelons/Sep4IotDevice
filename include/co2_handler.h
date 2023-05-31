@@ -6,7 +6,7 @@
  */ 
 
 #pragma once
-#include "error.h"
+#include "error_handler.h"
 
 typedef struct co2 *co2_handler_t;
 co2_handler_t co2_create(error_handler_t error_handler, TickType_t freequency);

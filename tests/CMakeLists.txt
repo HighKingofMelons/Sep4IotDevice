@@ -14,7 +14,7 @@ set(OBJECT_DIR ${CMAKE_SOURCE_DIR}/build/tests/CMakeFiles/Sep4IotDeviceTests.dir
 set(SOURCES_TEST
     fakes.c
     ../src/co2_handler.c
-    ../src/error.c
+    ../src/error_handler.c
     ../src/temperature.c
     ../src/humidity.c
     ../src/actuation.c
@@ -25,7 +25,7 @@ set(SOURCES_TEST
 set(GCOV_FILES
     ${OBJECT_DIR}actuation.c.gcda
     ${OBJECT_DIR}co2_handler.c.gcda
-    ${OBJECT_DIR}error.c.gcda
+    ${OBJECT_DIR}error_handler.c.gcda
     ${OBJECT_DIR}humidity.c.gcda
     ${OBJECT_DIR}temperature.c.gcda
     ${OBJECT_DIR}LoRaWANHandler.c.gcda
@@ -36,7 +36,7 @@ set(GCOV_FILES
 set(TESTS
     test_co2_handler.cpp
     test_temperature.cpp
-    error.cpp
+    test_error_handler.cpp
     test_humidity.cpp
     actuation.cpp
     test_lorawan_handler.cpp

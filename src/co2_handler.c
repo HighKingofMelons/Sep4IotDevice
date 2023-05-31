@@ -13,7 +13,7 @@
 #include <message_buffer.h>
 #include <task.h>
 #include "../include/taskConfig.h"
-#include "../include/error.h"
+#include "../include/error_handler.h"
 #include "../include/co2_handler.h"
 #include <mh_z19.h>
 
@@ -32,8 +32,6 @@ void setMaxCo2Limit(co2_handler_t self, uint16_t maxCo2Limit);
 void setMinCo2Limit(co2_handler_t self, uint16_t minCO2Limit);
 void co2_makeOneMesuremnt(co2_handler_t self, uint16_t ppm); // TODO: delete
 
-static TaskHandle_t mesureCo2Task = NULL;
-
 typedef struct co2 {
 	uint16_t co2Array[10];
 	uint8_t nextCo2ToReadIdx;
@@ -45,7 +43,8 @@ typedef struct co2 {
 	uint16_t maxCo2Limit;
 	uint16_t minCo2Limit;
 	error_handler_t error_handler;
-	} co2_st;
+	TaskHandle_t mesure_co2_task_h;
+} co2_st;
 	
 co2_handler_t co2_create(error_handler_t error_handler, TickType_t last_messure_circle_time){
 	co2_handler_t _newCo2 = initializeCo2(error_handler, last_messure_circle_time);
@@ -56,7 +55,7 @@ co2_handler_t co2_create(error_handler_t error_handler, TickType_t last_messure_
 				TASK_MESSURE_CO2_STACK,
 				(void*) _newCo2,
 				TASK_MESSURE_CO2_PRIORITY,
-				&mesureCo2Task);
+				&(_newCo2->mesure_co2_task_h));
 	return _newCo2;
 }
 
@@ -272,9 +271,9 @@ int8_t co2_acceptability_status(co2_handler_t self)
 }
 
 void co2_handler_destroy(co2_handler_t self) {
-	if(mesureCo2Task != NULL) {
-		vTaskDelete(mesureCo2Task);
-		mesureCo2Task = NULL;
+	if(self->mesure_co2_task_h != NULL) {
+		vTaskDelete(self->mesure_co2_task_h);
+		self->mesure_co2_task_h = NULL;
 	}
 
 	vSemaphoreDelete(self->latestAvgCo2Mutex);
