@@ -103,7 +103,7 @@ void actuation_task(void *pvParameters) {
     TickType_t lastDelay = xTaskGetTickCount();
     
     for(;;) {
-        xTaskDelayUntil(&lastDelay, pdMS_TO_TICKS(300000));
+        xTaskDelayUntil(&lastDelay, pdMS_TO_TICKS(30000));
         if (actuators_get_state(self) == ACTUATORS_OFF) {
             printf("ACTUATORS_OFF\n");
             continue;
