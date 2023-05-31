@@ -128,7 +128,7 @@ void parse_downlink_payload(handler_controller_t self) {
 	vTaskDelay(pdMS_TO_TICKS(5000));
 	printf("Limits are being changed.\n");
 	uint8_t flags = bytes[0];
-	actuators_turn_on_of(self->actuation_handler, (flags & 0x80) == 0x80);
+	actuators_turn_on_off(self->actuation_handler, (flags & 0x80) == 0x80);
 	vTaskDelay(pdMS_TO_TICKS(5000));
 	uint8_t max_temp_limit = ((int16_t) bytes[1]) * 10;
 	uint8_t min_temp_limit = ((int16_t) bytes[2]) * 10;
