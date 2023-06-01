@@ -24,7 +24,7 @@
 #define TASK_LORA_UPLINK_STACK      ( configMINIMAL_STACK_SIZE + 170)
 #define TASK_HANDLER_CONTROLLER_STACK      ( configMINIMAL_STACK_SIZE + 270)
 #define TASK_ERROR_STACK            ( configMINIMAL_STACK_SIZE - 80 )
-#define	TASK_ACTUATOR_STACK		    ( configMINIMAL_STACK_SIZE - 80 )
+#define	TASK_ACTUATOR_STACK		    ( configMINIMAL_STACK_SIZE - 60 )
 
 #define configUSE_MUTEXES			1
 

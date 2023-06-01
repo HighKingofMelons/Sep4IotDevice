@@ -68,7 +68,7 @@ void handler_controller_task(void *pvParameters) {
 
     for( ;; ) {
         xTaskDelayUntil(&(self->last_messure_circle_time), pdMS_TO_TICKS(MESURE_CIRCLE_FREAQUENCY));
-        create_uplink_payload(self);;
+        create_uplink_payload(self);
 		vTaskDelay(pdMS_TO_TICKS(30000UL));
         parse_downlink_payload(self);
     } 
