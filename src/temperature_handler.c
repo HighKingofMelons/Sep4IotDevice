@@ -29,7 +29,7 @@ int16_t temperature_get_max_limit(temperature_t self);
 int16_t temperature_get_min_limit(temperature_t self);
 void temperature_set_max_limit(temperature_t self, int16_t maxLimit);
 void temperature_set_min_limit(temperature_t self, int16_t minLimit);
-void temperature_record_measurment(temperature_t self);
+void temperature_record_measurment(temperature_t self); // TODO : remove!
 
 typedef struct temperature {
 	int16_t temperatureArray[10];
