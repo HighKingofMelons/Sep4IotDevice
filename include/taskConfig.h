@@ -3,8 +3,13 @@
 
  * Created: 27/04/2023 13.29.57
  *  Author: andre
- */ 
+ */
 
+/** @file
+ * @brief This is a taskConfig header file.
+ *
+ * It handles the tasks.
+ */
 #pragma once
 
 #include <FreeRTOSConfig.h>
