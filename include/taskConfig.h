@@ -18,13 +18,13 @@
 #define	TASK_ACTUATOR_PRIORITY	    ( tskIDLE_PRIORITY + 1 )
 
 /* Task stack sizes*/
-#define TASK_MESSURE_TEMP_STACK		( configMINIMAL_STACK_SIZE - 80)
-#define	TASK_MESSURE_HUM_STACK		( configMINIMAL_STACK_SIZE - 80)
-#define TASK_MESSURE_CO2_STACK		( configMINIMAL_STACK_SIZE - 80)
-#define TASK_LORA_UPLINK_STACK      ( configMINIMAL_STACK_SIZE + 170)
-#define TASK_HANDLER_CONTROLLER_STACK      ( configMINIMAL_STACK_SIZE + 270)
-#define TASK_ERROR_STACK            ( configMINIMAL_STACK_SIZE - 80 )
-#define	TASK_ACTUATOR_STACK		    ( configMINIMAL_STACK_SIZE - 60 )
+#define TASK_MESSURE_TEMP_STACK		       ( configMINIMAL_STACK_SIZE -  80 )
+#define	TASK_MESSURE_HUM_STACK		       ( configMINIMAL_STACK_SIZE -  80 )
+#define TASK_MESSURE_CO2_STACK		       ( configMINIMAL_STACK_SIZE -  80 ) 
+#define TASK_LORA_UPLINK_STACK             ( configMINIMAL_STACK_SIZE + 170 )
+#define TASK_HANDLER_CONTROLLER_STACK      ( configMINIMAL_STACK_SIZE + 270 )
+#define TASK_ERROR_STACK                   ( configMINIMAL_STACK_SIZE -  80 )
+#define	TASK_ACTUATOR_STACK		           ( configMINIMAL_STACK_SIZE -  80 )
 
 #define configUSE_MUTEXES			1
 
