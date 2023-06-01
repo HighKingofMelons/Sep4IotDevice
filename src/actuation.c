@@ -101,7 +101,7 @@ void actuation_task(void *pvParameters) {
     TickType_t lastDelay = xTaskGetTickCount();
     
     for(;;) {
-        xTaskDelayUntil(&lastDelay, pdMS_TO_TICKS(30000));
+        xTaskDelayUntil(&lastDelay, pdMS_TO_TICKS(60000));
         update_vent(self);
         update_aircon(self);
         //printf("Ac hw: %i\n", uxTaskGetStackHighWaterMark(actuation_task_h));

@@ -15,7 +15,7 @@
 #define	TASK_MESSURE_HUM_PRIORITY	( tskIDLE_PRIORITY + 2 )
 #define TASK_MESSURE_CO2_PRIORITY	( tskIDLE_PRIORITY + 2 )
 #define TASK_ERROR_PRIORITY         ( tskIDLE_PRIORITY + 1 )
-#define	TASK_ACTUATOR_PRIORITY	    ( tskIDLE_PRIORITY + 1 )
+#define	TASK_ACTUATOR_PRIORITY	    ( tskIDLE_PRIORITY + 3 )
 
 /* Task stack sizes*/
 #define TASK_MESSURE_TEMP_STACK		       ( configMINIMAL_STACK_SIZE -  80 )
