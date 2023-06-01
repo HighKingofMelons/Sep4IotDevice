@@ -32,8 +32,6 @@ enum actuator {
     AIRCON      = 1
 };
 
-actuator_state_t actuators_get_state(actuation_handler_t self);
-
 void update_vent(actuation_handler_t self) {
     if (pdTRUE != xSemaphoreTake(self->override_sema, pdMS_TO_TICKS(50)))
         return;
@@ -104,15 +102,9 @@ void actuation_task(void *pvParameters) {
     
     for(;;) {
         xTaskDelayUntil(&lastDelay, pdMS_TO_TICKS(30000));
-        if (actuators_get_state(self) == ACTUATORS_OFF) {
-            printf("ACTUATORS_OFF\n");
-            continue;
-        }
-
         update_vent(self);
         update_aircon(self);
-        lastDelay = xTaskGetTickCount();
-        printf("Ac hw: %i\n", uxTaskGetStackHighWaterMark(actuation_task_h));
+        //printf("Ac hw: %i\n", uxTaskGetStackHighWaterMark(actuation_task_h));
     }
 }
 
@@ -203,33 +195,14 @@ void actuators_aircon_disable_override(actuation_handler_t self) {
 }
 
 void actuators_turn_on_off(actuation_handler_t self, actuator_state_t state) {
-    while(1) {
-        if (pdTRUE == xSemaphoreTake(self->actuator_state_sema, pdMS_TO_TICKS(50))) {
-           break;
-        }
-    }
 
-    if ((state == ACTUATORS_OFF) && (state != self->actuator_state)) {
+    if (state == ACTUATORS_OFF) {
         actuators_ventilation_override_state(self, VENT_OFF);
         actuators_aircon_override_state(self, AIRCON_OFF);
-        printf("ACTUATORS_OFF\n");
+        printf("ACTUATORS DISABLED\n");
     } else {
-        printf("ACTUATORS_ON\n");
+        actuators_aircon_disable_override(self);
+        actuators_ventilation_disable_override(self);
+        printf("ACTUATORS ENABLED\n");
     }
-
-    self->actuator_state = state;
-    xSemaphoreGive(self->actuator_state_sema);
-}
-
-actuator_state_t actuators_get_state(actuation_handler_t self) {
-    actuator_state_t tmp = ACTUATORS_OFF;
-    while(1) {
-        if (pdTRUE == xSemaphoreTake(self->actuator_state_sema, pdMS_TO_TICKS(100))) {
-           tmp = self->actuator_state;
-           break;
-        }
-    }
-
-    xSemaphoreGive(self->actuator_state_sema);
-    return tmp;
 }
