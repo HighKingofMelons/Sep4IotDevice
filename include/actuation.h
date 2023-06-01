@@ -18,7 +18,7 @@ void actuators_ventilation_disable_override(actuation_handler_t self);
 typedef enum {
     AIRCON_HEAT =  100,
     AIRCON_COOL = -100,
-    AIRCON_OFF  =  50
+    AIRCON_OFF  =  0
 } aircon_state_t;
 
 typedef enum {

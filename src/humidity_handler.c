@@ -29,7 +29,7 @@ uint8_t humidity_getMaxLimit(humidity_t self);
 uint8_t humidity_getMinLimit(humidity_t self);
 void humidity_setMaxLimit(humidity_t self, uint8_t maxLimit);
 void humidity_setMinLimit(humidity_t self, uint8_t minLimit);
-void humidity_recordMeasurment(humidity_t self);
+void humidity_recordMeasurment(humidity_t self); // TODO: remove
 
 typedef struct humidity {
 	uint16_t humidityArray[10];
