@@ -18,6 +18,7 @@ TaskHandle_t actuation_task_h;
 struct actuation_handler {
     temperature_t temp_handler;
     humidity_t humid_handler;
+    co2_handler_t co2_handler;
 
     SemaphoreHandle_t override_sema;
     SemaphoreHandle_t actuator_state_sema;
@@ -31,8 +32,6 @@ enum actuator {
     AIRCON      = 1
 };
 
-actuator_state_t actuators_get_state(actuation_handler_t self);
-
 void update_vent(actuation_handler_t self) {
     if (pdTRUE != xSemaphoreTake(self->override_sema, pdMS_TO_TICKS(50)))
         return;
@@ -42,17 +41,22 @@ void update_vent(actuation_handler_t self) {
         return;
     }
 
-    switch (humidity_get_acceptability_status(self->humid_handler))
+    int8_t humi = humidity_get_acceptability_status(self->humid_handler);
+    int8_t co2222 = co2_acceptability_status(self->co2_handler);
+
+    if (DEBUG) {
+        printf("humi: %i co2222: %i\n", humi, co2222);
+    }
+
+    if ((0 != humi) | (0 != co2222)) 
     {
-    case  1:
         rc_servo_setPosition(VENTILATION, VENT_ON);
         printf("VENT_ON\n");
-        break;
-    case  0:
-    case -1:
+    }
+    else
+    {
         rc_servo_setPosition(VENTILATION, VENT_OFF);
         printf("VENT_OFF\n");
-        break;
     }
 
     xSemaphoreGive(self->override_sema);
@@ -67,7 +71,13 @@ void update_aircon(actuation_handler_t self) {
         return;
     }
 
-    switch (temperature_get_acceptability_status(self->temp_handler))
+    int8_t temp = temperature_get_acceptability_status(self->temp_handler);
+
+    if (DEBUG) {
+        printf("temp: %i\n", temp);
+    }
+
+    switch (temp)
     {
     case -1:
         rc_servo_setPosition(AIRCON, AIRCON_HEAT);
@@ -91,20 +101,14 @@ void actuation_task(void *pvParameters) {
     TickType_t lastDelay = xTaskGetTickCount();
     
     for(;;) {
-        xTaskDelayUntil(&lastDelay, pdMS_TO_TICKS(300000));
-        if (actuators_get_state(self) == ACTUATORS_OFF) {
-            printf("ACTUATORS_OFF\n");
-            continue;
-        }
-
+        xTaskDelayUntil(&lastDelay, pdMS_TO_TICKS(60000));
         update_vent(self);
         update_aircon(self);
-        lastDelay = xTaskGetTickCount();
-        printf("Ac hw: %i\n", uxTaskGetStackHighWaterMark(actuation_task_h));
+        //printf("Ac hw: %i\n", uxTaskGetStackHighWaterMark(actuation_task_h));
     }
 }
 
-actuation_handler_t actuation_handler_init(temperature_t temperature, humidity_t humidity) {
+actuation_handler_t actuation_handler_init(temperature_t temperature, humidity_t humidity, co2_handler_t co2) {
     rc_servo_initialise();
 
     actuation_handler_t _handler = calloc(1, sizeof(struct actuation_handler));
@@ -112,6 +116,7 @@ actuation_handler_t actuation_handler_init(temperature_t temperature, humidity_t
     *_handler = (struct actuation_handler) {
         temperature,
         humidity,
+        co2,
 
         xSemaphoreCreateMutex(),
         xSemaphoreCreateMutex(),
@@ -190,33 +195,14 @@ void actuators_aircon_disable_override(actuation_handler_t self) {
 }
 
 void actuators_turn_on_off(actuation_handler_t self, actuator_state_t state) {
-    while(1) {
-        if (pdTRUE == xSemaphoreTake(self->actuator_state_sema, pdMS_TO_TICKS(50))) {
-           break;
-        }
-    }
 
-    if ((state == ACTUATORS_OFF) && (state != self->actuator_state)) {
+    if (state == ACTUATORS_OFF) {
         actuators_ventilation_override_state(self, VENT_OFF);
         actuators_aircon_override_state(self, AIRCON_OFF);
-        printf("ACTUATORS_OFF\n");
+        printf("ACTUATORS DISABLED\n");
     } else {
-        printf("ACTUATORS_ON\n");
+        actuators_aircon_disable_override(self);
+        actuators_ventilation_disable_override(self);
+        printf("ACTUATORS ENABLED\n");
     }
-
-    self->actuator_state = state;
-    xSemaphoreGive(self->actuator_state_sema);
-}
-
-actuator_state_t actuators_get_state(actuation_handler_t self) {
-    actuator_state_t tmp = ACTUATORS_OFF;
-    while(1) {
-        if (pdTRUE == xSemaphoreTake(self->actuator_state_sema, pdMS_TO_TICKS(100))) {
-           tmp = self->actuator_state;
-           break;
-        }
-    }
-
-    xSemaphoreGive(self->actuator_state_sema);
-    return tmp;
 }

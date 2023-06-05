@@ -3,6 +3,7 @@
 extern "C" {
     #include <stdint.h>
     #include "fakes.h"
+    #include "Controls/co2_handler.h"
     #include "Controls/temperature_handler.h"
     #include "Controls/humidity_handler.h"
     #include "Controls/actuation.h"
@@ -44,6 +45,22 @@ temperature_st makeTemp (int8_t accept_result) {
     return _temp;
 }
 
+co2_st makeCo2 (int8_t accept_result) {
+    co2_st _co2 = {
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0,
+        (uint8_t) (16 + (15 * accept_result)),
+        0,
+        0,
+        0,
+        1,
+        20,
+        10
+    };
+
+    return _co2;
+}
+
 TEST(actuation_handler, test_fakestructs) {
     RESET_FAKE(xSemaphoreGive);
     RESET_FAKE(xSemaphoreTake);
@@ -66,6 +83,14 @@ TEST(actuation_handler, test_fakestructs) {
     ASSERT_EQ(temperature_get_acceptability_status(&tem1), 1);
     ASSERT_EQ(temperature_get_acceptability_status(&tem2), 0);
     ASSERT_EQ(temperature_get_acceptability_status(&tem3), -1);
+
+    co2_st co21 = makeCo2(1);
+    co2_st co22 = makeCo2(0);
+    co2_st co23 = makeCo2(-1);
+
+    ASSERT_EQ(co2_acceptability_status(&co21), 1);
+    ASSERT_EQ(co2_acceptability_status(&co22), 0);
+    ASSERT_EQ(co2_acceptability_status(&co23), -1);
 }
 
 TEST(actuation_handler, update_aircon_overrides) {
@@ -78,6 +103,7 @@ TEST(actuation_handler, update_aircon_overrides) {
 
     struct actuation_handler _hand = {
         &temp,
+        NULL,
         NULL,
         0,
         0,
@@ -114,10 +140,12 @@ TEST(actuation_handler, update_vent_overrides) {
     FFF_RESET_HISTORY();
 
     humidity_st humid = makeHumid(1);
+    co2_st co2 = makeCo2(0);
 
     struct actuation_handler _hand = {
         NULL,
         &humid,
+        &co2,
         0,
         0,
         pdTRUE,
@@ -157,6 +185,7 @@ TEST(actuation_handler, update_aircon_temp_aircon_OFF) {
     struct actuation_handler _hand = {
         &temp,
         NULL,
+        NULL,
         0,
         0,
         pdTRUE,
@@ -183,6 +212,7 @@ TEST(actuation_handler, update_aircon_temp_aircon_COOL) {
 
     struct actuation_handler _hand = {
         &temp,
+        NULL,
         NULL,
         0,
         0,
@@ -211,6 +241,7 @@ TEST(actuation_handler, update_aircon_temp_aircon_HEAT) {
     struct actuation_handler _hand = {
         &temp,
         NULL,
+        NULL,
         0,
         0,
         pdTRUE,
@@ -234,10 +265,12 @@ TEST(actuation_handler, update_vent_humid_vent_ON) {
     FFF_RESET_HISTORY();
 
     humidity_st humid = makeHumid(1);
+    co2_st co2 = makeCo2(0);
 
     struct actuation_handler _hand = {
         NULL,
         &humid,
+        &co2,
         0,
         0,
         pdFALSE,
@@ -261,10 +294,12 @@ TEST(actuation_handler, update_vent_humid_vent_OFF1) {
     FFF_RESET_HISTORY();
 
     humidity_st humid = makeHumid(0);
+    co2_st co2 = makeCo2(0);
 
     struct actuation_handler _hand = {
         NULL,
         &humid,
+        &co2,
         0,
         0,
         pdFALSE,
@@ -281,17 +316,19 @@ TEST(actuation_handler, update_vent_humid_vent_OFF1) {
     ASSERT_EQ(rc_servo_setPosition_fake.arg1_val, VENT_OFF);
 }
 
-TEST(actuation_handler, update_vent_humid_vent_OFF2) {
+TEST(actuation_handler, update_vent_humid_vent_ON2) {
     RESET_FAKE(xSemaphoreGive);
     RESET_FAKE(xSemaphoreTake);
     RESET_FAKE(rc_servo_setPosition);
     FFF_RESET_HISTORY();
 
+    co2_st co2 = makeCo2(0);
     humidity_st humid = makeHumid(-1);
 
     struct actuation_handler _hand = {
         NULL,
         &humid,
+        &co2,
         0,
         0,
         pdFALSE,
@@ -305,7 +342,94 @@ TEST(actuation_handler, update_vent_humid_vent_OFF2) {
     
     ASSERT_GE(xSemaphoreGive_fake.call_count, 2);
     ASSERT_EQ(rc_servo_setPosition_fake.call_count, 1);
+    ASSERT_EQ(rc_servo_setPosition_fake.arg1_val, VENT_ON);
+}
+
+TEST(actuation_handler, update_vent_co2_vent_ON) {
+    RESET_FAKE(xSemaphoreGive);
+    RESET_FAKE(xSemaphoreTake);
+    RESET_FAKE(rc_servo_setPosition);
+    FFF_RESET_HISTORY();
+
+    co2_st co2 = makeCo2(1);
+    humidity_st humid = makeHumid(0);
+
+    struct actuation_handler _hand = {
+        NULL,
+        &humid,
+        &co2,
+        0,
+        0,
+        pdFALSE,
+        pdTRUE,
+        ACTUATORS_ON
+    };
+
+    xSemaphoreTake_fake.return_val = pdTRUE;
+
+    update_vent(&_hand);
+
+    ASSERT_GE(xSemaphoreGive_fake.call_count, 2);
+    ASSERT_EQ(rc_servo_setPosition_fake.call_count, 1);
+    ASSERT_EQ(rc_servo_setPosition_fake.arg1_val, VENT_ON);
+}
+
+TEST(actuation_handler, update_vent_both_vent_OFF) {
+    RESET_FAKE(xSemaphoreGive);
+    RESET_FAKE(xSemaphoreTake);
+    RESET_FAKE(rc_servo_setPosition);
+    FFF_RESET_HISTORY();
+
+    co2_st co2 = makeCo2(0);
+    humidity_st humid = makeHumid(0);
+
+    struct actuation_handler _hand = {
+        NULL,
+        &humid,
+        &co2,
+        0,
+        0,
+        pdFALSE,
+        pdTRUE,
+        ACTUATORS_ON
+    };
+
+    xSemaphoreTake_fake.return_val = pdTRUE;
+
+    update_vent(&_hand);
+    
+    ASSERT_GE(xSemaphoreGive_fake.call_count, 2);
+    ASSERT_EQ(rc_servo_setPosition_fake.call_count, 1);
     ASSERT_EQ(rc_servo_setPosition_fake.arg1_val, VENT_OFF);
+}
+
+TEST(actuation_handler, update_vent_both_vent_ON) {
+    RESET_FAKE(xSemaphoreGive);
+    RESET_FAKE(xSemaphoreTake);
+    RESET_FAKE(rc_servo_setPosition);
+    FFF_RESET_HISTORY();
+
+    co2_st co2 = makeCo2(1);
+    humidity_st humid = makeHumid(-1);
+
+    struct actuation_handler _hand = {
+        NULL,
+        &humid,
+        &co2,
+        0,
+        0,
+        pdFALSE,
+        pdTRUE,
+        ACTUATORS_ON
+    };
+
+    xSemaphoreTake_fake.return_val = pdTRUE;
+    
+    update_vent(&_hand);
+    
+    ASSERT_GE(xSemaphoreGive_fake.call_count, 2);
+    ASSERT_EQ(rc_servo_setPosition_fake.call_count, 1);
+    ASSERT_EQ(rc_servo_setPosition_fake.arg1_val, VENT_ON);
 }
 
 TEST(actuation_handler, init) {
@@ -317,8 +441,9 @@ TEST(actuation_handler, init) {
 
     temperature_st temp = makeTemp(0);
     humidity_st humi = makeHumid(0);
+    co2_st co2 = makeCo2(0);
 
-    actuation_handler_t act = actuation_handler_init(&temp, &humi);
+    actuation_handler_t act = actuation_handler_init(&temp, &humi, &co2);
 
     ASSERT_EQ(rc_servo_initialise_fake.call_count, 1);
     ASSERT_EQ(rc_servo_setPosition_fake.call_count, 2);
@@ -335,8 +460,9 @@ TEST(actuation_handler, init) {
 TEST(actuation_handler, destroy) {
     temperature_st temp = makeTemp(0);
     humidity_st humi = makeHumid(0);
+    co2_st co2 = makeCo2(0);
 
-    actuation_handler_t act = actuation_handler_init(&temp, &humi);
+    actuation_handler_t act = actuation_handler_init(&temp, &humi, &co2);
 
     RESET_FAKE(vTaskDelete);
     RESET_FAKE(vSemaphoreDelete);
@@ -355,6 +481,7 @@ TEST(actuation_handler, ventilation_override_state) {
     FFF_RESET_HISTORY();
 
     struct actuation_handler _hand = {
+        NULL,
         NULL,
         NULL,
         0,
@@ -385,6 +512,7 @@ TEST(actuation_handler, ventilation_disable_override) {
     struct actuation_handler _hand = {
         NULL,
         NULL,
+        NULL,
         0,
         0,
         pdFALSE,
@@ -410,6 +538,7 @@ TEST(actuation_handler, aircon_override_state) {
     FFF_RESET_HISTORY();
 
     struct actuation_handler _hand = {
+        NULL,
         NULL,
         NULL,
         0,
@@ -438,6 +567,7 @@ TEST(actuation_handler, aircon_disable_override) {
     FFF_RESET_HISTORY();
 
     struct actuation_handler _hand = {
+        NULL,
         NULL,
         NULL,
         0,

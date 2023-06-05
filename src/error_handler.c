@@ -170,7 +170,6 @@ void error_handler_task (void *pvArguments) {
         update_display(self);
         xTaskDelayUntil((TickType_t *const) &lastWake, pdMS_TO_TICKS(15000));
         lastWake = xTaskGetTickCount();
-        printf("Err hw: %i\n", uxTaskGetStackHighWaterMark(self->error_task_h));
     }
 }
 

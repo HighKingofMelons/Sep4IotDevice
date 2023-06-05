@@ -5,6 +5,11 @@ extern "C"
     #include "fakes.h"
     #include <taskConfig.h>
     #include "Controls/lorawan_handler.h"
+    #include "Controls/temperature_handler.h"
+    #include "Controls/humidity_handler.h"
+    #include "Controls/co2_handler.h"
+    #include "Controls/actuation.h"
+    #include "Controls/error_handler.h"
 }
 
 class Test_lorawan_handler : public ::testing::Test
@@ -49,6 +54,80 @@ protected:
     {
     }
 
+    temperature_st makeTemp() {
+        temperature_st _temp = {
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0,
+            32,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        };
+
+        return _temp;
+    }
+
+    humidity_st makeHum() {
+        humidity_st _hum = {
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0,
+            43,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        };
+
+        return _hum;
+    }
+
+    co2_st makeCo2() {
+        co2_st _co2 = {
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0,
+            547,
+            0,
+            0,
+            0
+        };
+
+        return _co2;
+    }
+
+    struct error_handler makeError() {
+        error_handler _error = {
+            0,
+            0,
+            2,
+            0,
+            0
+        };
+
+        return _error;
+    }
+
+    actuation_handler makeActuation(temperature_t temp, humidity_t hum, co2_handler_t co2) {
+        actuation_handler _actuation = {
+            temp,
+            hum,
+            co2,
+            0,
+            0,
+            VENT_OFF,
+            AIRCON_OFF,
+            ACTUATORS_OFF
+        };
+
+        return _actuation;
+    }
+  
     void copyArrayMembers(uint8_t dest[], uint8_t src[], int size)
     { 
         for(int i = 0; i < size; i++) {

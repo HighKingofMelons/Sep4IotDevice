@@ -10,6 +10,7 @@
  * It hold a 5 attributes and is needed for accesing and using actuation.
  */
 typedef struct actuation_handler *actuation_handler_t;
+
 /**
  * @brief Initiatizes the actuation handler.
  *
@@ -17,7 +18,7 @@ typedef struct actuation_handler *actuation_handler_t;
  * @param humidity
  * @return actuation_handler_t
  */
-actuation_handler_t actuation_handler_init(temperature_t temperature, humidity_t humidity);
+actuation_handler_t actuation_handler_init(temperature_t temperature, humidity_t humidity, co2_handler_t co2);
 /**
  * @brief Destroys the actuation handler.
  *
